@@ -215,5 +215,74 @@ In programming, we need a way to express the absence of a value. In JavaScript, 
 
 `null` is similar to `undefined`: it represents the intentional absence of a value. Often, `null` represents emptiness or nothing. The chief difference between `null` and `undefined` is that you must use `null` explicitly if you want to use it; `undefined` can arise implicitly. These two values are so similar in their use and behaviour that some people think having both in JavaScript is a mistake. We'll explore `null` a little later. For now, you can think of it as a value that represents emptiness or nothing.
 
-### Operations
+### Data Structures
+
+The two most common data structures, or complex data types, that JavaScript programmers use are arrays and objects.
+
+###### Arrays
+
+JavaScript organizes information into ordered lists using arrays. They may contain strings, numbers, booleans, or any other data type. In JavaScript, array literals--representations of an array--use square brackets `[ ]` surrounding a comma-delimited list of values, otherwise known as elements.  
+
+The most important facts to remember about arrays are:  
+
+* The order of the elements is significant.
+* Use index numbers to retrieve array elements.
+* Index numbers are non-negative integers starting from `0`.
+
+###### Objects
+
+JavaScript objects have many use cases, but the one that interests us most now is as a dictionary-like data structure that matches keys with specific values. Other languages use different names for the same kind of structure: hash, dictionary, and associative array are the most common terms. Essentially, a JavaScript object is a collection of key-value pairs.  
+
+You can create objects using object literals, which have zero or more key-value pairs separated by commas all embedded within curly braces (`{}`). A key-value pair associates a key and a given value. Each pair consists of a key, in the form of a string, and a value of any type. Key-value pairs in object literals use the key followed by a colon (`:`) and then the value.  
+
+Objects are the building blocks of programming. You'll become intimately familiar with them as you learn more and more. For now, the most important thing to remember about objects is that you use keys to set or retrieve values.  
+
+### Expressions and Return Values
+
+**expressions**:
+
+* Anything that JavaScript can evaluate to a value, even if that value is `undefined` or `null`.
+* With only a few exceptions, almost everything you write in JavaScript is an expression.
+* JavaScript expressions always evaluate to a value.
+
+**return value**:
+
+* The evaluated value of an expression.
+
+Expressions do something, but they also return or evaluate to a value. The returned value may not always be what you expect. For instance, let's take a look at `console.log`:
+
+```javascript
+> console.log('Howdy')
+Howdy
+= undefined
+```
+
+Here, `console.log` displayed "Howdy" on the console, but then it showed the word `undefined` in a different color or dimmer brightness. That extra output is the return value of the expression, and `undefined` tells you that `console.log` returned nothing. It's important to understand that distinction.
+
+### Statements
+
+**statements**:
+
+* JavaScript applications consist of statements with an appropriate syntax. A single statement may span multiple lines. Multiple statements may occur on a single line if each statement is separated by a semicolon. This isn't a keyword, but a group of keywords (MDN).
+
+* Statements always evaluate as `undefined`. They differ from expressions in that you cannot use a statement as part of another expression.  
+
+* They differ from expressions in that you cannot use a statement as part of another expression.
+
+* Some statements include expressions as part of their syntax. For example, the `let` statement can include an initializer to set the initial value of the variable:
+
+  ```javascript
+  > let foo = 42
+  = undefined
+  ```
+
+  In the `let` statement, the code to the right of the `=` is an expression. That expression happens to be part of the `let` statement, but it is still an expression in its own right.
+
+* Unfortunately, the term "statement" isn't quite as well-defined as the MDN page referred to above makes out. In practice, most programmers use the term statement rather loosely: it refers to a syntactic unit of code that expresses an action for the computer to perform. All of the statements mentioned on the MDN page linked above conform to this definition, but the page doesn't list everything.
+
+* You can use the term "statement" somewhat loosely. However, try to keep the distinction between "statements" and "expressions" in mind as it is sometimes vital. Expressions can be part of a statement, but not all statements are expressions.
+
+---
+
+## Variables
 
