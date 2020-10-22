@@ -286,3 +286,92 @@ Here, `console.log` displayed "Howdy" on the console, but then it showed the wor
 
 ## Variables
 
+One of the most basic concepts of programming is that programs need to store information in memory so that it can use and manipulate that information. Variables are the means for doing that in almost all computer languages. They provide a way to label data with a descriptive name that helps us and other readers understand a program. Think of variables as containers that hold information: their purpose is to label and store data in memory so that your program can use it.
+
+### Variables and Variable Names
+
+A variable is simply a named area of a program's memory space where the program can store data. Typically, variables can be changed. That is, we can make a variable point to a different area of memory that has a different value.  
+
+###### Variable Naming
+
+Variable names are often referred to by the broader term, **identifiers**. In JavaScript, identifiers refer to several things:
+
+* Variable names declared by `let` and `var`
+* Constant names declared by `const`
+* Property names of objects
+* Function names
+* Function parameters
+* Class names
+
+The term _variable name_ includes all of these identifiers, except property names of objects. However, property names of the **global object** are usually included when discussing variable names. We'll use this inclusive form of variable name, but will be specific when there are important differences.  
+
+###### What Else is a Variable?
+
+JavaScript has a bunch of other things that involve storing data in a named area of memory. The list looks a lot like the list of identifiers:
+
+* Variables declared with `let` and `var`
+* Constants declared with `const`
+* Properties of the global object
+* Function names
+* Function parameters
+* Class names
+
+The most significant difference in this list compared to the list of identifiers is that not all object properties are variables; only those on the global object.  
+
+When JavaScript developers talk about variables or variable names, they often use these more inclusive meanings -- for most purposes, all of these concepts act like variables, and they all have names that can be used in situations that call for variable names. There are differences, though. We'll use the term variables in this inclusive manner, but will be specific when there are important differences.  
+
+### Declaring and Assigning Variables
+
+A variable declaration is a statement that asks the JavaScript engine to reserve space for a variable with a particular name and **initializes** it with a value.  JavaScript supplies several ways to declare variables, but the preferred way in modern JavaScript use the `let` keyword:  
+
+```javascript
+> let firstName
+= undefined
+```
+
+### Declaring Constants
+
+The `const` keyword is similar to `let`, but it lets you declare and initialize **constant** identifiers:
+
+```javascript
+> const firstName = 'Mitchell'
+= undefined
+
+> firstName
+= Mitchell
+```
+
+Once you initialize a constant, you can't give it another value.  
+
+Constants store values that remain the same throughout the execution of a program, a block within the program, or a function.  
+
+A standard convention when naming constants is to use all uppercase letters and digits in the name; if the name contains multiple words, use underscores to separate the words.  
+
+### Variable Scope
+
+A variable's **scope** determines where it is available in a program. The location where you declare a variable determines its scope. In JavaScript, variables declared with the `let` or `const` keywords have **block** scope. A block is a related set of JavaScript statements and expressions between a pair of opening and closing curly braces. We'll use an `if` statement to illustrate since they typically use at least one block:  
+
+```javascript
+if (expression) {	// block starts at {
+  doSomething();	// block body
+}									// block ends here
+```
+
+This code uses the basic syntax of an `if` statement: we'll learn more in the "Flow Control" chapter. For now, all you need to know is that JavaScript evaluates the expression between the parentheses (`()`). If it's true, JavaScript executes the code inside the block. Otherwise, it skips to the code that follows the block. Here, we run `doSomething()` when `expression` evaluates as true.  
+
+Constants declared with `const` have the same scope as variables declared with `let`.  
+
+### A Common Gotcha
+
+Be sure to always declare your variables and constants with `let` and `const`. JavaScript is a forgiving language, and one of the ways it demonstrates that occurs when you fail to declare a variable or constant. You can create them willy-nilly merely by assigning a variable to a value:  
+
+```javascript
+p = 'foo';
+```
+
+That looks harmless, but JavaScript has some bizarre rules when working with undeclared variables. The most notable rule is that all undeclared variables have global scope: they ignore block and function scope entirely. If your program uses that same variable name in a different scope without declaring it, there's a good chance that it will step on the original variable by changing its content. You don't want that to happen: it's typically difficult to debug, and sometimes fixing it breaks other code.  
+
+---
+
+## Input/Output
+
