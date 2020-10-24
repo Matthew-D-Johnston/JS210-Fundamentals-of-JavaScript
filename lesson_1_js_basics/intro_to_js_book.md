@@ -373,5 +373,130 @@ That looks harmless, but JavaScript has some bizarre rules when working with und
 
 ---
 
-## Input/Output
+## Functions
+
+Most languages have a feature called procedures that let you extract bits of code and run them as separate units. In JavaScript, we call these procedures **functions**.  
+
+### Using Functions
+
+Before you can use a function, you must first define it with the reserved keyword, `function`. After the word `function`, you write the function's name followed by a pair of parentheses (`()`). After the closing parenthesis, the code you want to associate with the function -- the **function body** -- gets placed between curly braces (`{}`).  
+
+Functions are called by typing their name and providing some optional values that we call **arguments**. In `say.js`, the function definition includes `(words)` after the function name. This syntax tells us that we should supply (**pass**) a single argument to the function when we call it. Arguments let you pass data from outside the function's scope into the function so it can access the data. If the function definition doesn't need access to outside data, you don't need any arguments.  
+
+In the definition of a function, the names between parentheses are called **parameters**. The arguments are the values of those parameters.  
+
+Function names and parameters are both considered variable names in JavaScript. Parameters, in particular, are **local variables**; they are only defined locally, within the body of the function.  
+
+Note that a parameter's scope is the function definition; you can't use it outside of the function.  
+
+Programmers often talk about function **invocation** and **invoking** functions. The terms are synonymous with "call" and "calling." You _invoke a function_ or write a _function invocation_. We use these terms as well.  
+
+The local variable names between parenthesis (`()`) are properly called **parameters**, not arguments. Arguments are the values you pass into the function for each of those parameters. The parameter values inside the function are also called arguments. You can think of parameters as placeholders, while arguments refer to the values that get stored in the placeholders.  
+
+### Return Values
+
+All of the functions we've written so far display text on the console. They can do much more. One common use case is to perform an operation and **return** a result to the call location for later use. We do that with **return values** and the `return` statement.  
+
+All JavaScript function calls evaluate to a value. By default, that value is `undefined`. However, when you use a `return` statement, you can return a specific value from a function.  
+
+JavaScript uses the `return` statement to return a value to the code that called the function: the **caller**. If you don't specify a value, it returns `undefined`. Either way, the `return` statement causes the function to stop running and returns control to the caller.  
+
+Functions that always return a boolean value, i.e., `true` or `false`, are called **predicates**. You will almost certainly encounter this term in future readings and videos, so commit it to memory.  
+
+### Variable Scope
+
+Let's take a few minutes to discuss the crucial concept of variable scope. In JavaScript, there are two types of variables based on where they're accessible: **global** variables and **local** variables. Global variables are available throughout a program, while local variables are confinded to a function. The keyword you use to declare a variable and the location where you declare it combine to determine whether the variable is global or local. We'll focus on where you declare variables; the `let` and `const` keywords both work as described below.  
+
+###### Global Variables
+
+As the name suggests, global variables have a global scope, which means that they are available everywhere within a program. You can read and reassign them at any time. Any variable declared inside a function or block is a local variable -- everything else is a global variable.  
+
+Global variables can be useful in some scenarios, e.g., application-wide configuration. However, most developers discourage their use since they often lead to bugs. In general, you should limit the scope of your variables as much as possible; smaller variable scopes limit the risk that an outer scope might misuse the variable.  
+
+###### Local Variables
+
+As the name suggests, local variables in JavaScript have a local scope, meaning that you can't access them outside the function that declares them. As with global variables, where you declare a local variable determines its scope.  
+
+Parameters have local scope within a function.  
+
+That brings us to another important property of local variables. Local variables are short-lived; they go away when the function that corresponds to their scope stops running. When we invoke the function, we start a new scope. If the code within that scope declares a new variable, that variable belongs to the scope. When the last bit of code in that scope finishes running, the scope goes away, as do any local variables declared within it. JavaScript repeats this process each time we invoke a function.  
+
+Another way to scope variables locally is to use block-scoping. We've already discussed it in the _Variables_ chapter, and we'll expand on it in the next. For now, block scoping occurs when you use `let` or `const` inside a block and confines the variable's scope to that block.  
+
+Variable scoping is a crucial topic in programming. A solid grasp of the concept is essential to fluency with any programming language.  
+
+### Functions vs. Methods
+
+Method invocation occurs when you prepend a variable name or value followed by a period (`.`) to a function invocation, e.g. `'xyzzy'.toUpperCase()`. We call such functions **methods**. We cover this topic in more detail in the Core Curriculum. For now, think of the previous code as the method `toUpperCase` as returning a modified version of the string `'xyzzy'`.  
+
+It's unfortunate, but there is no easy way to determine whether you need to use a function or method call for any given function. You must read the documentation or study the source code.  
+
+### Mutating the Caller
+
+Sometimes a method permanently alters the object that invokes the method: it **mutates the caller**.  
+
+Non-mutating methods like `toUpperCase()` often return a new value or object, but leave the caller unchanged.  
+
+One non-obvious point here is that mutation is a concern when dealing with arrays and objects, but not with primitive values like numbers, strings, and booleans. Primitive values are **immutable**. That means their values never change: operations on immutable values always return new values.  Operations on **mutable** values (arrays and objects) may or may not return a new value and may or may not mutate data.  
+
+How do you know which methods mutate the caller and which don't? It's useful to know that all primitive values are immutable, so this question never arises when dealing with them.  However, there's no way to tell whether a function mutates an array or object.  You have to use the documentation or memorize it through repetition.  
+
+If you have experience programming in other languages and wonder whether JavaScript is a pass-by-value or pass-by-reference language, JavaScript is both! It uses pass-by-value when dealing with primitive values and pass-by-reference with objects and arrays.  
+
+### Function Composition
+
+In a process called **function composition**, JavaScript lets us use a function call as an argument to another function.  
+
+### Three Ways to Define a Function
+
+In JavaScript, we call a function definition that looks like a **function declaration**. A notable property of function declarations is that you can call the function before you declare it.  
+
+Let's see an example of invoking a function before declaring it:
+
+```javascript
+greetPeople();
+
+function greetPeople() {
+  console.log("Good Morning");
+}
+```
+
+Add the above code to a `.js` file and run it with node. You'll see that it works without raising any errors.  
+
+Let's see another way to define a function called a **function expression**.  
+
+```javascript
+let greetPeople = function() {
+  console.log("Good Morning");
+}
+
+greetPeople();
+```
+
+That might look a little strange, but it's JavaScript that you'll see often. Most of it looks like a standard function declaration. However, since we're saving it to a variable, it's a function expression instead. Function expressions have one key difference from a function declaration: you cannot invoke a function expression before it appears in your program.  
+
+Our example declares a variable named `greetPeople` and assigns it to the function expression after the `=` sign. We can do that since JavaScript functions are first-class functions. The key feature of first-class functions is that you can treat them like any other value. You can assign them to variables, pass them as arguments to other functions, and return them from a function call. This behavior's implications are far-reaching; we'll see why that is when we talk about Array methods.  
+
+Any function definition that doesn't have the word `function` at the very beginning of a statement is a function expression. Even wrapping what looks like a function declaration in parentheses creates a function expression:  
+
+```javascript
+// This is a function expression, not a declaration
+
+(function greetPeople() {
+  console.log("Good Morning");
+})
+```
+
+There's a third kind of function in JavaScript called an arrow function. Syntactically, arrow functions look radically different from function declarations and expressions. Let's look at one:  
+
+```javascript
+let greetPeople = () => console.log("Good Morning!");
+greetPeople();
+```
+
+Wow! That's quite a departure from the functions we've seen so far. Arrow functions are similar to function expressions, but they use a different syntax. The differences are not merely syntactic, however. We'll discuss them in more detail in the Core Curriculum.  
+
+### The Call Stack
+
+
 
