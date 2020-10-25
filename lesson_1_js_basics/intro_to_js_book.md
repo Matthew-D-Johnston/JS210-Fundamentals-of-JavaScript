@@ -498,5 +498,107 @@ Wow! That's quite a departure from the functions we've seen so far. Arrow functi
 
 ### The Call Stack
 
+One important aspect of functions that all programmers need to understand is the concept of the **call stack**, or more casually, the **stack**.  
 
+The call stack helps JavaScript keep track of what function is executing as well as where execution should resume when the function returns. To do that, it works like a stack of books: if you have a stack of books, you can put a new book on the top or remove the topmost book from the stack. In much the same way, the call stack puts information about the current function on the top of the stack, then removes that information when the function returns.  
+
+Let's assume that we have the following code:
+
+```javascript
+function first() {
+  console.log("first function");
+}
+
+function second () {
+  first();
+  console.log("second function");
+}
+
+second();
+console.log("main function");
+```
+
+When this program starts running, the call stack initially has one item -- called a **stack frame** -- that represents the global (top-level) portion of the program. The initial stack frame is sometimes called the `main` function. JavaScript uses this frame to keep track of what part of the main program it is currently working on.
+
+| Call Stack |
+| :--------: |
+|     -      |
+|     -      |
+|     -      |
+|    main    |
+
+When program execution reaches the function invocation on line 10, it first updates the `main` stack frame with the current program location. JavaScript will use this location later to determine where execution should resume when `second` finishes running.
+
+After setting the location in the current stack frame, JavaScript creates a new stack frame for the `second` function and places it on the top of the call stack: we say that the new frame is **pushed** onto the stack. Our call stack now looks like this:
+
+|  Call Stack   |
+| :-----------: |
+|       -       |
+|       -       |
+|    second     |
+| main: line 10 |
+
+Note that the frame for the `second` function is now *stacked* on top of the `main` frame. While the `second` frame is still on the stack, `main` remains stuck beneath it, inaccessible. At the same time, the `main` function becomes dormant and the `second` function becomes active.
+
+The `second` function calls the `first` function on line 6. That action causes JavaScript to update the `second` frame so that JavaScript will know where to resume execution later. It then creates a new stack frame for the `first` function and pushes it to the call stack.
+
+|   Call Stack   |
+| :------------: |
+|       -        |
+|     first      |
+| second: line 6 |
+| main: line 10  |
+
+Once the `first` function begins executing, it invokes the `console.log` method. All JavaScript functions and methods, including the built-in ones like `console.log`, share the same call stack. Therefore, we need to record our current location and then push a new frame to the stack:
+
+|   Call Stack   |
+| :------------: |
+|  console.log   |
+| first: line 2  |
+| second: line 6 |
+| main: line 10  |
+
+Chances are, `console.log` also has several internal function calls. However, we will ignore them and just assume that `console.log` does all its work without any additional function calls. Instead, it just logs the message `first function` to the console, then immediately returns.
+
+When `console.log` returns, JavaScript removes -- **pops** -- the top frame from the call stack. That's the frame for `console.log` in this example. That leaves the previous stack frame exposed. JavaScript uses this frame to determine where execution should resume. In this case, execution resumes immediately after line 2.
+
+|   Call Stack   |
+| :------------: |
+|       -        |
+| first: line 2  |
+| second: line 6 |
+| main: line 10  |
+
+Eventually, the `first` function will return. When that happens, the `first` frame gets popped from the stack. That exposes the stack frame for `second`, and that, in turn, tells JavaScript that it should resume execution on line 6.
+
+|   Call Stack   |
+| :------------: |
+|       -        |
+|       -        |
+| second: line 6 |
+| main: line 10  |
+
+When `second` finishes executing, the stack frame for `second` gets popped from the call stack, exposing the stack frame for `main`. The `main` frame tells JavaScript to resume execution on line 10.
+
+|  Call Stack   |
+| :-----------: |
+|       -       |
+|       -       |
+|       -       |
+| main: line 10 |
+
+Eventually, the `main` function has no more code to run. When this happens, the `main` frame gets popped from the stack, and the program ends.
+
+| Call Stack |
+| :--------: |
+|     -      |
+|     -      |
+|     -      |
+|     -      |
+
+The call stack has a limited size that varies based on the JavaScript implementation. That size is usually sufficient for more than 10000 stack entries. If the stack runs out of room, you will see a `RangeError` exception together with a message that mentions the stack.
+
+---
+
+## Flow Control
 
