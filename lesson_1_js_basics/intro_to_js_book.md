@@ -602,3 +602,149 @@ The call stack has a limited size that varies based on the JavaScript implementa
 
 ## Flow Control
 
+### Conditionals
+
+A conditional is a fork (or multiple forks) in the road. Your data arrives at a conditional, which then tells the data where to go. The simplest conditionals use a combination of `if` statements with comparison and logical operators (`<`, `>`, `<=`, `>=`, `==`, `===`, `!=`, `!==`, `&&`, `||`) to direct traffic. They use the keywords `if` and `else`.  
+
+### Comparisons
+
+One thing to remember is that comparison operators return a boolean value: `true` or `false`.  
+
+The expressions or values that an operator uses are its **operands**. In comparisons, the expressions to the left and right of the operator are the operands.  
+
+- `===`
+
+  The **strict equality operator**, also known as the **identity operator**, returns `true` when the operands have the same type _and_ value, `false` otherwise.
+
+- `!==`
+
+  The **strict inequality operator** returns `false` when the operands have the same type and value, `true` otherwise. Note that `!==` is the inverse of `===`: when `===` returns `true`, `!==` returns false, and vice versa.
+
+- `==`
+
+  The **non-strict equality operator**, also known as the **loose equality operator**, is similar to `===`. However, when the operands have different types, `==` coerces one of the operands to the other operand's type before it compares them. The result is `true` when the final values are the same, `false` otherwise. The coercion behavior can lead to unexpected results. For instance, when we compare the number `5` to the string `5` using `==`, we get `true`; with `===`, we get `false`.
+
+- `!=`
+
+  The **non-strict inequality operator**, also known as the **loose inequality operator**, is similar to `!==`. However, when the operands have different types, `!=` coerces one of the operands to the other operand's type before it compares them. The result is `false` when the final values are the same, `true` otherwise.  
+
+  The rules that govern which operand `==` and `!=` coerces to the other are complex and difficult to remember. Avoid these operators when you can. For instance, you can use explicit coercion and `===` in most cases.  
+
+- `<`
+
+  The **less than operator** returns `true` when the value of the left operand has a value that is less than the value of the right operand, `false` otherwise.  
+
+  The examples with strings are especially tricky! When comparing strings, the comparison is character-by-character. Ruby moves from left-to-right in the strings looking for the first character that is different from its counterpart in the other string. Once it finds a character that differs, it compares that character with its counterpart, and makes a decision based on that. If both strings are equal up to the length of the shorter string as in the next to last example, then the shorter string is considered less than the longer string.  
+
+  If you use `<` with two different types, some sort of coercion will take place.
+
+- `>`
+
+  The **greater than operator** returns `true` when the value of the left operand has a value that is greater than the value of the right operand, `false` otherwise.  
+
+  As with `<`, the `>` operator can be used to compare strings, and can even be used with mixed types (but with sometimes bizarre results).
+
+- `<=`
+
+  The **less than or equal to operator** returns `true` when the value of the left operand has a value that is less than _or equal to_ the value of the right operand, `false` otherwise. Note that `=<` is not a valid comparison operator.  
+
+- `>=`
+
+  The **greater than or equal to operator** returns `true` when the value of the left operand has a value that is greater than _or equal to_ the value of the right operand, `false` otherwise. Note that `=>` is not a valid comparison operator.  
+
+### Logical Operators
+
+You're beginning to get a descent grasp of baic conditional flow. Let's take a few minutes to see how we can combine multiple conditions to create more specific and complex scenarios. The `&&`, `||`, and `!` **logical operators** provide the ability to combine conditions:  
+
+* `&&`
+
+  The **and operator** returns `true` when both operands are `true` and `false` when either operand is `false`.
+
+* `||`
+
+  The **or operator** returns `true` when either operand is `true` and `false` when both operands are `false`.
+
+* `!`
+
+  The **not operator** returns `true` when its operand is `false` and returns `false` when the operand is `true`. That is, it negates its operand. Note that, unlike most operators, `!` takes a single operand; the operand appears to the right of the operator (e.g. `!true` returns `false` and `!false` returns `true`).
+
+### Short Circuits
+
+The `&&` and `||` operators both use a mechanism called **short circuit evaluation** to evaluate their operands.  Consider these two expressions:
+
+```javascript
+> isRed(item) && isPortable(item)
+> isGreen(item) || hasWheels(item)
+```
+
+The first expression returns `true` when `item` is both red and portable. If either condition is `false`, then the overall result **must** be `false`. Thus, if the program determines that `item` is not red, it doesn't have to check whether it is portable. JavaScript short-circuits the entire expression by terminating evaluation as soon as it determines that `item` isn't red. It doesn't need to call `isPortable()` since it already knows that the entire expression must be `false`.  
+
+Similarly, the second expression returns `true` when `item` is either green or has wheels. When either condition is `true`, the overall result **must** be `true`. Thus, if the program determines that `item` is green, it doesn't have to check whether it has wheels. Again, JavaScript short-circuits the entire expression once it determines that `item` is green. The entire expression must be `true`.  
+
+### Truthiness
+
+Notice that every `if` statement has an expression that evaluates as true or false. However, the expression doesn't have to be one of the boolean values, `true` and `false`. JavaScript can coerce any value to a boolean value, and that's what it does in conditional contexts like the `if` statement. Thus, you can use any expression in a conditional statement. We often say that the expression **evaluates as** or **evaluates to** true or false.  
+
+When coercing a value to a boolean, JavaScript treats the following values as false:  
+
+* `false`
+* The number `0`. This includes all 3 variations of zero in JavaScript:
+  * `0`: The ordinary zero value.
+  * `-0`: A negative zero. That's mathematical nonsense, but a real thing in JavaScript.
+  * `0n`: The `BigInt` version of zero.
+* An empty string (`''`)
+* `undefined`
+* `null`
+* `NaN`
+
+Everything else evaluates to `true`.  
+
+###### Operator Precedence
+
+JavaScript has a set of **precedence** rules it uses to evaluate expressions that use multiple operators and sub-expressions. The following is a list of the comparison operations from the highest precedence (top) to lowest (bottom).
+
+* `<=`, `<`,  `>`,  `>=` - Comparison
+* `==`, `!=` - Equality
+* `&&` - Logical AND
+* `||` - Logical OR
+
+With the precedence list in hand, we can look at the following expression and determine how to evaluate it:
+
+```javascript
+if (x || y && z) {
+  // do something
+}
+```
+
+For the moment, let's ignore the fact tha both `||` and `&&` are short-circuit operators. The program first evaluates the `y && z` sub-expression `&&` has higher precedence than `||`. It then takes the result of that evaluation and evaluates `x || result`.  
+
+### The Ternary Operator
+
+The **ternary operator** is a quick and easy way to write a short, concise, and simple if/else conditional. It uses a combination of the `?` and `:` symbols and takes 3 operands (hence, the name "ternary"):
+
+```javascript
+> 1 == 1 ? 'this is true' : 'this is not true'
+= 'this is true'
+
+> 1 == 0 ? "this is true" : "this is not true"
+= 'this is not true'
+```
+
+The chief advantage that the ternary operator has over an `if/else` statement is that the entire structure is an expression; `if/else` is a statement, so it doesn't have a return value. What that means is that we can treat the ternary expression as a value: we can assign it to a variable, pass it as an argument, and so on.  
+
+```javascript
+> let message = true ? 'this is true' : 'this is not true'
+= undefined
+
+> message
+= 'this is true'
+
+> console.log(false ? 'this is true' : 'this is not true')
+this is not true
+= undefined
+```
+
+You can't do that with an `if/else` statement.  
+
+### Switch Statement
+
