@@ -748,3 +748,79 @@ You can't do that with an `if/else` statement.
 
 ### Switch Statement
 
+A `switch` statement is similar to an `if` statement, but it has a different interface. It compares a single value against multiple values for strict equality (as with the `===` operator), whereas `if` can test multiple expressions with any condition.  
+
+`switch` statements use the reserved words `switch`, `case`, `default`, and `break`. It's often easier to show rather than tell, and that's certainly the case with the `switch` statement. First, create a file named `switch.js` with this content:  
+
+```javascript
+let a = 5;
+
+switch (a) {
+  case 5:
+    console.log('a is 5');
+    break;
+  case 6:
+    console.log('a is 6');
+    break;
+  default:
+    console.log('a is neither 5, nor 6');
+    break;
+}
+
+// logs "a is 5" to the console
+```
+
+---
+
+## Loops and Iterating
+
+JavaScript loops have several forms, but the main looping structures use a looping keyword, a condition, and a block. These loops execute the loop's body (the block) for as long as the condition remains truthy. We use the term **one iteration** to describe executing the loop body once. JavaScript also has two other loop mechanisms: array abstractions and recursion. We'll see all of these mechanisms in this chapter.  
+
+### while Loops
+
+A `while` loop uses the `while` keyword followed by a conditional expression in parentheses and a block. The loop executes the block again and again for as long as the conditional expression remains truthy. In most programs, that loop should ultimately stop repeating. That means the block must do something that tells JavaScript when the loop should stop; that is, it needs to arrange for the conditional expression to become falsy. Otherwise, the loop is an **infinite loop** that never stops repeating.  
+
+**increment operator** (`++`): increments its operand by `1`; that is, it adds `1` to the existing value.  
+
+**decrement operator** (`--`): decrements a variable's value by `1`; that is, it subtracts `1` from the value.  
+
+There are two forms of `++`: one that comes before the variable name (the pre-increment operator), and one that comes after (the post-increment operator). Both increment the variable, but they differ in what gets returned by the expression. The pre-increment form returns the new value of the variable, while the post-increment form returns the previous value of the variable.  
+
+```javascript
+> let a = 1;
+> ++a;
+= 2
+
+> a
+= 2
+
+> a++
+= 2
+
+> a
+= 3
+```
+
+There are corresponding pre-decrement and post-decrement operators (e.g., `--a` and `a--`) that work in a similar way.  
+
+**Note**: There's a growing sentiment among some developers that the increment and decrement operators are harmful. It's easy to mistype them in ways that can lead to strange bugs, especially if you're not mindful of the return values. They recommend using the `+=` and `-=` operators instead; it's only a few characters more to type.
+
+###### Looping Over Arrays With while
+
+One of the most common uses of loops in programming is to **iterate** over the elements of an array and perform some action on each element. By iterate, we mean that we process each element one at a time, in sequence from the first to the last element.  
+
+###### do/while Loop
+
+A **do/while loop** differs visibly from a `while` loop, but its behavior is almost identical. The crucial difference is that `do/while` always executes the code in the block at least once. A `while` loop can't make that guarantee since the initial condition may be falsy; if it is, the loop body doesn't run. In a `do/while` loop, the conditional check occurs at the end of the loop instead of the beginning which allows it to run the code at least once, even if the condition is falsy when the loop begins.  
+
+Let's write some code that illustrates how `do/while` works. We'll ask the user whether he wants to repeat an action, and then repeat the question if he enters `y`.  
+
+```javascript
+let answer;
+do {
+  answer = prompt("Do you want to do that again?");
+} while (answer === 'y');
+```
+
+### for Loops
+
