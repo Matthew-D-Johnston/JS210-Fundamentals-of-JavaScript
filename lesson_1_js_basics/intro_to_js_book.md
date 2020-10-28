@@ -824,3 +824,51 @@ do {
 
 ### for Loops
 
+`for` loops have the same purpose as `while` loops, but they use a condensed syntax that works well when iterating over arrays and other sequences. A `for` loop combines variable initialization, a loop condition, and the variable increment/decrement expression all on the same line:  
+
+```javascript
+for (initialization; condition; increment) {
+  // loop body
+}
+```
+
+This structure behaves almost the same as:
+
+```javascript
+initialization;
+while (condition) {
+  // loop body
+  increment;
+}
+```
+
+The sole difference between the two loops is the scope of any variables declared by the initialization clause. In the `while` statement, the scope includes the code that surrounds the loop; in the `for` statement, the scope is the `for` statement and its body.  
+
+`for` loops let you see and understand the looping logic at a single glance. The syntax also lets you move the `index` variable from the global scope into the scope of the `for` statement, and it helps make your code cleaner and more organized.  
+
+### Controlling Loops
+
+JavaScript uses the keywords `continue` and `break` to provide more control loops. `continue` lets you start a new iteration of the loop, while `break` lets you terminate a loop early.  
+
+`continue`  
+
+Let's continue working with the names program.  Suppose we want all the uppercase names in our `upperNames` array except `Naveed`. The `continue` statement can help us do that.  
+
+When a loop encounters the `continue` keyword, it skips running the rest of the block and jumps ahead to the next iteration.  
+
+`break`  
+
+You sometimes want to skip all remaining iterations of a loop. For instance, when you search an array for a specific value, you probably want to stop searching once you find it. There's no reason to keep searching if you don't need any subsequent matches.  
+
+### Array Iteration
+
+JavaScript arrays have several methods that iterate over the elements without using any of the looping syntax we've seen, such as with the `forEach` method.  
+
+There are several other iterating methods in JavaScript; over time, you'll probably use them all. For now, know that most JavaScript programmers prefer to use **array looping abstractions** like `forEach` to loop over arrays.  
+
+### Recursion
+
+**Recursive** functions are functions that call themselves. Such code doesn't look much like a loop, but there's a close relationship between loops and recursion.  The relationship is close enough that we say that recursion is another way to create loops in JavaScript.  
+
+Every recursive function has a **baseline condition** that marks the end of the recursion and some code that recursively calls the function with a new argument. In most cases, the baseline condition returns a concrete value that gets reused as teh code "unwinds" the recursive calls. Each unwind step uses the previous return value(s) to calculate an intermediate result that gets returned in the next step.  
+
