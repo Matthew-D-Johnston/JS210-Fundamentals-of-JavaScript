@@ -872,3 +872,25 @@ There are several other iterating methods in JavaScript; over time, you'll proba
 
 Every recursive function has a **baseline condition** that marks the end of the recursion and some code that recursively calls the function with a new argument. In most cases, the baseline condition returns a concrete value that gets reused as teh code "unwinds" the recursive calls. Each unwind step uses the previous return value(s) to calculate an intermediate result that gets returned in the next step.  
 
+---
+
+## Arrays
+
+### What is an Array?
+
+An array is an ordered list of **elements**; each element has a value of any type. You can define an array by placing a list of values between brackets (`[]`):  
+
+```javascript
+> let myArray = [2, 'Pete', 2.99, 'another string']
+```
+
+This example demonstrates that arrays are **heterogenous**; `myArray` has both number and string values.  Arrays can have anything in them, including objects and even other arrays.  
+
+Each element in an array has a unique index number that gives the position of the element in the array. Thus, we can say that arrays are **indexed lists** as well as ordered lists.  
+
+### Modifying Arrays
+
+Arrays wouldn't be practical if we couldn't modify them. We need the ability to add, remove, and replace elements.  The `[]` operator and some array methods help us accomplish these tasks.  
+
+### Iteration Methods
+
