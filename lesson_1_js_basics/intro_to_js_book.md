@@ -928,9 +928,15 @@ The first of the invocations computes the sum of all the values in the array, e.
 
 The second invocation of `reduce` computes the product of the numbers in the array (`2 * 3 * 5 * 7`), starting out with `1` as the accumulator. (If we started with `0` as the accumulator, the final return value would be `0` since `0` times anything is `0`.)  
 
-### Other Array Methods
+---
 
+## Objects
 
+Object Oriented Programming is a programming paradigm that centers around modeling problems as **objects** that have **behavior** (they perform actions) and **state** (they have characteristics that distinguish between different objects). JavaScript objects support this paradigm, but we won't need them in this book. For now, we'll discuss objects as complex data structures, similar to arrays.  
+
+### What are Objects?
+
+Objects store a colletion of **key-value pairs**: each item in the collection has a name that we call the **key** and an associated **value**. Contrast this with arrays, which we associate values with ordered indexes. Other languages have similar key-value data structures, but they may use different names like dictionaries, associative arrays, maps, and hashes. Some developers may even use these terms regarding JavaScript objects, but it's better to use the correct name: objects.
 
 
 
