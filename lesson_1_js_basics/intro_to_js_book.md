@@ -936,7 +936,58 @@ Object Oriented Programming is a programming paradigm that centers around modeli
 
 ### What are Objects?
 
-Objects store a colletion of **key-value pairs**: each item in the collection has a name that we call the **key** and an associated **value**. Contrast this with arrays, which we associate values with ordered indexes. Other languages have similar key-value data structures, but they may use different names like dictionaries, associative arrays, maps, and hashes. Some developers may even use these terms regarding JavaScript objects, but it's better to use the correct name: objects.
+Objects store a colletion of **key-value pairs**: each item in the collection has a name that we call the **key** and an associated **value**. Contrast this with arrays, which we associate values with ordered indexes. Other languages have similar key-value data structures, but they may use different names like dictionaries, associative arrays, maps, and hashes. Some developers may even use these terms regarding JavaScript objects, but it's better to use the correct name: objects.  
+
+An object's keys are strings, but the values can be any type, including other objects. We can create an object uisng **object literal** syntax:  
+
+```javascript
+let person = {
+  name: 'Jane',
+  age: 37,
+  hobbies: ['photography', 'genealgy'],
+}
+```
+
+You can also write that on a single line, which is handy in `node`:
+
+```javascript
+> let person = { name: 'Jane', age: 37, hobbies: ['photography', 'genealogy'] }
+```
+
+We can access s specific value in an object in two ways: 1) dot notation and 2) bracket notation.  
+
+```javascript
+// dot notation
+> person.name
+= 'Jane'
+
+// bracket notation
+> person['age']
+= 37
+```
+
+Key-value pairs are also called object **properties** in JavaScript. We can also use "property" to refer to the key name; the meaning is typically clear from context. For instance, we can talk about the `name` property for the `person` object without mentioning the value.  
+
+### Objects vs. Primitives
+
+You may remember that JavaScript has two categories of data types: primitive and objects. The primitive types are strings, numbers, booleans, `null`, and `undefined`. Primitive types are the simplest, most basic types in JavaScript.  
+
+Objects include, but aren't limited to, the following types:  
+
+* Simple Objects
+* Arrays
+* Date Objects
+* Functions
+
+We learned about simple objects in the previous section; they're structures that contain multiple named values. Arrays are also objects, but they use integer indexes instead of keys. We learn about Date and Function objects in the Core Curriculum.  
+
+Objects are complex values composed of primitive values or other objects. For example, an array object (remember: arrays **are** objects) has a `length` property that contains a number: a primitive value. The critical thing to note is that we can change parts of an object, which means that objects are mutable.  
+
+Primitive values are immutable; they don't have parts that one can change. Such values are said to be **atomic**; they're indivisible. If a variable contains a primitive value, all you can do to that variable is use it in an expression or reassign it: give it an entirely new value. All operations on primitive values evaluate as new values. Even something like `0 + 0` evaluates to a new value of `0`.  
+
+### Prototypes
+
+
 
 
 
