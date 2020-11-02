@@ -987,6 +987,36 @@ Primitive values are immutable; they don't have parts that one can change. Such 
 
 ### Prototypes
 
+An interesting and handy feature of JavaScript objects is that they can **inherit** from other objects. When an object `a` inherits from object `b`, we say that `b` is the prototype of `a`. The practical implication is that `a` now has access to properties defined on `b` even though it doesn't define those properties itself.  
+
+The static method `Object.create` provides a simple way to create a new object that inherits from an existing object:
+
+```javascript
+let bob = { name: 'Bob', age: 22 };
+let studentBob = Object.create(bob);
+studentBob.year = 'Senior';
+
+console.log(studentBob.name); // logs 'Bob'
+```
+
+`Object.create` creates a new object and sets the prototype for that object to the object passed in as an argument. Our example creates a new object named `studentBob` that uses `bob` as its prototype. That is, it creates an inheritance relationship from `studentBob`, the **child** object, to `bob`, the **parent** object.  
+
+Since `studentBob` inherits from `bob`, we can use the `name` property even though `studentBob` doesn't explicitly define it. `Object.create` is one way to use inheritance in JavaScript. We learn more about it and other techniques in our JavaScript courses.  
+
+### Objects vs. Arrays
+
+When you need to choose between an object or an array to store some data, ask yourself a few questions:  
+
+* Do the individual values have names or labels? If yes, use an object. If the data doesn't have a natural label, an array should suffice.  
+* Does order matter? If yes, use an array.
+* Do I need a _stack_ or _queue_ structure? Arrays are good at mimicking simple "last-in-first-out" stacks and "first-in-first-out" queues.  
+
+---
+
+## More Stuff
+
+
+
 
 
 
