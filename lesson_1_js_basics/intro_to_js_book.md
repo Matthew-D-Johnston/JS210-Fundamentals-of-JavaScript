@@ -1015,6 +1015,116 @@ When you need to choose between an object or an array to store some data, ask yo
 
 ## More Stuff
 
+### Variables as Pointers
+
+In this section, we'll examine the concepts behind variables and **pointers**. Specifically, we'll see how some variables act as pointers to a place (or address space) in memory, while others contain values.  Beware: new programmers often have trouble mastering these topics, but the material is crucial.  
+
+Developers sometimes talk about **references**. At Launch School, we use both terms interchangeably. You can say that a variable points to or references an object in memory, and you can also say that the pointers stored in variables are references. Some languages make a distinction between references and pointers, but JavaScript does not; feel free to use either term.  
+
+As we've learned, JavaScript values fall into one of two broad categories: primitive values and objects. Primitive values are easier to understand, so we'll start there.  
+
+###### Working With Primitive Values
+
+Try running this code in `node`:
+
+```javascript
+> let a = 5
+> let b = a
+> a = 8
+> a
+= 8
+
+> b
+= 5
+```
+
+Nothing is surprising in that code. We initialize `a` to the value `5`, then assign `b` to the value of `a`: both variables contain `5` after line 2 runs.  
+
+Next, we reassign variable `a` to a value of `8` on line 3, and on lines 4 and 5 we see that `a` does indeed now have the value `8`. On lines 7 and 8 we see that `b`'s value did not change: it is still `5`.  
+
+That's straightforward and easy enough to understand: each variable has a value, and reassigning values does not affect any other variables that happen to have the same value. Thus, `a` and `b` are independent: changing one doesn't affect the other.  
+
+What's crucial to understand at this point is that variables that have primitive values store those values in the variable. When you assign a new value to a variable, JavaScript changes the variable's content to the new value. That's a simple operation that doesn't affect other variables, even those with the same value.  
+
+In reality, string values aren't stored in the variables, but they **act** like they are.  
+
+###### Working with Objects and Non-Mutating Operations
+
+Let's look at another example. This time, we'll use arrays. Remember that arrays in JavaScript are objects, and almost everything we say about arrays holds for objects as well.  
+
+```javascript
+> let c = [1, 2]
+> let d = c
+> c = [3, 4]
+> c
+= [3, 4]
+
+> d
+= [1, 2]
+```
+
+Again, this example holds no surprises. Reassigning `c` on line 3 creates a new array, but the code doesn't affect the value of `d`. The two variables return different arrays.  
+
+This code works as expected since reassignment doesn't mutate the variable to the left of the assignment operator. Instead, it changes the variable in such a way that it refers to the array on the right.  
+
+As with primitive values, this is straightforward: each variable has a value, and reassigning values does not affect any other variables that happen to have the same value. Thus, `c` and `d` can have independent values.  
+
+That must mean that arrays and other objects get stored directly inside variables like primitive values do, right? That seems logical, and so far, we've no reason to doubt it. However, it's wrong.  
+
+Let's see what happens with a mutating operation like the `push` method:
+
+```javascript
+> let e = [1, 2]
+> let f = e
+> e.push(3, 4)
+> e
+= [ 1, 2, 3, 4 ]
+
+> f
+= [ 1, 2, 3, 4 ]
+```
+
+Now, that's interesting and puzzling. We mutated the array given by `e`, but it also changed the array given by `f`! How could that happen if the variables contain the array values? It can't, and therein lies the concept of **pointers** or **references**.  
+
+It's still the case that primitive values get stored directly inside variables, but the situation with objects and arrays is different. Instead, the values get stored in a region of memory known as the **heap**--you don't have to remember that term--and the variable gets to a different value, one that points to or references the real value of the heap.  
+
+Thus, after running line 2, `e` and `f` both contain the same pointer value: it references the array value `[1, 2]`. When line 3 runs, it uses the pointer to access and mutate the array by appending `3` and `4` to its original value. Since `f` also points to that same array, both `e` and `f` reflect the updated contents of the array. Some developers call this aliasing: `e` and `f` are aliases for the same value.  
+
+Okay, that's good. What happens if we mutate a primitive value? Oops! You can't do that: all primitive values are immutable. Two variables can have the same primitive value, but they can never be aliases for the same value. If you give one variable a new value, it doesn't affect the other.  
+
+###### Gotcha
+
+If you've followed along so far, you may think that reassignment never mutates anything. As the following code demonstrates, however, that isn't always true:
+
+```javascript
+> let g = ['a', 'b', 'c']
+> let h = g
+> g[1] = 'x'
+> g
+= [ 'a', 'x', 'c' ]
+
+> h
+= [ 'a', 'x', 'c' ]
+```
+
+Don't let this confuse you. The key thing to observe here is that we're reassigning a specific element in the array, not the array itself. This code doesn't mutate the element, but it does mutate the array. Reassignment applies to the item you're replacing, not the object or array that contains that item.  
+
+###### Takeaway
+
+The takeaway of this section is that JavaScript stores primitive values in variables, but it uses pointers for non-primitive values like arrays and other objects. Pointers can lead to surprising and unexpected behaviour when two or more variables reference the same object in the heap. Primitive values don't have this problem.  
+
+When using pointers, it's also important to keep in mind that some operations mutate objects, while others don't. For instance, `push` mutates an array, but `map` does not. In particular, you must understand how something like `x = [1, 2, 3]` and `x[2] = 4` differ: both are reassignments, but the second mutates `x` while the first does not.  
+
+**Note:** The idea that JavaScript stores primitive values directly in variables is an oversimplification of how it works in the real world, but it mirrors reality well enough to serve as a mental model for almost all situations. Don't sweat the details right now.  
+
+
+
+
+
+
+
+
+
 
 
 
