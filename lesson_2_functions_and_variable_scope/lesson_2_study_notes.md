@@ -35,6 +35,8 @@ console.log(result);										// logs 15
 
 **Note:** If a function does not contain an explicit `return` statement, or the `return` statement does not include a value, the function implicitly returns the value `undefined`. This is a reason why functions are said to "have returned" rather than "finished execution". When we talk about closures in a later course this distinction will become more apparent. For now, just be mindful of the disambiguation between the `return` value (explicit or implicit) of a function and the statement that a "_function that has returned or returns_".  
 
+---
+
 ### Parameters vs. Arguments
 
 Consider the following:
@@ -50,6 +52,8 @@ We say that the function `multiply` takes two _parameters_, `a` and `b`. We call
 ```javascript
 multiply(5, 6);				// returns 30
 ```
+
+---
 
 ### Functional Scopes and Lexical Scoping
 
@@ -155,4 +159,136 @@ Remember these important variable scoping rules:
 * Every block creates a new local variable scope.
 * Lexical scope uses the structure of the source code to determine the variable's scope. This means that the code doesn't have to be executed for the scope to exist.
 * All variables in the same or surrounding scopes are visible inside functions and blocks.
+
+---
+
+### Function Declarations and Function Expressions
+
+#### Function Declarations
+
+Let's examine a function declaration:
+
+```javascript
+function hello() {
+  return 'hello world!';
+}
+
+console.log(typeof hello);		// function
+```
+
+A function declaration (sometimes called a "function statement") defines a variable (in this case, `hello`) whose type is `function`. It does not require assignment to a variable. The value of the function variable is the function itself. This "functional variable" obeys general scoping rules, and we can use it exactly like other JavaScript variables.  
+
+Function declarations are similar to variable declarations. Just as variable declarations must start with `let` or `const`, function declarations must start with `function`.  
+
+It is important to realize that a function declaration not only creates a function, but also creates a variable. We previously learned that we can create variables and constants in the current scope with the `let` and `const` keywords, we can also create variables by naming the arguments to a function via its parameters. A function declaration gives us a fourth way: a function declaration declares a variable with the same name as the function, and then assigns the function to that variable. Thus, for every function declaration, a variable is initialized.  
+
+#### Function Expressions
+
+A function expression defines a function as part of a larger expression syntax (typically a variable assignment).  
+
+```javascript
+const hello = function () {		// We can also use let instead of const
+  return 'hello';
+}
+
+console.log(typeof hello);		// function
+console.log(hello());					// hello
+```
+
+In this code, we define an anonymous function (one without a name) and assign it to the variable `hello`. We then use the variable to invoke the function.  
+
+#### Named Function Expressions
+
+We can also name function expressions, like this:
+
+```javascript
+let hello = function foo() {
+  console.log(typeof foo);		// function
+};
+
+hello();
+
+foo();
+```
+
+However, the name is only available inside the function (i.e. it can only be used from within the function's local scope). Though most function expressions use anonymous functions, named function expressions are useful for debugging. The debugger can show the function's name in the call stack, providing a valuable clue. Named function expressions can also be useful for recursive functions.  
+
+Named function expressions can look very similar to function declarations, but there is an easy way to differentiate between the two: if a _statement_ begins with the `function` keyword, then it is a function declaration; otherwise, it is a function expression. In the following code, we can see that even a minor change (adding parentheses) is enough to turn a function declaration into a function expression:  
+
+```javascript
+function foo() {
+  console.log('function declaration');
+}
+
+(function bar() {
+  console.log('function expression');
+});
+
+foo(); 		// function declaration
+bar();		// Uncaught ReferenceError: bar is not defined
+```
+
+A function defined using a function declaration must always have a name (it cannot be an anonymous function). In addition to creating a named function, a function declaration also creates a variable with the same name as that function's name. For example, the following two function definitions both define a named function and a variable with the same name as that function.  
+
+```javascript
+let foo = function foo() {
+  return 'a named function expression assigned to a variable';
+};
+
+function bar() {
+  return 'a function declaration';
+}
+```
+
+#### Arrow Functions
+
+One of the most popurlar additions to ES6 JavaScript is a special type of function called an arrow function. At this point, you can think of arrow functions as a shorthand way to write a function expression.  
+
+Consider the following function expression:  
+
+```javascript
+const multiply = function(a, b) {
+  return a * b;
+};
+```
+
+Using the arrow function syntax, we can rewrite this definition as:
+
+```javascript
+const multiply = (a, b) => {
+  return a * b;
+};
+```
+
+All we've done so far is eliminate the `function` keyword, and insert an arrow (`=>`) between the parameter list and the opening brace. That's not a huge improvement, and you might even say that this shorthand is a detriment to readability. However, we can make two more small modifications to an arrow funciton when its body only has one line. First, we can eliminate the braces and write the entire function on a single line:  
+
+```javascript
+const multiply = (a, b) => return a * b;
+```
+
+If you have a bunch of short functions like the `multiply` function, this shorthand is beginning to seem interesting. What's more, we can also eliminate the `return` keyword in this situation:  
+
+```javascript
+const multiply = (a, b) => a * b;
+```
+
+Arrow functions are most often used as **callback functions**. For instance, suppose we have the following code:  
+
+```javascript
+[1, 2, 3].map(function (element) {
+  return 2 * element;
+}); // returns [2, 4, 6]
+```
+
+In this case, the function passed to `map` is our callback function. We can simplify this somewhat verbose code by replacing the callback with an arrow function:  
+
+```javascript
+[1, 2, 3].map((element) => 2 * element); // returns [2, 4, 6]
+```
+
+When writing an arrow function that only has one parameter, you can omit the parentheses from the parameter list:
+
+```javascript
+[1, 2, 3].map(element => 2 * element); // returns [2, 4, 6]
+```
 
