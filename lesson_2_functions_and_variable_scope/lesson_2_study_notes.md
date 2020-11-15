@@ -574,5 +574,340 @@ The behavior that we try to explain with hoisting is merely a consequence of how
 
 When the execution phase occurs, JavaScript no longer cares about declarations. It does care about initialization and function/class definitions, but not the declarations themselves. The identifiers are already known, and their scope is already known. JavaScript merely needs to look up identifiers as needed.  
 
+---
 
+## Practice Problems: Variable Scopes in JavaScript (1)
+
+Please predict the output of the following programs, and explain why they output what they do.  
+
+###### Problem 1
+
+```javascript
+let a = 'outer';
+
+function testScope() {
+  let a = 'inner';
+  console.log(a);
+}
+
+console.log(a);
+testScope();
+console.log(a);
+```
+
+###### My Solution
+
+Here is what I expect the above code to output:
+
+```
+outer
+inner
+outer
+```
+
+The first call to log `a` to the console takes the variable `a` as its argument. `a` was first declared and initialized with the value `'outer'` on the very first line. Even though the function declaration for `testScope()` is 'hoisted' above the declaration of `a` when we run the code, this will have no effect on the value being referenced by `a`. The declaration of another variable `a` within the `testScope()` function is a completely different variable and is not associated with the `a` declared in the global scope. Since these are two different `a` variables there is nothing in the above code that would cause one to be written over with a new value.
+
+###### LS Solution
+
+```
+outer
+inner
+outer
+```
+
+Line 8 is the first invocation of `console.log`; here, `a` is the global variable `a` from line 1. Line 9 calls the `testScope` function; in the function, `a` is a local variable on line 4, so line 5 logs `inner`. After `testScope` returns, the `a` on line 10 is the global variable on line 1 again; therefore, it logs `outer`.  
+
+---
+
+###### Problem 2
+
+```javascript
+let a = 'outer';
+
+function testScope() {
+  a = 'inner';
+  console.log(a);
+}
+
+console.log(a);
+testScope();
+console.log(a);
+```
+
+###### My Solution
+
+Here is what I expect the above code to output:
+
+```
+inner
+inner
+inner
+```
+
+The variable `a` is first declared on Line 1 and initialized with the value `'outer'`. However, when the `testScope()` function is declared, beginning on Line 3, the function block contains a reassignment of `a` to the value of `'inner'`. Thus, the call to log `a` to the console on Line 8 will result in `inner` being logged to the console. This will also be the case for the invocation of `testScope()` on Line 9 and the invocation of `console.log(a)` on Line 10.  
+
+###### LS Solution
+
+```
+outer
+inner
+inner
+```
+
+On line 4, `a` is the global variable from line 1. The assignment assigns `inner` to the variable. Thus, line 10 logs `inner` instead of `outer`.  
+
+---
+
+###### Problem 3
+
+```javascript
+let basket = 'empty';
+
+function goShopping() {
+  function shop1() {
+    basket = 'tv';
+  }
+  
+  console.log(basket);
+  
+  let shop2 = function() {
+    basket = 'computer';
+  };
+  
+  const shop3 = () => {
+    let basket = 'play station';
+    console.log(basket);
+  };
+  
+  shop1();
+  shop2();
+  shop3();
+  
+  console.log(basket);
+}
+
+goShopping();
+```
+
+###### My Solution
+
+Expected output:
+
+```
+empty
+play station
+computer
+```
+
+On the first line, the `basket` variable is declared and initialized with a reference to the value `'empty'`. Then, we have a declaration of the function `goShopping`. On the last line, the `goShopping()` function is invoked. When it is invoked, we then have the declaration of the function `shop1()`. It is then followed by `console.log(basket)`, which logs `empty` to the console. Then we have two function expressions, one assigned to the variable `shop2` and the other assigned to the constant `shop3`. `shop1()` is then invoked and reassigns `basket` with the value `'tv'`. Then `shop2()` is invoked and reassigns `basket` again to `'computer'`. `shop3()` is then invoked and a local variable `basket` is declared and assigned to the value of `'play station'`, which is subsequently logged to the console. Finally, `console.log(basket)` is invoked again on the last line of the `goShopping()` function, and it logs `computer` to the console since that was the last value that was assigned to the global `basket` variable.
+
+###### LS Solution
+
+```
+empty
+playstation
+computer
+```
+
+The first log operation occurs on line 8; `basket` still has its original value, `empty`. The function call on line 19 changes `basket` to `tv`, and the call on line 20 changes it to `computer`. The function call on line 21 does not alter the value of the `basket` global, but defines and sets a local variable with the same name. It then logs `play station`. Upon returning from `shop3`, the local variable goes away, so line 23 logs the value of the global `basket`: `computer`.  
+
+---
+
+###### Problem 4
+
+```javascript
+function hello() {
+  a = 'hi';
+}
+
+hello();
+console.log(a);
+```
+
+###### My Solution
+
+Expected Output:
+
+```
+undefined
+ReferenceError: a is not defined
+```
+
+My original explanation was that since `a` was assigned to the value `'hi'` within the local scope of the `hello()` function that it would not be accessible outside that function. However, I ran the code and was surpised to get the following output:
+
+```
+hi
+```
+
+I looked at the code again and noticed that on line 2, the variable `a` is simply being assigned, but not declared.  I think that what happens here is that JavaScript interprets this as if somehow `a` has been defined elsewhere in the global scope. Thus, when it is assigned within the function declaration of `hello` and then that function is invoked on line 5, it gets assigned the value `'hi'` and is accessible within the global scope.
+
+###### LS Solution
+
+```
+hi
+```
+
+Here, we call the `hello` function, so we assign a value of `hi` to the variable. The variable is a global variable since we don't declare it with `let`, `const`, `var`, or `function`. Thus, line 6 logs `hi`.  
+
+Note that this is nearly identical to what happens when we explicitly declare `a` at the global level:
+
+```javascript
+let a;
+
+function hello() {
+  a = 'hi';
+}
+
+hello();
+console.log(a);
+```
+
+However, there is a subtle difference: without an explicit declaration, `a` becomes a property of the global object. We discuss objects in more detail later and why this extremely subtle distinction matters. For now, though, you just need to know that `a` is available everywhere in the program.  
+
+---
+
+###### Problem 5
+
+```javascript
+function hello() {
+  let a = 'hello';
+}
+
+hello();
+console.log(a);
+```
+
+###### My Solution
+
+Expected Output:
+
+```
+ReferenceError: a does not exist
+```
+
+Actual output:
+
+```
+ReferenceError: a is not defined
+```
+
+In this case, since we are declaring `a` within the local scope of the `hello` function, it cannot be accessed from outside that scope when we invoke `console.log(a)` on line 6.
+
+###### LS Solution
+
+```
+Uncaught ReferenceError: a is not defined
+```
+
+Since we don't define a global variable `a`, line 6 does not find any variables named `a`; thus, it raises a `ReferenceError`.  
+
+###### Problem 6
+
+```javascript
+console.log(a);
+
+var a = 1;
+```
+
+###### My Solution
+
+Expected output:
+
+```
+1
+```
+
+Even though the invocation of `console.log(a)` occurs before we declare the variable `a`, the variable declation gets 'hoisted' to the top of the code, meaning that there will be no error for trying to log the value of `a` to the console before actually declaring it and assigning it a value.
+
+###### LS Solution
+
+```
+undefined
+```
+
+After hoisting, this program is equivalent to:
+
+```javascript
+var a;
+console.log(a);
+a = 1;
+```
+
+Line 2 logs `undefined` since we declared `a` but never assigned it a value.
+
+---
+
+###### Problem 7
+
+```javascript
+console.log(a);
+
+let a = 1;
+```
+
+###### My Solution
+
+Expected output:
+
+```
+Uncaught ReferenceError: a is not defined
+```
+
+Actual output:
+
+```
+ReferenceError: cannot access 'a' before initialization
+```
+
+In this case, even after hoisting, the attempt to log the value of `a` to the console leads to a `ReferenceError`. The program knows that `a` exists but it says that it is not initialized yet.
+
+###### LS Solution
+
+```
+ReferenceError: Cannot access 'a' before initialization
+```
+
+After hoisting, JavaScript can tell that there is an `a` variable, but that variable lives in the Temporal Dead Zone; it is unset and cannot be accessed.
+
+---
+
+###### Problem 8
+
+```javascript
+console.log(a);
+
+function hello() {
+  a = 1;
+}
+```
+
+###### My Solution
+
+Expected Output:
+
+```
+ReferenceError: 'a' does not exist
+```
+
+In this case we are trying to log `a` to the console when `a` has not been declared. Even the assignment to the value of `1` within the block of the `hello` function declaration makes no difference here since we have not invoked the `hello` function.
+
+###### LS Solution
+
+```
+Uncaught ReferenceError: a is not defined
+```
+
+After hoisting, this program is equivalent to:
+
+```javascript
+function hello() {
+  a = 1;
+}
+
+console.log(a);
+```
+
+We define `hello`, but never call it, so we never assign a value to `a`. Since we also don't declare `a` anywhere, line 5 produces a `ReferenceError`.
+
+---
 
