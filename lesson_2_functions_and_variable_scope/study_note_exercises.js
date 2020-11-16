@@ -87,8 +87,92 @@
 // let a = 1;
 
 
-console.log(a);
+// console.log(a);
 
-function hello() {
-  a = 1;
+// function hello() {
+//   a = 1;
+// }
+
+// function say() {
+//   if (false) {
+//     let a = 'hello from inside a block';
+//   }
+
+//   console.log(a);
+// }
+
+// say();
+
+// function hello() {
+//   a = 'hello';
+//   console.log(a);
+
+//   if (false) {
+//     var a = 'hello again';
+//   }
+// }
+
+// hello();
+// console.log(a);
+
+// function hello() {
+//   a = 'hello';
+//   console.log(a);
+
+//   if (false) {
+//     let a = 'hello again';
+//   }
+// }
+
+// hello();
+// console.log(a);
+
+// var a = 'hello';
+
+// for (var index = 0; index < 5; index += 1) {
+//   var a = index;
+// }
+
+// console.log(a);
+
+// let a = 'hello';
+
+// for (let index = 0; index < 5; index += 1) {
+//   let a = index;
+// }
+
+// console.log(a);
+
+// var a = 'global';
+
+// function checkScope() {
+//   var a = 'local';
+//   const nested = function() {
+//     var a = 'nested';
+//     let superNested = () => {
+//       a = 'superNested';
+//       return a;
+//     };
+
+//     return superNested();
+//   };
+
+//   return nested();
+// }
+
+// console.log(checkScope());
+// console.log(a);
+
+let a = 'outer';
+let b = 'outer';
+
+console.log(a);
+console.log(b);
+setScope(a);
+console.log(a);
+console.log(b);
+
+function setScope(foo) {
+  foo = 'inner';
+  b = 'inner';
 }

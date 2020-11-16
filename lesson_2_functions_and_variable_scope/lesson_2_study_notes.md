@@ -911,3 +911,469 @@ We define `hello`, but never call it, so we never assign a value to `a`. Since w
 
 ---
 
+## Practice Problems: Variable Scopes in JavaScript (2)
+
+Please predict the output of the following programs, and explain why they output what they do.
+
+###### Problem 1
+
+```javascript
+function say() {
+  if (false) {
+    var a = 'hello from inside a block';
+  }
+  
+  console.log(a);
+}
+
+say();
+```
+
+###### My Solution
+
+Expected output:
+
+```
+ReferenceError: a does not exist
+```
+
+Here, we invoke the `say()` function that was declared above the invocation. Within the definition of the function we have an `if` conditional statement, but which should never run because its condition is `false`. Thus, the `a` variable never gets declared and the attempt to log its value to the console should run some sort of `ReferenceError`.
+
+###### LS Solution
+
+```
+undefined
+```
+
+The scope of variables declared with `var` is function-level, not block-level. Therefore, after hoisting, this code becomes:
+
+```javascript
+function say() {
+  var a;
+  if (false) {
+    a = 'hello from inside a block';
+  }
+  
+  console.log(a);
+}
+```
+
+Since we declare but never assign `a`, line 7 logs `undefined`.
+
+---
+
+###### Problem 2
+
+```javascript
+function say() {
+  if (false) {
+    let a = 'hello from inside a block';
+  }
+  
+  console.log(a);
+}
+
+say();
+```
+
+###### My Solution
+
+Expected output
+
+```
+ReferenceError: a is not defined
+```
+
+This time, because the variable declaration was done with a `let` rather than a `var`, I believe we will run into a ReferenceError. However, I expect the specific error to be one where `a` is not defined or initialized rather than not existing. I think that JavaScript knows `a` exists but it just doesn't get initialized.
+
+###### LS Solution
+
+```
+ReferenceError: a is not defined
+```
+
+The scope of variables declared with `let` is block-level, not function-level. Therefore, the variable `a` is only available inside the `if` clause on line 3.  
+
+---
+
+###### Problem 3
+
+```javascript
+function hello() {
+  a = 'hello';
+  console.log(a);
+  
+  if (false) {
+    var a = 'hello again';
+  }
+}
+
+hello();
+console.log(a);
+```
+
+###### My Solution
+
+Expected output:
+
+```
+hello
+hello
+```
+
+The first `hello` that is logged to the console comes from the invocation of the `hello()` function on the second last line. The variable `a` is assigned the string value `'hello'` in the function definition and on the next line there is a call to log that value to the console. That is the first `hello` comes from. The second one only occurs because we've invoked the `hello()` function, which assigns the string value `'hello'` to the variable `a`. Because the assignment does not occur in a variable declaration statement, JavaScript interprets the code as if `a` was declared in the global scope. Thus, the call to log the value of `a` to the console outside the scope of the function precludes the possibility of an error being thrown.
+
+###### LS Solution
+
+```
+hello
+Uncaught ReferenceError: a is not defined
+```
+
+After hoisting:
+
+```javascript
+function hello() {
+  var a;
+  a = 'hello';
+  
+  console.log(a);
+  
+  if (false) {
+    a = 'hello again';
+  }
+}
+
+hello();
+console.log(a);
+```
+
+`a`'s scope is the body of `hello`. Since there is no global variable named `a`, line 13 raises an error.
+
+---
+
+###### Problem 4
+
+```javascript
+function hello() {
+  a = 'hello';
+  console.log(a);
+  
+  if (false) {
+    let a = 'hello again';
+  }
+}
+
+hello();
+console.log(a);
+```
+
+###### My Solution
+
+Expected output:
+
+```
+hello
+ReferenceError: a is undefined
+```
+
+This is similar to the previous problem. `a` is not scoped at the global level, meaning that the last call to log its value to the console should return an error.
+
+###### LS Solution
+
+```
+hello
+hello
+```
+
+Inside the `if` statement, `a`'s scope is confined to line 6. Since `a` on line 2 is not declared, it is treated as a global variable. Thus, both lines 3 and 11 output `hello`.
+
+---
+
+###### Problem 5
+
+```javascript
+var a = 'hello';
+
+for (var index = 0; index < 5; index += 1) {
+  var a = index;
+}
+
+console.log(a);
+```
+
+###### My Solution
+
+Expected output:
+
+```javascript
+hello
+```
+
+This output is due to the fact that we declare the variable `a` on the first line with the string value `'hello'`. The declaration of another variable `a` within the block of the `for` loop is a completely separate variable that is scoped at the level of the block and thus does not reassign the value of the `a` variable that is scoped at the global level.
+
+###### LS Solution
+
+```
+4
+```
+
+JavaScript hoists the variable declaration on line 4 to the top of the global scope. Since a global variable named `a` exists, the hoist has no direct effect on operation. Inside the loop, `a` gets assigned five times; at the end of the loop, it has a value of 4. Thus, line 7 logs `4`.
+
+---
+
+###### Problem 6
+
+```javascript
+let a = 'hello';
+
+for (let index = 0; index < 5; index += 1) {
+  let a = index;
+}
+
+console.log(a);
+```
+
+###### My Solution
+
+Expected output:
+
+```
+hello
+```
+
+Okay, this one I'm going to use my response for the last problem. I think the two different declarations of `a` using `let` instead of `var` means there are two separate `a` variables, one scoped at the global level and the other at the level of the `for` loop block. If this is wrong, then this illustrates something fundamentally different about the scoping rules for function blocks versus other types of blocks.
+
+###### LS Solution
+
+```
+hello
+```
+
+In this code, we have two different `a` variables: one in the outer scope, and one in the inner scope. The declaration on line 4 creates and initializes the inner-scoped variable. On line 7, we output the value of the `a` variable declared on line 1. That variable still has the value `hello`, so line 7 outputs `hello`.  
+
+---
+
+###### Problem 7
+
+```javascript
+let a = 1;
+
+function foo() {
+  a = 2;
+  let bar = function() {
+    a = 3;
+    return 4;
+  };
+  
+  return bar();
+}
+
+console.log(foo());
+console.log(a);
+```
+
+###### My Solution
+
+Expected output:
+
+```
+4
+3
+```
+
+The value that is logged to the console is the value returned by the invocation of the `foo()` function. The `foo()` function returns the value returned by the nested `bar()` function, whose return value is `4`.  The next value that is logged to the console is the value that is assigned to the variable `a`. `a` is first declared and assigned a value of `1`. However, within the definition of the `foo()` function, it is first reassigned a value of `2`. It is then reassigned the value of `3` within the definition of the `bar()` function. Since the `foo()` function gets invoked, which in turn invokes the `bar()` function, those reassignment instructions get executed. Thus, the value assigned to the variable `a` after the reassignments are executed is `3`.
+
+###### LS Solution
+
+```
+4
+3
+```
+
+The `foo` function returns the return value of the `bar` function, which is 4. During this process, the code changes the global variable twice. Thus, the final value is 3.  
+
+---
+
+###### Problem 8
+
+```javascript
+var a = 'global';
+
+function checkScope() {
+  var a = 'local';
+  const nested = function() {
+    var a = 'nested';
+    let superNested = () => {
+      a = 'superNested';
+      return a;
+    };
+    
+    return superNested();
+  };
+  
+  return nested();
+}
+
+console.log(checkScope());
+console.log(a);
+```
+
+###### My Solution
+
+Expected output:
+
+```
+superNested
+superNested
+```
+
+Invoking the `checkScope()` function returns the string value `'superNested'` and ultimately leads to the reassignment of the globally scoped variable `a ` to that same string value.
+
+###### LS Solution
+
+```
+superNested
+global
+```
+
+With super-nested functions, you must chase through the functions starting with the function invocations. Here, we start with line 18, the first function invocation. From there, line 4 goes to line 5, line 5 to line 15, and so on through lines 6, 7, 12, 8, and 9.  Line 9 obviously returns `'superNested'`, so line 12 must return `'superNested'` too. This takes us back to line 15 which also returns `'superNested'`. Finally, line 18 receives the final return value (`'superNested'`) and logs it. During this entire process, we never modify the global `a`, so it still has the value `global`.  
+
+---
+
+###### Problem 9
+
+```javascript
+let a = 'outer';
+let b = 'outer';
+
+console.log(a);
+console.log(b);
+setScope(a);
+console.log(a);
+console.log(b);
+
+function setScope(foo) {
+  foo = 'inner';
+  b = 'inner';
+}
+```
+
+###### My Solution
+
+Expected output
+
+```
+outer
+outer
+outer
+inner
+```
+
+The first two values logged to the console are straightforward: we simply log the values that we assigned to the variables `a` and `b` when we declared them on the first two lines. The we invoke the `setScope()` function with the variable `a` as an argument. The value referenced by `a` gets assigned to the local `foo` variable; thus, `foo` originally references the string value `'outer'`. However, it is immediately reassigned to the string value `'inner'`. But this has no effect on the global variable `a`; `a` still references `'outer'`. `b`, on the other hand, is reassgined to the string value `'inner'` within the function definition, which is why when we log its value to the console again, it now logs `inner` instead of `outer`.
+
+###### LS Solution
+
+```
+outer
+outer
+outer
+inner
+```
+
+Function arguments become local variables in the function, so assigning to an argument has no effect on the original argument.
+
+---
+
+###### Problem 10
+
+```javascript
+let total = 50;
+let increment = 15;
+
+function incrementBy(increment) {
+  total += increment;
+}
+
+console.log(total);
+incrementBy(10);
+console.log(total);
+console.log(increment);
+```
+
+###### My Solution
+
+Expected output:
+
+```
+50
+60
+15
+```
+
+The first value logged to the console is just the value assigned to the `total` variable when we declared it on the first line. That value is `50`. Then we invoke the `incrementBy()` function with the argument `10`. This increment's the `total` global variable by `10`, making the new value `60`. That is the value that we then log to the console. Finally, we log the value associated with the variable `increment` to the console. That value is still `15`.
+
+###### LS Solution
+
+```
+50
+60
+15
+```
+
+Though our parameter has the same name as the variable declared on line 2, it is not the same variable. Function parameters are locally scoped variables, even when they have the same names as variables defined in the outer scope.
+
+---
+
+###### Problem 11
+
+```javascript
+let a = 'outer';
+
+console.log(a);
+setScope();
+console.log(a);
+
+var setScope = function () {
+  a = 'inner';
+};
+```
+
+###### My Solution
+
+Expected output:
+
+```
+outer
+inner
+```
+
+The first value logged to the console is just the value we assigned to the `a` variable when we declared it on the first line. Then we call the `setScope` function, which reassigns the global `a` variable to the string value `'inner'`. Thus, when we log the value of `a` to the console, it now logs `inner` instead of `outer`.
+
+###### LS Solution
+
+```
+outer
+Uncaught TypeError: setScope is not a function(...)
+```
+
+With hoisting, the above code is equivalent to:
+
+```javascript
+var setScope;
+
+let a = 'outer';
+
+console.log(a);
+setScope();
+console.log(a);
+
+setScope = function () {
+  a = 'inner';
+};
+```
+
+Line 6 tries to call `setScope` as a function. However, `setScope` is just a declared global variable whose value is `undefined`. Note that unlike function declarations, with function expressions using `var`, the name of the function is hoisted, but not the function body.
+
+----
+
