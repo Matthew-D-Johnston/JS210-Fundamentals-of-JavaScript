@@ -1377,3 +1377,224 @@ Line 6 tries to call `setScope` as a function. However, `setScope` is just a dec
 
 ----
 
+## Closures
+
+Closures let a function access a variable that was in scope at the function's definition point even when that variable is no longer in scope. You may not realize it, but you've been using closures from the time you invoked your first function.  
+
+### What to Focus On
+
+You should focus on the following:
+
+- What is a closure?
+- What is in a closure?
+- When is a closure created?
+- What is the relationship between closures and scope?
+- What do we mean when we say that closures are defined lexically?
+- What is partial function application?
+
+### Closures
+
+The concepts of closure and scope are intimately related. Closures use the scope in effect at a function's definition point to determine what variables that function can access. What variables are in scope during a function's execution depend on the closure formed by the function's definition. It's somewhat circular reasoning, but it's impossible to separate the two.  
+
+MDN defines **closure** as "the combination of a function and the lexical environment within which that function was [defined]." You can think of closure as a function combined with all of the variables in its lexical scope, including function and class names.  
+
+Note that the MDN definition of closure uses the term "declared" where we say "defined". Since closure occurs with both declarations and expressions, that term is wrong. Please use our modified version of the quote.  
+
+Closures are created when you define a function or method. The closure essentially _closes over_ its environment -- what's in scope. In effect, the function definition and its scope become a single entity called a closure. When the function is invoked, it has access to everything in its environment. That is, it can use any variable that was in the lexical scope where the function was defined. **Even if those variables aren't in the lexical scope where you invoke the function, it can still access them.**  
+
+Wait a minute. How can you use variables that aren't in scope? Doesn't scope govern what variables you can use? Yes, that's true, but it's a little imprecise. When we say that a variable is no longer in scope, we mean that it isn't in scope at the point in your program where you invoke the function. However, closure and scope are lexical concepts. Where you invoke a function is unimportant; where you define the function is. A closure includes all the variables that are in scope where you defined the function. Those variables may not be in scope when you invoke the function, but they're still available to the function.  
+
+In practice, some JavaScript engines optimize closure to only include variable names that the function needs. If it doesn't use a particular variable name, that name isn't included in the closure. You may run into this when using a debugger. Google Chrome's Devtools debugger, for instance, lets you see what's in the closure by looking at the "Closure" item in the "Scope" pane -- it contains a list of variables in the closure for the current function. You can also see this in the Node debugger in a more confusing way: you can't access an identifier in the outer scope unless the current function uses that name.  
+
+###### A Helpful Mental Model
+
+Let's try to describe a more helpful mental model. When you define a function, JavaScript finds all of the variable names within the lexical scope that contains the function definition. It then takes those names and places them inside a special "envelope" object that it attaches to the function object. Each name in the envelope is a pointer to the original variable, not the value it contains.  
+
+"Envelope" is not a term that you're likely to encounter elsewhere. It's just our word for how this mental model of closure works. We won't use it again after this assignment.  
+
+The phrase "pointer to the ... variable" may seem odd. We usually think of variables as pointers to objects, not as something that we can point to. We can point to the object that a variable references, but we can't point to the variable. That's the way JavaScript is defined. However, internally, it can do anything it needs to do, including pointing to variables. In this case, it needs a pointer to the variable so that it can see any changes made to what the variable references or contains:  
+
+```javascript
+let numbers = [1, 2, 3];
+
+function printNumbers() {
+  console.log(numbers);
+}
+
+printNumbers(); // => [ 1, 2, 3 ]
+
+numbers = [4, 5];
+printNumbers(); // => [ 4, 5 ]
+```
+
+If the closure pointed to the value instead of the variable, it wouldn't be able to tell that we reassigned `numbers` on line 9. That is also true for primitive values: we need a pointer to the variable so the closure can see any changes.  
+
+```javascript
+let number = 42;
+
+function printNumber() {
+  console.log(number);
+}
+
+printNumber(); // => 42
+
+number = 3.1415;
+printNumber(); // => 3.1415
+```
+
+We'll return to this concept in a few minutes.  
+
+When a function encounters a variable name during execution, it first looks inside its local scope for that name. If it can't find the name, it peeks inside the envelope to see whether the variable is mentioned there. If it is, JavaScript can follow the pointer and get the current value of the variable. In fact, this is how scope works in JavaScript: it first checks for local variables by a given name, then it looks to the closure if it can't find it. All that stuff about looking at outer scopes until you reach the global scope all happens during the creation phase when JavaScript is looking for identifiers (e.g., variable and function names) and determining what scope they belong to.  
+
+What about variables that are in scope when you invoke a function? Can the function access them? If those variables were in scope at the definition point, then yes, it can. However, if those variables weren't in scope when you defined the function, then the function won't be able to access them. They're not listed in the envelope since those names aren't in scope at the function definition point. Only variables that are in scope when you define the function are available to the function.  
+
+###### Examples of Closure
+
+Okay, then, how can we invoke a function in a way that lets it access something that isn't in scope? Recall that, in JavaScript, functions are first-class objects. We can assign them to variables, pass them as function arguments, and use them as function return values. That means that we don't have to execute a function in the same scope in which we defined it; we can call it from a completely different part of the program. This is easiest to see with a higher-order function that returns a function object. For instance:  
+
+```javascript
+function foo() {
+  let name = "Pete";
+  return function() {
+    console.log(name);
+  };
+}
+
+let printPete = foo();
+printPete(); // Pete
+```
+
+In this example, we first call `foo` and capture its return value, a function that logs the value of the `name` variable defined in the lexical scope of `foo`. At a minimum, the closure formed by the returned function's definition contains a pointer to `name` in its envelope. That pointer means that `name`'s value won't get discarded (garbage collected -- we'll meet this concept later) when `foo` is done.  
+
+Though `name` is out of scope when `foo` finishes, the returned function has an envelope that contains a pointer to `name`. Thus, the function can still follow the pointer to the original variable, and find its current value, and that lets `printPete()` print `'Pete'`.
+
+Functions that return functions are perhaps the most powerful feature of closure in JavaScript.  
+
+Let's consider a simpler example of closure:  
+
+```javascript
+let counter = 0;
+
+function incrementCounter() {
+  counter += 1;
+}
+
+incrementCounter();
+incrementCounter();
+console.log(counter); // 2
+```
+
+At first glance, this code seems to illustrate variable scope: a function can access a variable in its surrounding scope. However, the reason why it can do that is that the function definition forms a closure that includes the variables in the outer scope. That includes `counter`, which means that `incrementCounter` can access and update the `counter` variable.  
+
+A closure is not a snapshot of the program state. As we saw a little earlier, each time you invoke a function, it sees the most recent values of the variables in its envelope. Thus, if a variable's value changes, the closure ensures that the function sees the new value, not the old one. Thus, `incrementCounter` increments the `counter` variable from `1` to `2` during its second invocation.  
+
+In most programs, you would probably return the `incrementCounter` function from another function:
+
+```javaScript
+function makeCounter() {
+  let counter = 0;
+  
+  return function() {
+    counter += 1;
+    return counter;
+  }
+}
+
+let incrementCounter = makeCounter();
+console.log(incrementCounter()); // 1
+console.log(incrementCounter()); // 2
+```
+
+Note that `counter` is now a private variable in the sense that we cannot access it directly. The only way to determine its value is to call the function that `makeCounter` returns, but that also increments the variable. This form of data protection is a big reason why returning a function from another function is so powerful.  
+
+It's important to remember that closure definitions are purely lexical. Closures are based on your program's structure, not by what happens when you execute it. Even if you never call a particular function, that function forms a closure with its surrounding scope.  
+
+### Partial Function Application
+
+In the last section, we saw several ways in which closures play a part in our programs. Let's take a brief look at a more useful application of closures.  
+
+Consider the following code:  
+
+```javascript
+function add(first, second) {
+  return first + second;
+}
+
+function makeAdder(firstNumber) {
+  return function(secondNumber) {
+    return add(firstNumber, secondNumber);
+  };
+}
+
+let addFive = makeAdder(5);
+let addTen = makeAdder(10);
+
+console.log(addFive(3));  // 8
+console.log(addFive(55)); // 60
+console.log(addTen(3));   // 13
+console.log(addTen(55));  // 65
+```
+
+In this program, the `makeAdder` function creates and returns a new function that, in turn, calls and returns the return value of calling `add` with two arguments. What's interesting here is that we define the first number when we call `makeAdder`. We don't supply the second number until later when we call the function that `makeAdder` returns.
+
+A function such as `makeAdder` is said to use **partial function application**. It applies some of the function's arguments (the `add` functin's `first` argument here) when called, and supplies the remaining arguments when you call the returned function. Partial function application refers to the creation of a function that can call a second function with fewer arguments than the second function expects. The created function supplies the remaining arguments.  
+
+The partial function technique is most useful when you need to pass a function to another function that won't call the passed function with enough arguments. It lets you create a function that fills in the gaps by supplying the missing elements. For instance, suppose you have a function that downloads an arbitrary file from the Internet. The download may fail, so the function also expects a callback function that it can call when an error occurs:
+
+```javascript
+function download(locationOfFile, errorHandler) {
+  // try to download the file
+  if (gotError) {
+    errorHandler(reasonCode);
+  }
+}
+
+function errorDetected(url, reason) {
+  // handle the error
+}
+
+download("https://example.com/foo.txt", /* ??? */);
+```
+
+Our error handling function, `errorDetected`, takes two arguments, but `download` only passes one argument to the error handler. Suppose the `download` function is part of a 3rd party library that you can't modify. You can turn to partial function application to get around the single-argument limitation:
+
+```javascript
+function makeErrorHandlerFor(locationOfFile) {
+  return function(reason) {
+    errorDetected(locationOfFile, reason);
+  };
+}
+
+let url = "https://example.com/foo.txt";
+download(url, makeErrorHandlerFor(url));
+```
+
+The `download` method now calls the partial function returned by `makeHandlerFor`, and `errorDetected` gets both arguments it needs.  
+
+In this simple example, partial function application may be overkill. However, if you need to use `errorDetected` in several different locations, partial function application can save you a lot of time and effort. You don't have to create an error handler function for each situation.  
+
+Rather than creating a `makeErrorHandlerFor` function, you can use `bind` to perform partial function application. In most cases, `bind` is all you need.
+
+```javascript
+let url = "https://example.com/foo.txt";
+download(url, errorDetected.bind(null, url));
+```
+
+We'll meet up again with partial function application in a later course.  
+
+### What are Closures Good For?
+
+We've seen several examples in this assignment, including callbacks, partial function application, and creating private data. In addition, here are some other things made possible by closures: we'll meet most (but not all) of these later in the curriculum:
+
+* Currying (a special form of partial function application)
+* Emulating private methods
+* Creating functions that can only be executed once
+* Memoization (avoding repetitive resource-intensive operations)
+* Iterators and generators
+* The module pattern (putting code and data into modules)
+* Asynchronous operations
+
+---
+
+
+
