@@ -383,3 +383,25 @@ function logValue() {
 console.log(typeof logValue);
 ```
 
+###### My Solution
+
+Expected output:
+
+```
+string
+```
+
+After hoisting:
+
+```javascript
+function logValue() {
+  console.log('Hello, world!');
+}
+
+var logValue;
+
+logValue = 'foo';
+
+console.log(typeof logValue);
+```
+
