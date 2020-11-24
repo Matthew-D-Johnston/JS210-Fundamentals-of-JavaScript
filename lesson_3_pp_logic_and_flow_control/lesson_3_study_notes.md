@@ -1093,7 +1093,339 @@ function isPrime(number) {
 
 ---
 
+# XOR
+
+For boolean values, the `||` operator returns `true` if either or both of its operands are `true`, `false` if both operands are `false`. The `&&` operator, on the other hand, returns `true` if both of its operands are `true`, and `false` if either operand is `false`. This works great until you need only one of two conditions to be `true`, the so-called "exclusive or", or `XOR`.  
+
+Write a function named `isXor` that takes two arguments, and returns `true` if exactly one argument is **truthy**, `false` otherwise. Your function should work with the boolean values of `true` and `false`, but also any JavaScript values based on their "truthiness".  
+
+###### Example
+
+```javascript
+isXor(false, true);     // true
+isXor(true, false);     // true
+isXor(false, false);    // false
+isXor(true, true);      // false
 
 
+isXor(false, 3);        // true
+isXor('a', undefined);  // true
+isXor(null, '');        // false
+isXor('2', 23);         // false
+```
 
+###### My Solution
+
+```javascript
+function isXor(arg1, arg2) {
+    return (!!arg1 && !arg2) || (!arg1 && !!arg2);
+}
+```
+
+###### LS Solution
+
+```javascript
+function isXor(value1, value2) {
+  if (value1 && !value2) {
+    return true;
+  }
+  
+  if (!value1 && value 2) {
+    return true;
+  }
+  
+  return false;
+}
+```
+
+We can also use an equivalent `if...else` structure:
+
+```javascript
+function isXor(value1, value2) {
+  if (value1 && !value2) {
+    return true;
+  } else if (!value1 && value2) {
+    return true;
+  } else {
+    return false;s
+  }
+}
+```
+
+###### Further Exploration
+
+You can write a solution that is even more concise:  
+
+Alternative 1:  
+
+```javascript
+function isXor(value1, value2) {
+  return !!((value1 && !value2) || (value2 && !value1));
+}
+```
+
+The two exclamation points (`!!`) coerce the return value to a boolean value (`true` or `false`). By default, logical operators return the value of the values of the operands, not a boolean value. Without the `!!`, the function returns the truthy (e.g., `'a'` or `2`) or falsy (e.g., `''`) values; the `!!` guarantees that the result is boolean.  
+
+###### Example
+
+```javascript
+// expression form
+((expr1 && expr2) || (expr3 && expr4))
+
+isXor('a', undefined);    // true
+// series of evaluations:
+!!(('a' && !undefined) || (undefined && !'a'))
+!!(('a' && true) || (undefined && false))
+!!( true || undefined )
+!!( true )                // true
+
+
+isXor(null, '');          // false
+// series of evaluations:
+!!((null && !'') || ('' && !null))
+!!((null && true) || ('' && true))
+!!( null || '' )
+!!( '' )                  // false
+```
+
+Alternative 2:
+
+```javascript
+function isXor(value1, value2) {
+  return Boolean(value1) !== Boolean(value2);
+}
+```
+
+While these solutions are more concise, they take a little more effort to understand.  
+
+###### Questions to Think About
+
+`||` and `&&` are so-called short-circuit operators; JavaScript evaluates the second operand only when needed. For instance, in `a || b`, you don't need to evaluate `b` if `a` is truthy. Does the `isXor` function perform short-circuit evaluation? Why or why not? Does short-circuit evaluation in XOR operations make sense?  
+
+Can you think of a situation where a boolean `isXor` function is useful? Suppose you were modeling a light at the top of a flight of stairs wired such that you can turn the light on or off from either upstairs or downstairs. This is an XOR configuration, and you can model it in JavaScript using the `isXor` function. Try to think of some more examples.  
+
+---
+
+# Guessing the Password
+
+Write a password guessing program that tracks how many times the user enters the wrong password. If the user enters the password wrong three times, log `You have been denied access.` and terminate the program. If the password is correct, log `You have successfully logged in.` and end the program.  
+
+###### Example
+
+```j
+// password = 'password'
+
+// The program displays a dialog that asks the user to enter a password.
+// If the user enters the wrong password, keep asking up to three times. After
+// three failures, log the access denied.
+
+What is the password: 123
+What is the password: opensesame
+What is the password: letmein
+
+// message on the console
+You have been denied access.
+
+// If the user enters the right password, report login success.
+What is the password: password
+
+// message on the console
+You have successfully logged in.
+```
+
+###### My Solution
+
+```javascript
+let password = 'password';
+
+let rlSync = require('readline-sync');
+let validated = false;
+
+for (let attempts = 1; attempts <= 3; attempts += 1) {
+  let guess = rlSync.question('What is the password: ');
+
+  if (guess === password) {
+    validated = true;
+    break;
+  }
+}
+
+if (validated) {
+  console.log('You have successfully logged in.');
+} else {
+  console.log('You have been denied access');
+}
+```
+
+###### LS Logic and Structure
+
+You need to count the failed attempts, and keep prompting the user for the password until she enters the correct password or fails three times.
+
+###### LS Solution
+
+This solution is a direct translation of the guide we provided in the "Logic and Structure" section:
+
+```javascript
+const PASSWORD = 'password';
+let failedAttempts = 0;
+
+while (true) {
+  let guess = prompt('What is the password:');
+  
+  if (guess === PASSWORD) {
+    console.log('You have successfully logged in.');
+    break;
+  }
+  
+  failedAttempts += 1;
+  
+  if (failedAttempts === 3) {
+    console.log('You have been denied access.');
+    break;
+  }
+}
+```
+
+Alternative Solution:  
+
+For this solution, we keep asking the user to enter the password unless they have already entered the password correctly. We allow up to three failed attempts. Finally, we use the failed attempts count to determine which message we should log.  
+
+```javascript
+const PASSWORD = 'password';
+let failedAttempts = 0;
+
+do {
+  let guess = prompt('What is the password:');
+  
+  if (guess === password) {
+    break;
+  }
+  
+  failedAttempts += 1;
+} while (failedAttempts < 3);
+
+if (failedAttempts === 3) {
+  console.log('You have been denied access.');
+} else {
+  console.log('You have successfully logged in.');
+}
+```
+
+---
+
+# Student Grade
+
+Write a program to determine a student's grade based on the average of three scores you get from the user. Use these rules to compute the grade:  
+
+* If the average score is greater than or equal to `90` then the grade is `'A'`
+* If the average score is greater than or equal to `70` and less than `90` then the grade is `'B'`
+* If the average score is greater than or equal to `50` and less than `70` then the grade is `'C'`
+* If the average score is less than `50` then grade is `'F'`
+
+You may assume that all input values are valid positive integers.  
+
+###### Example
+
+```
+// prompts to get the 3 scores
+Enter score 1: 90
+Enter score 2: 50
+Enter score 3: 78
+
+// log to the console
+Based on the average of your 3 scores your letter grade is "B".
+```
+
+###### My Solution
+
+HTML Chrome Solution:
+
+```javascript
+let score1 = Number(prompt('Enter score 1: '));
+let score2 = Number(prompt('Enter score 2: '));
+let score3 = Number(prompt('Enter score 3: '));
+
+let averageScore = (score1 + score2 + score3) / 3;
+
+let grade;
+
+if (averageScore >= 90) {
+  grade = 'A';
+} else if (averageScore >= 70 && averageScore < 90) {
+  grade = 'B';
+} else if (averageScore >= 50 && averageScore < 70) {
+  grade = 'C';
+} else {
+  grade = 'F';
+}
+
+console.log(`Based on the avearge of your 3 scores your letter grade is "${grade}".`);
+```
+
+Command Line Node Solution:
+
+```javascript
+let rlSync = require('readline-sync');
+
+let score1 = Number(rlSync.question('Enter score 1: '));
+let score2 = Number(rlSync.question('Enter score 2: '));
+let score3 = Number(rlSync.question('Enter score 3: '));
+
+let averageScore = (score1 + score2 + score3) / 3;
+
+let grade;
+
+if (averageScore >= 90) {
+  grade = 'A';
+} else if (averageScore >= 70 && averageScore < 90) {
+  grade = 'B';
+} else if (averageScore >= 50 && averageScore < 70) {
+  grade = 'C';
+} else {
+  grade = 'F';
+}
+
+console.log(`Based on the avearge of your 3 scores your letter grade is "${grade}".`);
+```
+
+###### LS Solution
+
+```javascript
+let score1 = Number(prompt('Enter score 1:'));
+let score2 = Number(prompt('Enter score 2:'));
+let score3 = Number(prompt('Enter score 3:'));
+let total = score1 + score2 + score3;
+let average = total / 3;
+
+let grade;
+if (average >= 90) {
+  grade = 'A';
+} else if (average >= 70 && average < 90) {
+  grade = 'B';
+} else if (average >= 50 && average < 70) {
+  grade = 'C';
+} else {
+  grade = 'F';
+}
+
+console.log('Based on the average of your 3 scores your letter grade is "' +
+            grade + '".');
+```
+
+You can simplify this a bit if you realize that line 11 doesn't need to check `&& average < 90` (line 9 removes all scores >= 90 from consideration). Likewise, you don't need `&& average < 70` on line 13. You can also make `'F'` the default grade. So, lines 8-17 become:
+
+```javascript
+let grade = 'F';
+if (average >= 90) {
+  grade = 'A';
+} else if (average >= 70) {
+  grade = 'B';
+} else if (average >= 50) {
+  grade = 'C';
+}
+```
+
+###### Further Exploration
+
+Our solution limits us to exactly three input scores. Modify it to accept any number of scores. To simplify matters, move the computation of the average into a function.  
 
