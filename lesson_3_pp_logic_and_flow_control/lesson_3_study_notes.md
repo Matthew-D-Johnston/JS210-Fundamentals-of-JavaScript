@@ -1429,3 +1429,247 @@ if (average >= 90) {
 
 Our solution limits us to exactly three input scores. Modify it to accept any number of scores. To simplify matters, move the computation of the average into a function.  
 
+```javascript
+let rlSync = require('readline-sync');
+
+let numberOfScores = Number(rlSync.question('How many scores do you want to enter? '));
+
+let scores = [];
+
+for (let index = 1; index <= numberOfScores; index += 1) {
+  let score = Number(rlSync.question(`Enter score ${index}: `));
+
+  scores.push(score);
+}
+
+const SumScores = (total, currentScore) => total + currentScore;
+
+let scoreTotal = scores.reduce(SumScores);
+
+let averageScore = scoreTotal / numberOfScores;
+
+if (averageScore >= 90) {
+  grade = 'A';
+} else if (averageScore >= 70) {
+  grade = 'B';
+} else if (averageScore >= 50) {
+  grade = 'C';
+} else {
+  grade = 'F';
+}
+
+console.log(`Based on the avearge of your ${numberOfScores} scores your letter grade is "${grade}".`);
+```
+
+---
+
+# Greatest Common Divisor
+
+Create a function that computes the Greatest Common Divisor of two positive integers.
+
+###### Example
+
+```javascript
+gcd(12, 4);		// 4
+gcd(15, 10);	// 5
+gcd(9, 2);		// 1
+```
+
+###### My Solution
+
+```javascript
+let gcd = function (num1, num2) {
+  let smallestNum;
+
+  if (num1 < num2) {
+    smallestNum = num1;
+  } else {
+    smallestNum = num2;
+  }
+  
+  let greatestCommonDivisor;
+  
+  for (let divisor = smallestNum; divisor > 0; divisor -= 1) {
+    if (num1 % divisor === 0 && num2 % divisor === 0) {
+      greatestCommonDivisor = divisor;
+      break;
+    }
+  }
+
+  return greatestCommonDivisor;
+};
+```
+
+###### LS Solution
+
+This solution employs Euclid's alogorithm.
+
+```javascript
+function gcd(num1, num2) {
+  var temp;
+  
+  while (num2 !== 0) {
+    temp = num2;
+    num2 = num1 % num2;
+    num1 = temp;
+  }
+  
+  return num1;
+}
+```
+
+###### Further Exploration
+
+The examples all put the larger number first. Do you think the program will still work if you reverse the order and place the smaller number first?  
+
+Our solution works with only two numbers. Can you expand it to accept an array of two or more numbers instead? Hint: the GCD is associative. To compute the GCD of 12, 4, and 8, for instance, you can compute:
+
+```javascript
+gcd(12, gcd(4, 8));		// 4
+```
+
+You can also compute it with:
+
+```javascript
+gcd(gcd(12, 4), 8);		// 4
+```
+
+###### My Solution
+
+```javascript
+function gcd(numbers) {
+  while (numbers.length !== 1) {
+    let num1 = numbers.pop();
+    let num2 = numbers.pop();
+
+    let temp;
+
+    while (num2 !== 0) {
+      temp = num2;
+      num2 = num1 % num2;
+      num1 = temp;
+    }
+
+    numbers.unshift(num1);
+  }
+
+  return numbers[0];
+}
+```
+
+---
+
+# Goldbach Numbers
+
+Write a function named `checkGoldbach` that uses [Goldbach's Conjecture](https://en.wikipedia.org/wiki/Goldbach's_conjecture) to log every pair of primes that sum to the number supplied as an argument. The conjecture states that _"you can express every integer greater than 2 as the sum of two primes"_. The function takes as its only parameter, an integer `expectedSum`, and logs all combinations of two prime numbers whose sum is `expectedSum`. Log the prime pairs with the smaller number first. If `expectedSum` is odd or less than 4, your function should log `null`.  
+
+Your `checkGoldback` function **may** call the `isPrime` function you wrote for a previous practice problem.  
+
+###### Example
+
+```javascript
+checkGoldbach(3);
+// logs: null
+
+checkGoldbach(4);
+// logs: 2 2
+
+checkGoldbach(12);
+// logs 5 7
+
+checkGoldbach(100);
+// logs:
+// 3 97
+// 11 89
+// 17 83
+// 29 71
+// 41 59
+// 47 53
+```
+
+###### My Solution
+
+```javascript
+function isPrime(number) {
+  let result = true;
+
+  if (number === 0 || number === 1) {
+    result = false;
+  } else {
+    let multiple = parseInt((number + 1) / 2, 10);
+      
+    while (multiple > 1) {
+      if (number % multiple === 0) {
+        result = false;
+        break;
+      }
+      
+      multiple -= 1;
+    }
+  }
+  
+  return result;
+}
+
+function checkGoldbach(expectedSum) {
+  let goldbachPairs = [];
+
+  if (expectedSum < 4 || expectedSum % 2 === 1) {
+    console.log(null);
+  } else {
+    for (let num1 = expectedSum / 2; num1 <= expectedSum - 2; num1 += 1) {
+      let num2 = expectedSum - num1;
+
+      if (isPrime(num1) && isPrime(num2)) {
+        if (num1 < num2) {
+          goldbachPairs.unshift([num1, num2]);
+        } else {
+          goldbachPairs.unshift([num2, num1]);
+        } 
+      }
+    }
+  }
+  goldbachPairs.forEach(element => console.log(`${element[0]} ${element[1]}`));
+}
+```
+
+###### LS Solution
+
+```javascript
+let isPrime = function(number) {
+  if (number < 2) {
+    return false;
+  }
+  
+  for (let firstNumber = 2; firstNumber < number; firstNumber += 1) {
+    if (number % firstNumber === 0) {
+      return false;
+    }
+  }
+  
+  return true;
+};
+
+let checkGoldbach = function(expectedSum) {
+  if (expectedSum < 4 || expectedSum % 2 === 1) {
+    console.log(null);
+    return;
+  }
+  
+  let num1 = 1;
+  let num2;
+  
+  do {
+    num1 += 1;
+    num2 = expectedSum - num1;
+    if (isPrime(num1) && isPrime(num2)) {
+      console.log(num1, num2);
+    }
+  } while (num1 !== num2);
+};
+```
+
+Note that our solution uses function expressions instead of declarations. There was no particular reason to do that other than to help keep them in mind. Our solution could just as easily used ordinary function declarations or arrow functions.
+
+---
+

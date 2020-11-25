@@ -4,7 +4,7 @@ function isPrime(number) {
   if (number === 0 || number === 1) {
     result = false;
   } else {
-    let multiple = (number + 1) / 2;
+    let multiple = parseInt((number + 1) / 2, 10);
       
     while (multiple > 1) {
       if (number % multiple === 0) {
@@ -25,3 +25,5 @@ console.log(isPrime(3));
 console.log(isPrime(43));
 console.log(isPrime(55));
 console.log(isPrime(0));
+console.log(isPrime(4));
+console.log(isPrime(8));
