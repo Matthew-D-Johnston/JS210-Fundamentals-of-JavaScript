@@ -1673,3 +1673,116 @@ Note that our solution uses function expressions instead of declarations. There 
 
 ---
 
+# Pattern Generation
+
+Write a function that takes a number of rows as the argument `nStars` and logs a square of numbers and asterisks. For example, if `nStars` is 7, log the following pattern:  
+
+```javascript
+generatePattern(7);
+
+// console output
+1******
+12*****
+123****
+1234***
+12345**
+123456*
+1234567
+```
+
+You may assume that `nStars` is greater than 1 and less than 10.  
+
+###### My Solution
+
+```javascript
+function generatePattern(nStars) {
+  let numbers = '1';
+
+  for (let index = 1; index <= nStars; index += 1) {
+    let stars = '*'.repeat(nStars - index);
+    console.log(numbers + stars);
+    numbers += (index + 1);
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+function generatePattern(nStars) {
+  for (let lineNumber = 1; lineNumber <= nStars; lineNumber += 1) {
+    let string = '';
+    
+    for (let digit = 1; digit <= lineNumber; digit += 1) {
+      string += String(digit);
+    }
+    
+    for (let count = lineNumber + 1; count <= nStars; count += 1) {
+      string += '*';
+    }
+    
+    console.log(string);
+  }
+}
+```
+
+###### Further Exploration
+
+Have you tried supplying `generatePattern` with a number greater than 9? What did you observe? Can you fix the current implementation so that it still renders as a rectangle? Try it yourself before scrolling down.
+
+###### My Solution
+
+```javascript
+function lineLength(number) {
+  let string = '';
+  for (let index = 1; index <= number; index += 1) {
+    string += index;
+  }
+
+  return string.length;
+}
+
+function generatePattern(nStars) {
+  let stars = '*'.repeat(lineLength(nStars));
+  let starsArray = stars.split('');
+
+  for (let index = 1; index <= nStars; index += 1) {
+    starsArray[index - 1] = String(index);
+    while (starsArray.join('').length > stars.length) {
+      starsArray.pop();
+    }
+    console.log(starsArray.join(''));
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+function generatePattern(nStars) {
+  let lastRowString = '';
+  
+  for (let lineNumber = 1; lineNumber <= nStars; lineNumber += 1) {
+    lastRowString += String(lineNumber);
+  }
+  
+  let width = lastRowString.length;
+  
+  for (let lineNumber = 1; lineNumber <= nStars; lineNumber += 1) {
+    let string = '';
+    for (let digit = 1; digit <= lineNumber; digit += 1) {
+      string += String(digit);
+    }
+    
+    let numberOfStars = width - string.length;
+    for (let count = 1; coount <= numberOfStars; count += 1) {
+      string += '*';
+    }
+    
+    console.log(string);
+  }
+}
+```
+
+---
+
