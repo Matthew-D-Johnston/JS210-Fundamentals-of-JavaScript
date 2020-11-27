@@ -1786,3 +1786,146 @@ function generatePattern(nStars) {
 
 ---
 
+# Index of Substring
+
+Write two functions that each take two strings as arguments. Their expected behaviors are as follows:  
+
+* The `indexOf` function searches for the first instance of a substring in `firstString` that matches the string `secondString`, and returns the index of the character where that substring begins.
+* The `lastIndexOf` function searches for the last instance of a substring in `firstString` that matches the string `secondString`, and returns the index of the character where that substring begins.  
+
+###### Examples
+
+```javascript
+function indexOf(firstString, secondString) {
+  // statements
+}
+
+function lastIndexOf(firstString, secondString) {
+  // statements
+}
+
+indexOf('Some strings', 's');											// 5
+indexOf('Blue Whale', 'Whale');										// 5
+indexOf('Blue Whale', 'Blute');										// -1
+indexOf('Blue Whale', 'leB');											// -1
+
+lastIndexOf('Some strings', 's');									// 11
+lastIndexOf('Blue Whale, Killer Whale', 'Whale');	// 19
+lastIndexOf('Blue Whale, Killer Whale', 'all');		// -1
+```
+
+You may use the square brackets (`[]`) to access a character by index (as shown below), and the `length` property to find the string length. However, you may not use any other properties or methods from JavaScript's built-in String class.  
+
+```javascript
+'hello'[0];			// "h"
+'hello'[4];			// "o"
+```
+
+###### My Solution
+
+##### Algorithm:
+
+* Find the length of the `firstString` and that of the `secondString`.
+* Create a function that will return an array of substrings of the `firstString` that have the same length as the `secondString`.
+* Starting at 0, loop through each index of the `firstString` looking for matches with the `secondString`. The group of characters used for comparison must be the same length as that of the `secondString`.
+* Record the index number where the first match occurs.
+
+##### Code:
+
+```javascript
+function subString(string, subStringLength) {
+  let subStrings = [];
+  let numberOfSubStrings = string.length - subStringLength;
+
+  for (let index = 0; index <= numberOfSubStrings; index += 1) {
+    let subString = '';
+
+    for (let index2 = index; index2 <= ((subStringLength + index) - 1); index2 += 1) {
+      subString += string[index2];
+    }
+
+    subStrings.push(subString);
+  }
+
+  return subStrings;
+}
+
+
+function indexOf(firstString, secondString) {
+  let resultIndex = -1;
+  let subStrings = subString(firstString, secondString.length);
+
+  for (let index = 0; index <= (subStrings.length - 1); index += 1) {
+    if (subStrings[index] === secondString) {
+      resultIndex = index;
+      break;
+    }
+  }
+
+  return resultIndex;
+}
+
+function lastIndexOf(firstString, secondString) {
+  let resultIndex = -1;
+  let subStrings = subString(firstString, secondString.length);
+
+  for (let index = 0; index <= (subStrings.length - 1); index += 1) {
+    if (subStrings[index] === secondString) {
+      resultIndex = index;
+    }
+  }
+
+  return resultIndex;
+}
+```
+
+###### LS Solution
+
+```javascript
+function indexOf(firstString, secondString) {
+  let limit = firstString.length - secondString.length;
+  
+  for (let indexFirst = 0; indexFirst <= limit; indexFirst += 1) {
+    let matchCount = 0;
+    
+    for (let indexSecond = 0; indexSecond < secondString.length; indexSecond += 1) {
+      if (firstString[indexFirst + indexSecond] === secondString[indexSecond]) {
+        matchCount += 1;
+      } else {
+        break;
+      }
+    }
+    
+    if (matchCount === secondString.length) {
+      return indexFirst;
+    }
+  }
+  
+  return -1;
+}
+
+function lastIndexOf(firstString, secondString) {
+  let limit = firstString.length - secondString.length;
+
+  for (let indexFirst = limit; indexFirst >= 0; indexFirst -= 1) {
+    let matchCount = 0;
+
+    for (let indexSecond = 0; indexSecond < secondString.length; indexSecond += 1) {
+      if (firstString[indexFirst + indexSecond] === secondString[indexSecond]) {
+        matchCount += 1;
+      } else {
+        break;
+      }
+    }
+
+    if (matchCount === secondString.length) {
+      return indexFirst;
+    }
+  }
+
+  return -1;
+}
+```
+
+---
+
