@@ -1929,3 +1929,114 @@ function lastIndexOf(firstString, secondString) {
 
 ---
 
+# Trimming Spaces
+
+Write a function that takes a string as an argument, and returns the string stripped of spaces from both ends. Do not remove or alter internal spaces.  
+
+###### Example
+
+```javascript
+trim('  abc  ');  // "abc"
+trim('abc   ');   // "abc"
+trim(' ab c');    // "ab c"
+trim(' a b  c');  // "a b  c"
+trim('      ');   // ""
+trim('');         // ""
+```
+
+You may use the square brackets (`[]`) to access a character by index (as shown below), and the `length` property to find the string length. However, you may not use any other properties or methods from JavaScript's built-in String class.  
+
+```javascript
+'hello'[0];       // "h"
+'hello'[4];       // "o"
+```
+
+###### My Solution
+
+##### Algorithm
+
+* Convert to array first.
+* Start from the front of the array and remove all whitespaces until a non-whitespace character is reached.
+* Then do the same thing, but starting from the end of the array.
+* Join the array.
+* Find the first character index and the last character index.
+
+##### Function
+
+```javascript
+function trim(text) {
+
+  let firstIndex;
+  let lastIndex;
+
+  let limit = text.length - 1;
+
+  for (let index = 0; index <= limit; index += 1) {
+    if (text[index] !== ' ') {
+      firstIndex = index;
+      break;
+    }
+  }
+
+  for (let index = limit; index >= 0; index -= 1) {
+    if (text[index] !== ' ') {
+      lastIndex = index;
+      break;
+    }
+  }
+
+  let strippedText = '';
+
+  for (let index = firstIndex; index <= lastIndex; index += 1) {
+    strippedText += text[index];
+  }
+
+  return strippedText;
+}
+```
+
+###### LS Solution
+
+```javascript
+function trim(string) {
+  let trimmed = trimLeft(string);
+  trimmed = trimRight(trimmed);
+  
+  return trimmed;
+}
+
+function trimLeft(string) {
+  let newString = '';
+  let copyMode = false;
+  
+  for (let index = 0; index < string.length; index += 1) {
+    if(string[index] !== ' ') {
+      copyMode = true;
+    }
+    
+    if (copyMode) {
+      newString += string[index];
+    }
+  }
+  
+  return newString;
+}
+
+function trimRight(string) {
+  let newString = '';
+  let copyMode = false;
+  
+  for (let index = string.length - 1; index >= 0; index -= 1) {
+    if (string[index] !== ' ') {
+      copyMode = true;
+    }
+    
+    if (copyMode) {
+      newString = string[index] + newString;
+    }
+  }
+  
+  return newString;
+}
+```
+
