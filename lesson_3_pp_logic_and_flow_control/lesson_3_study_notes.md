@@ -2040,3 +2040,187 @@ function trimRight(string) {
 }
 ```
 
+---
+
+# Splitting a String
+
+Write a function that takes two arguments:
+
+1. a string to be split
+2. a delimiter character
+
+The function logs the split strings to the console as shown below:
+
+###### Examples
+
+```javascript
+function splitString(string, delimiter) {
+  // ...
+}
+
+splitString('abc,123,hello world', ',');
+// logs:
+// abc
+// 123
+// hello world
+
+splitString('hello');
+// logs:
+// ERROR: No delimiter
+
+splitString('hello', '');
+// logs:
+// h
+// e
+// l
+// l
+// o
+
+splitString('hello', ';');
+// logs:
+// hello
+
+splitString(';hello;', ';');
+// logs:
+// (this is a blank line)
+// hello
+```
+
+You may use the square brackets (`[]`) to access a character by index (as shown below), and the `length` property to find the string length. However, you may not use any other properties or methods from JavaScript's built-in String class.  
+
+```javascript
+'hello'[0]; 		// "h"
+'hello'[4]; 		// "o"
+```
+
+###### My Solution
+
+```javascript
+function splitString(string, delimiter) {
+  if (delimiter === '') {
+    let subStrings = [];
+
+    for (let index = 0; index < string.length; index += 1) {
+      subStrings.push(string[index]);
+    }
+
+    for (let index = 0; index < subStrings.length; index += 1) {
+      console.log(subStrings[index]);
+    }
+  } else if (delimiter) {
+    let subStrings = [];
+    let subString = '';
+
+    for (let index = 0; index < string.length; index += 1) {
+      if (string[index] !== delimiter) {
+        subString += string[index];
+
+        if (index === string.length - 1) {
+          subStrings.push(subString);
+        }
+      } else {
+        subStrings.push(subString);
+        subString = '';
+      }
+    }
+
+    for (let index = 0; index < subStrings.length; index += 1) {
+      console.log(subStrings[index]);
+    }
+  } else {
+    console.log('ERROR: No delimiter');
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+function splitString(string, delimiter) {
+  if (delimiter === undefined) {
+    console.log('ERROR: No delimiter');
+    return;
+  }
+  
+  let tempString = '';
+  for (let index = 0; index < string.length; index += 1) {
+    if (string[index] === delimiter) {
+      console.log(tempString);
+      tempString = '';
+    } else if (delimiter === '') {
+      console.log(string[index]);
+    } else {
+      tempString += string[index];
+    }
+  }
+  
+  if (tempString) {
+    console.log(tempString);
+  }
+}
+```
+
+---
+
+# Repeating Strings
+
+Implement a function that takes a string and a number `times` as arguments. The function should return the string repeated `times` number of times. If `times` is not a number, return `undefined`. If it is a negative number, return `undefined` also. If `times` is `0`, return an empty string. You may ignore the possibility that `times` is a number that isn't an integer.  
+
+```javascript
+function repeat(string, times) {
+  // …
+}
+
+repeat('abc', 1);       // "abc"
+repeat('abc', 2);       // "abcabc"
+repeat('abc', -1);      // undefined
+repeat('abc', 0);       // ""
+repeat('abc', 'a');     // undefined
+repeat('abc', false);   // undefined
+repeat('abc', null);    // undefined
+repeat('abc', '  ');    // undefined
+```
+
+You may concatenate string, but you may not use any other properties or methods from JavaScript's built-in String class.
+
+###### My Solution
+
+```javascript
+function repeat(string, times) {
+  let repeatedString = undefined;
+
+  if (typeof(times) === 'number' && times >= 0) {
+    repeatedString = '';
+
+    for (let index = 0; index < times; index += 1) {
+      repeatedString += string;
+    }
+  }
+
+  console.log(repeatedString);
+}
+```
+
+###### LS Solution
+
+```javascript
+const isCount = value => Number.isInteger(value) && value >= 0;
+
+function repeat(string, times) {
+  if (!isCount(times)) {
+    return undefined;
+  }
+  
+  let repeated = '';
+  for (let counter = 0; counter < times; counter += 1) {
+    repeated += string;
+  }
+  
+  return repeated;
+}
+```
+
+---
+
+
+
