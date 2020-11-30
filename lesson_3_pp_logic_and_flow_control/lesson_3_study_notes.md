@@ -2222,5 +2222,252 @@ function repeat(string, times) {
 
 ---
 
+# String StartsWith
 
+Implement a function that determines whether a string begins with another string. If it does, the function should return `true`, or `false` otherwise.  
+
+###### Examples
+
+```javascript
+function startsWith(string, searchString) {
+  // ...
+}
+
+let str = 'We put comprehension and mastery above all else';
+startsWith(str, 'We');							// true
+startsWith(str, 'We put');					// true
+startsWith(str, '');								// true
+startsWith(str, 'put');							// false
+
+let longerString = 'We put comprehension and mastery above all else!';
+startsWith(str, longerString);			// false
+```
+
+You may use the square brackets (`[]`) to access a character by index (as shown below), and the `length` property to find the string length. However, you may not use any other properties or methods from JavaScript's built-in String class.  
+
+```javascript
+'hello'[0];		// "h"
+'hello'[4];		// "o"
+```
+
+###### My Solution
+
+##### Algorithm
+
+* If `searchString` is longer than `string` we can return `false` right away.
+* Otherwise, we will need to loop through each character of the `searchString` and compare it to the corresponding character of the original `string`.
+* If ever the compared characters from each string are not identical then we can immediately return `false`.
+* Otherwise, we return `true`.
+
+##### Function
+
+```javascript
+function startsWith(string, searchString) {
+  if (string.length < searchString.length) {
+    return false;
+  } else {
+    for (let index = 0; index < searchString.length; index += 1) {
+      if (string[index] !== searchString[index]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+function startsWith(string, searchString) {
+  for (let index = 0; index < searchString.length; index += 1) {
+    if (string[index] !== searchString[index]) {
+      return false;
+    }
+  }
+  
+  return true;
+}
+```
+
+---
+
+# Converting Strings to Lower Case
+
+Write a function that returns a string converted to lowercase.  
+
+To convert a single uppercase character to a lowercase character, get its ASCII numeric representation from the [ASCII table](http://www.asciitable.com/), add 32 to that number, then convert the number back to a character using the same ASCII table. You can use the `String.fromCharCode` and the `String.charCodeAt` methods for these operations. For example:
+
+```javascript
+let string = 'A';
+let asciiNumeric = string.charCodeAt(0);				// 65
+let asciiNumeric += 32;
+string = String.fromCharCode(asciiNumeric);  // "a", converted to lowercase
+```
+
+######  Examples
+
+```javascript
+function toLowerCase(string) {
+  // ...
+}
+
+toLowerCase('ALPHABET');		// "alphabet"
+toLowerCase('123');					// "123"
+toLowerCase('abcDEF');			// "abcdef"
+```
+
+You may use the square brackets (`[]`) to access a character by index (as shown below), and the `length` property to find the string length. However, you may not use any other properties or methods from JavaScript's built-in String class.  
+
+```javascript
+'hello'[0]; 	// "h"
+'hello'[4];		// "o"
+```
+
+###### My Solution
+
+```javascript
+function toLowerCase(string) {
+  let newString = '';
+
+  for (let index = 0; index < string.length; index += 1) {
+    let asciiNumeric = string[index].charCodeAt(0);
+    if (asciiNumeric >= 65 && asciiNumeric <= 90) {
+      asciiNumeric += 32;
+    }
+
+    newString += String.fromCharCode(asciiNumeric);
+  }
+
+  return newString;
+}
+```
+
+Or...
+
+```javascript
+function toLowerCase(string) {
+  let newString = '';
+
+  for (let index = 0; index < string.length; index += 1) {
+    let asciiNumeric = string[index].charCodeAt(0);
+    if (asciiNumeric >= 65 && asciiNumeric <= 90) {
+      asciiNumeric += 32;
+      newString += String.fromCharCode(asciiNumeric);
+    } else {
+      newString += string[index];
+    }
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+function toLowerCase(string) {
+  const CONVERSION_OFFSET = 32;
+  let newString = '';
+  
+  for (let index = 0; index < string.length; index += 1) {
+    let charCode = string.charCodeAt(index);
+    
+    if (string[index] >= 'A' && string[index] <= 'Z') {
+      charCode += CONVERSION_OFFSET;
+    }
+    
+    newString += String.fromCharCode(charCode);
+  }
+  
+  return newString;
+}
+```
+
+---
+
+# Substring (1)
+
+Write a function that returns a substring of a string based on a starting index and length.  
+
+###### Examples
+
+```javascript
+function substr(string, start, length) {
+  // ...
+}
+
+let string = 'hello world';
+
+substr(string, 2, 4);				// "llo "
+substr(string, -3, 2);			// "rl"
+substr(string, 8, 20);			// "rld"
+substr(string, 0, -20);			// ""
+substr(string, 0, 0);				// ""
+```
+
+* The `start` argument is the starting index. If negative, treat it as `strLength + start` where `strLength` is the length of the string. For example, if `start` is -3, treat it as `strLength - 3`.
+* The `length` argument is the maximum length of the desired substring. If `length` exceeds the number character available, just use the available characters.  
+
+You may use the square brackets (`[]`) to access a character by index (as shown below), and the `length` property to find the string length. However, you may not use any other properties or methods from JavaScript's built-in String class.
+
+###### My Solution
+
+```javascript
+function substr(string, start, length) {
+  let subString = '';
+  
+  if (start < 0) {
+    let startIndex = string.length + start;
+
+    if (startIndex + length <= string.length) {
+      limit = startIndex + length;
+    } else {
+      limit = string.length;
+    }
+
+    for (let index = startIndex; index < limit; index += 1) {
+      subString += string[index];
+    }
+  } else {
+    let limit;
+
+    if (start + length <= string.length) {
+      limit = start + length;
+    } else {
+      limit = string.length;
+    }
+
+    for (let index = start; index < limit; index += 1) {
+      subString += string[index];
+    }
+  }
+  
+  return subString;
+}
+```
+
+###### LS Solution
+
+```javascript
+function substr(string, start, length) {
+  if (start < 0) {
+    start = string.length + start;
+  }
+  
+  let newString = '';
+  for (let counter = 0; counter < length; counter += 1) {
+    let index = start + counter;
+    
+    if (string[index] === undefined) {
+      break;
+    }
+    
+    newString += string[index];
+  }
+  
+  return newString;
+}
+```
+
+---
 
