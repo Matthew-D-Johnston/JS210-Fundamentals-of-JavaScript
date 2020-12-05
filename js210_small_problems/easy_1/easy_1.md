@@ -344,3 +344,299 @@ if (computationType === 's') {
 
 ## 6. Short Long Short
 
+Write a function that takes two strings as arguments, determines the longer of the two strings, and then returns the result of concatenating the shorter string, the longer string, and the shorter string once again. You may assume that the strings are of different lengths.  
+
+Examples:  
+
+```javascript
+shortLongShort('abc', 'defgh'); 		// "abcdefghabc"
+shortLongShort('abcde', 'fgh');		 	// "fghabcdefgh"
+shortLongShort('', 'xyz'); 					// "xyz"
+```
+
+###### My Solution
+
+```javascript
+function shortLongShort(word1, word2) {
+  let length1 = word1.length;
+  let length2 = word2.length;
+
+  if (length1 < length2) {
+    return word1 + word2 + word1;
+  } else {
+    return word2 + word1 + word2;
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+function shortLongShort(string1, string2) {
+  if (string1.length > string2.length) {
+    return string2 + string1 + string2;
+  } else {
+    return string1 + string2 + string3;
+  }
+}
+```
+
+---
+
+## 7. Leap Years Part 1
+
+In the modern era under the Gregorian Calendar, leap years occur in every year that is evenly divisible by 4, unless the year is also divisible by 100. If the year is evenly divisible by 100, then it is not a leap year, unless the year is also evenly divisible by 400.  
+
+Assume this rule is valid for any year greater than year 0. Write a function that takes any year greater than 0 as input, and returns `true` if the year is a leap year, or `false` if it is not a leap year.  
+
+Examples:
+
+```javascript
+isLeapYear(2016);      // true
+isLeapYear(2015);      // false
+isLeapYear(2100);      // false
+isLeapYear(2400);      // true
+isLeapYear(240000);    // true
+isLeapYear(240001);    // false
+isLeapYear(2000);      // true
+isLeapYear(1900);      // false
+isLeapYear(1752);      // true
+isLeapYear(1700);      // false
+isLeapYear(1);         // false
+isLeapYear(100);       // false
+isLeapYear(400);       // true
+```
+
+###### My Solution
+
+```javascript
+function isLeapYear(year) {
+  if (year % 400 === 0) {
+    return true;
+  } else if (year % 100 === 0) {
+    return false;
+  } else if (year % 4 === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+function isLeapYear(year) {
+  if (year % 400 === 0) {
+    return true;
+  } else if (year % 100 === 0) {
+    return false;
+  } else {
+    return year % 4 === 0;
+  }
+}
+```
+
+A shorter solution
+
+```javascript
+const isLeapYear = (year) => (year % 400 === 0) || (year % 4 === 0 && year % 100 !=== 0);
+```
+
+###### Further Exploration
+
+The order in which you perform tests for a leap year calculation is important. For what years will `isLeapYear` fail if you rewrite it as shown below?
+
+```javascript
+function isLeapYear(year) {
+  if (year % 100 === 0) {
+    return false;
+  } else if (year % 400 === 0) {
+    return true;
+  } else {
+    return year % 4 === 0;
+  }
+}
+```
+
+It will fail for any year that is divisible by 400, since any year divisible by 400 is also divisible by 100 and the first condition will return `true` so that the function returns `false`.  
+
+Can you rewrite `isLeapYear` to perform its tests in the opposite order of the above solution? That is, test whether the year is divisible by 4 first, then, if necessary, test whether it is divisible by 100, and finally, if necessary, test whether it is divisible by 400. Is this solution simpler or more complex than the original solution?
+
+```javascript
+function isLeapYear(year) {
+  if (year % 4 === 0) {
+    if (year % 100 === 0) {
+      if (year % 400 === 0) {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
+```
+
+This solution feels a little bit more complex to read.
+
+---
+
+## 8. Leap Years Part 2
+
+This is a continuation of the previous exercise.  
+
+The British Empire adopted the Gregorian Calendar in 1752, which was a leap year. Prior to 1752, they used the Julian Calendar. Under the Julian Calendar, leap years occur in any year that is evenly divisible by 4.  
+
+Using this information, update the function from the previous exercise to determine leap years both before and after 1752.  
+
+Examples:  
+
+```javascript
+isLeapYear(2016);      // true
+isLeapYear(2015);      // false
+isLeapYear(2100);      // false
+isLeapYear(2400);      // true
+isLeapYear(240000);    // true
+isLeapYear(240001);    // false
+isLeapYear(2000);      // true
+isLeapYear(1900);      // false
+isLeapYear(1752);      // true
+isLeapYear(1700);      // true
+isLeapYear(1);         // false
+isLeapYear(100);       // true
+isLeapYear(400);       // true
+```
+
+###### My Solution
+
+```javascript
+function isLeapYear(year) {
+  if (year < 1752) {
+    return year % 4 === 0;
+  } else {
+    if (year % 400 === 0) {
+      return true;
+    } else if (year % 100 === 0) {
+      return false;
+    } else if (year % 4 === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+function isLeapYear(year) {
+  if (year < 1752 && year % 4 === 0) {
+    return true;
+  } else if (year % 400 === 0) {
+    return true;
+  } else if (year % 100 === 0) {
+    return false;
+  } else {
+    return year % 4 === 0;
+  }
+}
+```
+
+---
+
+## 9. Multiples of 3 and 5
+
+Write a function that computes the sum of all numbers between `1` and some other number, inclusive, that are multiples of `3` or `5`. For instance, if the supplied number is `20`, the result should be `98` (`3 + 5 + 6 + 9 + 10 + 12 + 15 + 18 + 20`).  
+
+You may assume that the number passed in is an integer greater than `1`.  
+
+Examples:  
+
+```javascript
+multisum(3);				// 3
+multisum(5);				// 8
+multisum(10); 			// 33
+multisum(1000);			// 234168
+```
+
+###### My Solution
+
+```javascript
+function multisum(number) {
+  let sum = 0;
+
+  for (let index = 1; index <= number; index += 1) {
+    if (index % 3 === 0 || index % 5 === 0) {
+      sum += index;
+    }
+  }
+
+  return sum;
+}
+```
+
+###### LS Solution
+
+```javascript
+function isMultiple(number, divisor) {
+  return number % divisor === 0;
+}
+
+function multisum(maxValue) {
+  let sum = 0;
+  
+  for (let number = 1; number <= maxValue; number += 1) {
+    if (isMultiple(number, 3) || is Multiple(number, 5)) {
+      sum += number;
+    }
+  }
+  
+  return sum;
+}
+```
+
+---
+
+## 10. ASCII String Value
+
+Write a function that determines and returns the ASCII string value of a string passed in as an argument. The ASCII string value is the sum of the ASCII values of every character in the string. (You may use `String.prototype.charCodeAt()` to determine the ASCII value of a character.)  
+
+Examples:  
+
+```javascript
+asciiValue('Four score');         // 984
+asciiValue('Launch School');      // 1251
+asciiValue('a');                  // 97
+asciiValue('');                   // 0
+```
+
+###### My Solution
+
+```javascript
+function asciiValue(string) {
+  let asciiSum = 0;
+
+  for (let index = 0; index < string.length; index += 1) {
+    asciiSum += string.charCodeAt(index);
+  }
+
+  return asciiSum;
+}
+```
+
+###### LS Solution
+
+```javascript
+function asciiValue(string) {
+  let sum = 0;
+  
+  for (let i = 0; i < string.length; i += 1) {
+    sum += string.charCodeAt(i);
+  }
+  
+  return sum;
+}
+```
+
