@@ -2610,6 +2610,66 @@ This happens since there are 26 characters in the modern English alphabet: 2 set
 ###### My Solution
 
 ```javascript
+function rot13(string) {
+  let newString = '';
 
+  const Rot13Key = 13;
+  const ALPHABET = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz \
+                    ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  for (let index = 0; index < string.length; index += 1) {
+    let currentChar = string[index];
+    let alphabetIndex = ALPHABET.indexOf(currentChar);
+
+    if (alphabetIndex >= 0) {
+      newString += ALPHABET[alphabetIndex + Rot13Key];
+    } else {
+      newString += currentChar;
+    }
+  }
+
+  return newString;
+}
 ```
+
+###### LS Solution
+
+```javascript
+function rot13(text) {
+  let transformed = '';
+  for (let index = 0; index < text.length; index += 1) {
+    transformed += rot13Character(text[index]);
+  }
+  
+  return transformed;
+}
+
+function rot13Character(char) {
+  const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+  let isUpperCase = false;
+  let initialIndex = ALPHABET.indexOf(char);
+  
+  // no match might mean that we are dealing with an uppercase letter
+  if (initialIndex === -1) {
+    initialIndex = ALPHABET.indexOf(char.toLowerCase());
+    isUpperCase = true;
+  }
+  
+  // if there is still no match, it's not a character between a-z
+  if (initialIndex === -1) {
+    return char;
+  }
+  
+  let shiftedIndex = (initialIndex + 13) % 26;
+  let transformed = ALPHABET[shiftedIndex];
+  
+  if (isUpperCase) {
+    transformed = transformed.toUpperCase();
+  }
+  
+  return transformed;
+}
+```
+
+---
 
