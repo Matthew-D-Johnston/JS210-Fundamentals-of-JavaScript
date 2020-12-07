@@ -151,3 +151,141 @@ To simplify matters, the solution starts out by creating two (2) variables and a
 
 Modify this function so that it truncates the `message` if it doesn't fit inside a maximum width provided as a second argument (the width is the width of the box itself). You may assume no maximum if the second argument is omitted. For a real challenge, try word wrapping messages that are too long to fit, so that they appear on multiple lines but are still contained within the box.  
 
+###### My Solution no. 1
+
+```javascript
+function logInBox(string, maxWidth) {
+  let width = 0;
+
+  if (string.length < maxWidth) {
+    width = string.length + 2;
+  } else {
+    width = maxWidth - 2;
+    string = string.slice(0, width - 2)
+  }
+
+  let dashes = '-'.repeat(width);
+  let spaces = ' '.repeat(width);
+
+  console.log(`+${dashes}+`);
+  console.log(`|${spaces}|`);
+  console.log(`| ${string} |`);
+  console.log(`|${spaces}|`);
+  console.log(`+${dashes}+`);
+}
+```
+
+###### My Solution no. 2
+
+```javascript
+function logInBox(string, maxWidth) {
+  let width = 0;
+  let stringLength = string.length;
+  let stringSegments = [];
+
+  if (stringLength < maxWidth) {
+    width = stringLength + 2;
+  } else {
+    width = maxWidth - 4;
+    let segments;
+
+    if (stringLength % width === 0) {
+      segments = parseInt(stringLength / width, 10);
+    } else {
+      segments = parseInt(stringLength / width, 10) + 1;
+    }
+
+    let startIndex = 0;
+    let endIndex = width;
+    let stringSegment;
+    for (let segNumber = 1; segNumber <= segments; segNumber += 1) {
+      stringSegment = string.slice(startIndex, endIndex);
+
+      if (stringSegment.length === width) {
+        stringSegments.push(stringSegment);
+      } else {
+        let difference = width - stringSegment.length;
+        stringSegment += ' '.repeat(difference);
+        stringSegments.push(stringSegment);
+      }
+
+      startIndex = endIndex;
+      endIndex += width;
+    }
+  }
+
+  let dashes = '-'.repeat(width);
+  let spaces = ' '.repeat(width);
+  
+  if (stringLength < maxWidth) {
+    console.log(`+${dashes}+`);
+    console.log(`|${spaces}|`);
+    console.log(`| ${string} |`);
+    console.log(`|${spaces}|`);
+    console.log(`+${dashes}+`);
+  } else {
+    console.log(`+ ${dashes} +`);
+    console.log(`| ${spaces} |`);
+    for (let index = 0; index < stringSegments.length; index += 1) {
+      console.log(`| ${stringSegments[index]} |`);
+    }
+    console.log(`| ${spaces} |`);
+    console.log(`+ ${dashes} +`);
+  }
+}
+```
+
+---
+
+## 3. Stringy Strings
+
+Write a function that takes one argument, a positive integer, and returns a string of alternating `'1'`s and `'0'`s, always starting with a `'1'`. The `length` of the string should match the given integer.  
+
+Examples:
+
+```javascript
+stringy(6); 			// "101010"
+stringy(9); 			// "101010101"
+stringy(4);				// "1010"
+stringy(7);				// "1010101"
+```
+
+###### My Solution
+
+```javascript
+function stringy(integer) {
+  let string = '';
+  let zeros = false;
+
+  for (let index = 1; index <= integer; index += 1) {
+    zeros ? string += '0' : string += '1';
+
+    zeros = !zeros;
+  }
+
+  return string;
+}
+```
+
+###### LS Solution
+
+```javascript
+function stringy(size) {
+  let result = '';
+  
+  for (let i = 0; i < size; i += 1) {
+    if (i % 2 === 0) {
+      result += '1';
+    } else {
+      result += '0';
+    }
+  }
+  
+  return result;
+}
+```
+
+---
+
+## 4. Fibonacci Number Location by Length
+
