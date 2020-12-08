@@ -369,3 +369,252 @@ function findFibonacciIndexByLength(length) {
 
 ## 5. Right Triangles
 
+Write a function that takes a positive integer, `n`, as an argument, and logs a right triangle whose sides each have `n` stars. The hypotenuse of the triangle (the diagonal side in the images below) should have one end at the lower-left of the triangle, and the other end at the upper-right.  
+
+Examples:
+
+```javascript
+triangle(5);
+
+    *
+   **
+  ***
+ ****
+*****
+
+triangle(9);
+
+        *
+       **
+      ***
+     ****
+    *****
+   ******
+  *******
+ ********
+*********
+```
+
+###### My Solution
+
+```javascript
+function triangle(n) {
+  for (let stars = 1; stars <= n; stars += 1) {
+    let line = ' '.repeat(n - stars) + '*'.repeat(stars);
+    console.log(line);
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+function triangle(height) {
+  let stars = 1;
+  let spaces = height -1;
+  
+  for (let i = 0; i < height; i += 1) {
+    console.log(repeat(' ', spaces) + repeat('*', stars));
+    stars += 1;
+    spaces -= 1;
+  }
+}
+
+function repeat(char, count) {
+  let repeated = '';
+  
+  for (let i = 0; i < count; i += 1) {
+    repeated += char;
+  }
+  
+  return repeated;
+}
+```
+
+---
+
+## 6. Madlibs
+
+Madlibs is a simple game where you create a story template with "blanks" for words. You, or another player, then construct a list of words and place them into the story, creating an often silly or funny story as a result.  
+
+Create a simple madlib program that prompts for a noun, a verb, an adverb, and an adjective, and injects them into a story that you create.  
+
+Example:  
+
+```
+Enter a noun: dog
+Enter a verb: walk
+Enter an adjective: blue
+Enter an adverb: quickly
+
+// console output
+Do you walk your blue dog quickly? That's hilarious!
+```
+
+###### My Solution
+
+```javascript
+let rlSync = require('readline-sync');
+
+let noun = rlSync.question('Enter a noun: ');
+let verb = rlSync.question('Enter a verb: ');
+let adjective = rlSync.question('Enter an adjective: ');
+let adverb = rlSync.question('Enter an adverb: ');
+
+console.log(`Do you ${verb} your ${adjective} ${noun} ${adverb}? That's hilarious!`);
+```
+
+###### LS Solution
+
+```javascript
+const noun = prompt('Enter a noun:');
+const verb = prompt('Enter a verb:');
+const adjective = prompt('Enter an adjective:');
+const adverb = prompt('Enter an adverb:');
+
+const sentence1 = `Do you ${verb} your ${adjective} ${noun} ${adverb}? That's hilarious!`;
+const sentence2 = `The ${adjective} ${noun} ${verb}s ${adverb} over the lazy dog.`;
+const sentence3 = `The ${noun} ${adverb} ${verb}s up ${adjective} Joe's turtle.`;
+
+console.log(sentence1);
+console.log(sentence2);
+console.log(sentence3);
+```
+
+---
+
+## 7. Double Doubles
+
+A double number is an even-length number whose left-side digits are exactly the same as its right-side digits. For example, `44`, `3333`, `103103`, and `7676` are all double numbers, whereas `444`, `334433`, and `107` are not.  
+
+Write a function that returns the number provided as an argument multiplied by two, unless the argument is a double number; return double numbers as-is.  
+
+Examples:  
+
+```javascript
+twice(37);          // 74
+twice(44);          // 44
+twice(334433);      // 668866
+twice(444);         // 888
+twice(107);         // 214
+twice(103103);      // 103103
+twice(3333);        // 3333
+twice(7676);        // 7676
+```
+
+###### My Solution
+
+```javascript
+function twice(number) {
+  let stringNumber = String(number);
+  let size = stringNumber.length;
+
+  if (size % 2 === 0) {
+    let firstHalf = stringNumber.slice(0, size / 2);
+    let secondHalf = stringNumber.slice(size / 2, size);
+
+    if (firstHalf === secondHalf) {
+      return number;
+    }
+  }
+
+  return number * 2;
+}
+```
+
+###### LS Solution
+
+```javascript
+function twice(number) {
+  if (isDoubleNumber(number)) {
+    return number;
+  } else {
+    return number * 2;
+  }
+}
+
+function isDoubleNumber(number) {
+  const stringNumber = String(number);
+  const center = stringNumber.length / 2;
+  const leftNumber = stringNumber.substring(0, center);
+  const rightNumber = stringNumber.substring(center);
+  
+  return leftNumber === rightNumber;
+}
+```
+
+---
+
+## 8. Grade Book
+
+Write a function that determines the mean (average) of the three scores passed to it, and returns the letter associated with that grade.  
+
+Numerical score letter grade list:  
+
+- 90 <= score <= 100: 'A'
+- 80 <= score < 90: 'B'
+- 70 <= score < 80: 'C'
+- 60 <= score < 70: 'D'
+- 0 <= score < 60: 'F'
+
+Tested values are all between `0` and `100`. There is no need to check for negative values or values greater than 100.  
+
+Examples:
+
+```javascript
+getGrade(95, 90, 93);    // "A"
+getGrade(50, 50, 95);    // "D"
+```
+
+###### My Solution
+
+```javascript
+function getGrade(score1, score2, score3) {
+  let meanScore = (score1 + score2 + score3) / 3;
+
+  if (meanScore >= 90) {
+    return 'A';
+  } else if (meanScore >= 80) {
+    return 'B';
+  } else if (meanScore >= 70) {
+    return 'C';
+  } else if (meanScore >= 60) {
+    return 'D';
+  } else {
+    return 'F';
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+function getGrade(grade1, grade2, grade3) {
+  const average = (grade1 + grade2 + grade3) / 3;
+
+  if (average >= 90 && average <= 100) {
+    return 'A';
+  } else if (average >= 80 && average < 90) {
+    return 'B';
+  } else if (average >= 70 && average < 80) {
+    return 'C';
+  } else if (average >= 60 && average < 70) {
+    return 'D';
+  } else {
+    return 'F';
+  }
+}
+```
+
+---
+
+## 9. Clean Up the Words
+
+Given a string that consists of some words and an assortment of non-alphabetic characters, write a function that returns that string with all of the non-alphabetic characters replaced by spaces. If one or more non-alphabetic characters occur in a row, you should only have one space in the result (i.e., the result string should never have consecutive spaces).  
+
+Examples:  
+
+```javascript
+cleanUp("---what's my +*& line?");    // " what s my line "
+```
+
