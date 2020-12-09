@@ -618,3 +618,132 @@ Examples:
 cleanUp("---what's my +*& line?");    // " what s my line "
 ```
 
+###### My Solution
+
+```javascript
+function cleanUp(text) {
+  let newText = '';
+
+  for (let index = 0; index < text.length; index += 1) {
+    if (!!text[index].match(/[a-z]/i)) {
+      newText += text[index];
+    } else {
+      if (newText[newText.length - 1] === ' ') {
+        continue;
+      } else {
+        newText += ' ';
+      }
+    }
+  }
+
+  return newText;
+}
+```
+
+###### LS Solution
+
+```javascript
+function cleanUp(text) {
+  let cleanText = '';
+  
+  for (let i = 0; i < text.length; i += 1) {
+    if (isLowerCaseLetter(text[i]) || isUpperCaseLetter(text[i])) {
+      cleanText += text[i];
+    } else if (cleanText[cleanText.length - 1] !== ' ') {
+      cleanText += ' ';
+    }
+  }
+  
+  return cleanText;
+}
+
+const isLowerCaseLetter = (char) => char >= 'a' && char <= 'z';
+
+const isUpperCaseLetter = (char) => char >= 'A' && char <= 'Z';
+```
+
+---
+
+## 10. What Century is That
+
+Write a function that takes a year as input and returns the century. The return value should be a string that begins with the century number, and ends with `'st'`, `'nd'`, `'rd'`, or `'th'` as appropriate for that number.  
+
+New centuries begin in years that end with `01`. So, the years 1901 - 2000 comprise the 20th century.  
+
+Examples:
+
+```javascript
+century(2000);        // "20th"
+century(2001);        // "21st"
+century(1965);        // "20th"
+century(256);         // "3rd"
+century(5);           // "1st"
+century(10103);       // "102nd"
+century(1052);        // "11th"
+century(1127);        // "12th"
+century(11201);       // "113th"
+```
+
+###### My Solution
+
+```javascript
+function century(year) {
+  let result;
+
+  if (year % 100 === 0) {
+    result = String(parseInt(year / 100, 10));
+  } else {
+    result = String(parseInt(year / 100, 10) + 1);
+  }
+
+  let lastDigit = result[result.length - 1];
+  let last2Digits = result.substring(result.length - 2);
+
+  if (last2Digits === '11' || last2Digits === '12' || last2Digits === '13') {
+    result += 'th';
+  } else if (lastDigit === '1') {
+    result += 'st';
+  } else if (lastDigit === '2') {
+    result += 'nd';
+  } else if (lastDigit === '3') {
+    result += 'rd';
+  } else {
+    result += 'th';
+  }
+  
+  return result;
+}
+```
+
+###### LS Solution
+
+```javascript
+function century(year) {
+  let centuryNumber = Math.floor(year / 100) + 1;
+  
+  if (year % 100 === 0) {
+    centuryNumber -= 1;
+  }
+  
+  return String(centuryNumber) + centurySuffix(centuryNumber);
+}
+
+function centurySuffix(centuryNumber) {
+  if (catchWithTh(centuryNumber % 100)) {
+    return 'th';
+  }
+  
+  let lastDigit = centuryNumber % 10;
+  switch (lastDigit) {
+    case 1: return 'st';
+    case 2: return 'nd';
+    case 3: return 'rd';
+    default: return 'th';
+  }
+}
+
+function catchWithTh(lastTwo) {
+  return lastTwo === 11 || lastTwo === 12 || lastTwo === 13;
+}
+```
+
