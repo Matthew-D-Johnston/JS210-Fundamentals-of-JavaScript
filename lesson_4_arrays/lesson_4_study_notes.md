@@ -222,3 +222,146 @@ Array.isArray('array');		// false
 
 ## 3. Array Operations: push, pop, shift, and unshift
 
+1. Write a function named `push` that accepts two arguments: an Array and any other value. The function should append the second argument to the end of the Array, and return the new length of the Array.
+
+   ```javascript
+   let count = [0, 1, 2];
+   push(count, 3);					// 4
+   count;									// [ 0, 1, 2, 3 ]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function push(arr, elem) {
+     arr[arr.length] = elem;
+     return arr.length;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   const push = (array, value) => {
+     array[array.length] = value;
+     return array.length;
+   }
+   ```
+
+2. Write a function named `pop` that accepts one argument: an Array. The function should remove the last element from the array and return it.
+
+   ```javascript
+   let count = [1, 2, 3];
+   pop(count); 						// 3
+   count;									// [1, 2]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function pop(arr) {
+     let newLength = arr.length - 1;
+     let value = arr[newLength];
+     arr.length = newLength;
+     return value;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   const pop = array => {
+     if(array.length === 0) {
+       return undefined;
+     }
+     
+     let newLength = array.length - 1;
+     let value = array[newLength];
+     array.length = newLength;
+     return value;
+   }
+   ```
+
+3. Write a function named `unshift` that accepts two arguments: an Array and a value. The function should insert the value at the beginning of the Array, and return the new `length` of the array. You will need a `for` loop for this problem.
+
+   ```javascript
+   let count = [1, 2, 3];
+   unshift(count, 0);      // 4
+   count;                  // [ 0, 1, 2, 3 ]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function unshift(arr, elem) {
+     let newArray = [elem];
+   
+     for (let index = 0; index < arr.length; index += 1) {
+       newArray[index + 1] = arr[index];
+       arr[index] = newArray[index];
+     }
+   
+     arr[arr.length] = newArray[arr.length];
+     return arr.length;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   let unshift = function(array, value) {
+     for (let index = array.length; index > 0; index -= 1) {
+       array[index] = array[index - 1];
+     }
+     
+     array[0] = value;
+     return array.length;
+   }
+   ```
+
+4. Write a function named `shift` that accepts one argument: an Array. The function should remove the first value from the beginning of the Array and return it.
+
+   ```javascript
+   let count = [1, 2, 3];
+   shift(count);						// 1
+   count;									// [ 2, 3 ]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function shift(arr) {
+     let value = arr[0];
+   
+     for (let index = 1; index < arr.length; index += 1) {
+       arr[index - 1] = arr[index]; 
+     }
+   
+     arr.length = arr.length - 1;
+     return value;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   let shift = function(array) {
+     let first = array[0];
+     
+     if (array.length === 0) {
+       return undefined;
+     }
+     
+     for (let index = 0; index < array.length - 1; index += 1) {
+       array[index] = array[index + 1];
+     }
+     
+     array.length = array.length - 1;
+     return first;
+   }
+   ```
+
+---
+
+## 4. Array Operations: indexOf and lastIndexOf
+
