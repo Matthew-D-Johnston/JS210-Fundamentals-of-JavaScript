@@ -439,3 +439,531 @@ Array.isArray('array');		// false
 
 ## 5. Array Operations: slice, splice, concat, and join
 
+1. Write a function named `slice` that accepts three arguments: an Array, a start index, and an end index. The function should return a new Array that contains values from the original Array starting with the value at the starting index, and including all values up to but not including the end index. Do not modify the original Array.
+
+   *You may use functions that were answers to previous practice problems to complete this problem, but do not use any built-in Array methods.*
+
+   ```javascript
+   slice([1, 2, 3, 4, 5], 0, 2);                      // [ 1, 2 ]
+   slice(['a', 'b', 'c', 'd', 'e', 'f', 'g'], 1, 3);  // [ 'b', 'c' ]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function slice(array, startIndex, endIndex) {
+     let newArray = [];
+     let newArrIndex = 0;
+   
+     for (let index = startIndex; index < endIndex; index += 1) {
+       newArray[newArrIndex] = array[index];
+       newArrIndex += 1;
+     }
+   
+     return newArray;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function slice(array, begin, end) {
+     let newArray = [];
+     for (let index = begin; index < end; index += 1) {
+       push(newArray, array[index]);
+     }
+     
+     return newArray;
+   }
+   ```
+
+2. Write a function named `splice` that accepts three arguments: an Array, a start index, and the number of values to remove. The function should remove values from the original Array, starting with the first index and removing the specified number of values. The function should return the removed values in a new Array.
+
+   *You may use functions that were answers to previous practice problems to complete this problem, but do not use any built-in Array methods.*
+
+   ```javascript
+   let count = [1, 2, 3, 4, 5, 6, 7, 8];
+   splice(count, 2, 5);                   // [ 3, 4, 5, 6, 7 ]
+   count;                                 // [ 1, 2, 8 ]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function push(arr, elem) {
+     arr[arr.length] = elem;
+     return arr.length;
+   }
+   
+   function splice(array, startIndex, numberOfValues) {
+     let endIndex = startIndex + numberOfValues;
+     let splicedArray = [];
+     let excludedElements = [];
+   
+     for (let index = 0; index < array.length; index += 1) {
+       if (index >= startIndex && index < startIndex + numberOfValues) {
+         push(splicedArray, array[index]);
+       } else {
+         push(excludedElements, array[index]);
+       }
+     }
+   
+     array.length = array.length - numberOfValues;
+   
+     for (let index = 0; index < excludedElements.length; index += 1) {
+       array[index] = excludedElements[index];
+     }
+   
+     return splicedArray;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function splice(array, begin, number) {
+     let removedValues = [];
+     for (let index = begin; index < array.length; index += 1) {
+       if (index < begin + number) {
+         push(removedValues, array[index]);
+       }
+       
+       array[index] = array[index + number];
+     }
+     
+     array.length = array.length - removedValues.length;
+     return removedValues;
+   }
+   ```
+
+3. Write a function named `concat` that accepts two Array arguments. The function should return a new Array that contains the values from each of the original Arrays.
+
+   *You may use functions that were answers to previous practice problems to complete this problem, but do not use any built-in Array methods.*
+
+   ```javascript
+   concat([1, 2, 3], [4, 5, 6]);			// [ 1, 2, 3, 4, 5, 6 ]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function push(arr, elem) {
+     arr[arr.length] = elem;
+     return arr.length;
+   }
+   
+   function concat(array1, array2) {
+     let newArray = [];
+   
+     for (let index = 0; index < array1.length; index += 1) {
+       push(newArray, array1[index]);
+     }
+   
+     for (let index = 0; index < array2.length; index += 1) {
+       push(newArray, array2[index]);
+     }
+   
+     return newArray;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function concat(firstArray, secondArray) {
+     let newArray = [];
+     for (let index = 0; index < firstArray.length; index += 1) {
+       push(newArray, firstArray[index]);
+     }
+     
+     for (let index = 0; index < secondArray.length; index += 1) {
+       push(newArray, secondArray[index]);
+     }
+     
+     return newArray;
+   }
+   ```
+
+4. Write a function named `join` that accepts two arguments: an Array and a String. The function should coerce each value in the Array to a String, and then join those values together using the second argument as a separator. You may assume that a separator will always be passed.
+
+   You can call the `String` function on any JavaScript value to get its String representation.
+
+   ```javascript
+   join(['bri', 'tru', 'wha'], 'ck ');       // 'brick truck wha'
+   join([1, 2, 3], ' and ');                 // '1 and 2 and 3'
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function join(array, string) {
+     let joinedString = '';
+   
+     for (let index = 0; index < array.length; index += 1) {
+       joinedString += String(array[index]);
+   
+       if (array.length - index !== 1) {
+         joinedString += string;
+       }
+     }
+   
+     return joinedString;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function join(array, separator) {
+     let result = '';
+     
+     for (let index = 0; index < array.length; index += 1) {
+       result += String(array[index]);
+       
+       if (index < array.length - 1) {
+         result += separator;
+       }
+     }
+     
+     return result;
+   }
+   ```
+
+---
+
+## 7. Arrays and Operators
+
+Operators form much of the syntax a programmer uses when writing programs. JavaScript is no exception. Here are some JavaScript operators:
+
+```
++`, `-`, `*`, `/`, `%`, `+=`, `-=`, `==`, `!=`, `===`, `!==`, `>`, `>=`, `<`, `<=
+```
+
+These should seem familiar; you used them when working with Number and String objects. There, they are extremely useful. Unfortunately, they are almost useless with Array objects.
+
+---
+
+## 8. Practice Problem: Comparing Arrays
+
+n the last assignment, we saw that JavaScript's equality operators don't examine the values in the arrays—instead, they check that the arrays are the same object. It's more likely that you'll want to know whether two arrays contain the same values. To do this, you need to write your own function.  
+
+Write a function named `arraysEqual` that takes two arrays as arguments. The function should return `true` if the arrays contain the same values, or `false` if they do not.  
+
+Test the function with arrays that contain number, string, and boolean values. Don't worry about handling arrays that contain other Arrays or Objects.  
+
+```javascript
+arraysEqual([1], [1]);                               // true
+arraysEqual([1], [2]);                               // false
+arraysEqual([1, 2], [1, 2, 3]);                      // false
+arraysEqual([1, 'hi', true], [1, 'hi', true]);       // true
+arraysEqual([1, 'hi', true], [1, 'hi', false]);      // false
+arraysEqual([1, 'hi', true], [1, 'hello', true]);    // false
+arraysEqual([1, 'hi', true], [2, 'hi', true]);       // false
+```
+
+###### My Solution
+
+```javascript
+function arraysEqual(array1, array2) {
+  if (array1.length !== array2.length) {
+    return false;
+  } else {
+    for (let index = 0; index < array1.length; index += 1) {
+      if (array1[index] !== array2[index]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+```
+
+###### LS Solution
+
+```javascript
+function arraysEqual(left, right) {
+  if (left.length !== right.length) {
+    return false;
+  }
+  
+  for (let index = 0; index < left.length; index += 1) {
+    if (left[index] !== right[index]) {
+      return false;
+    }
+  }
+  
+  return true;
+}
+```
+
+---
+
+## 9. Practice Problems: Basic Array Uses
+
+In the problems below, we ask you to write functions that work with Arrays. You may use Array's index access (`[]`), the `length` property, and any [Array Methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) you need.
+
+1. Write a function that returns the first element of an array passed in as an argument.
+
+   ```javascript
+   function firstElementOf(arr) {
+     // …
+   }
+   
+   firstElementOf(['U', 'S', 'A']);  // returns "U"
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function firstElementOf(arr) {
+     return arr[0];
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function firstElementOf(arr) {
+     return arr[0];
+   }
+   
+   firstElementOf(['U', 'S', 'A']); 	// returns "U"
+   ```
+
+2. Write a function that returns the last element of an array passed in as an argument.
+
+   ```javascript
+   function lastElementOf(arr) {
+     // …
+   }
+   
+   lastElementOf(['U', 'S', 'A']);  // returns "A"
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function lastElementOf(arr) {
+     return arr[arr.length - 1];
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function lastElementOf(arr) {
+     return arr[arr.length - 1];
+   }
+   
+   last ElementOf(['U', 'S', 'A']);	// returns "A"
+   ```
+
+3. Write a function that accepts two arguments, an array and an integer index position, and returns the element at the given index. What happens if the index is greater than the length of the array? What happens if it is a negative integer?
+
+   ```javascript
+   function nthElementOf(arr, index) {
+     // …
+   }
+   
+   let digits = [4, 8, 15, 16, 23, 42];
+   
+   nthElementOf(digits, 3);   // returns 16
+   nthElementOf(digits, 8);   // what does this return?
+   nthElementOf(digits, -1);  // what does this return?
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function nthElementOf(arr, index) {
+     if (index >= arr.length) {
+       return arr[arr.length - 1];
+     } else if (index < 0) {
+       if ((index * -1) >= arr.length) {
+         return arr[0];
+       }
+       return arr[arr.length + index];
+     } else {
+       return arr[index];
+     }
+   }
+   
+   let digits = [4, 8, 15, 16, 23, 42];
+   
+   nthElementOf(digits, 3);   // returns 16
+   nthElementOf(digits, 8);   // returns 42
+   nthElementOf(digits, -1);  // returns 42
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function nthElementOf(arr, index) {
+     return arr[index];
+   }
+   
+   let digits = [4, 8, 15, 16, 23, 42];
+   
+   nthElementOf(digits, 3);   // returns 16
+   nthElementOf(digits, 8);   // returns undefined
+   nthElementOf(digits, -1);  // returns undefined
+   ```
+
+4. Can we insert data into an array at a negative index? If so, why is this possible?
+
+   ###### My Solution
+
+   Yes, we can.
+
+   ```javascript
+   let digits = [4, 8, 15, 16, 23, 42];
+   
+   digits[-1] = 92;
+   
+   digits; 		// returns [ 4, 8, 15, 16, 23, 42, '-1': 92 ]
+   ```
+
+   I'm not exactly sure why this is possible.
+
+   ###### LS Solution
+
+   Yes, we can do this since all arrays are objects in JavaScript. You will learn more about this in the next lesson, but for now, try these statements on the digits array you used above and examine the return values.
+
+   ```javascript
+   digits[-1] = -42;
+   nthElementOf(digits, -1);
+   digits[-1];
+   digits['-1'];
+   ```
+
+   There is a slight nuance here: the added element becomes part of the "array object," but it isn't properly one of the array elements. The `digits.length` property, for instance, remains unchanged.
+
+5. Write a function that accepts an array as the first argument and an integer value, `count`, as the second. It should return a new array that contains the first `count` elements of the array.
+
+   ```javascript
+   function firstNOf(arr, count) {
+     // …
+   }
+   
+   let digits = [4, 8, 15, 16, 23, 42];
+   firstNOf(digits, 3);    // returns [4, 8, 15]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function firstNOf(arr, count) {
+     let newArray = [];
+     for (let index = 0; index < count; index += 1) {
+       newArray.push(arr[index]);
+     }
+     
+     return newArray;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function firstNOf(arr, count) {
+     return arr.slice(0, count);
+   }
+   
+   let digits = [4, 8, 15, 16, 23, 42];
+   firstNOf(digits, 3); 		// returns [4, 8, 15]
+   ```
+
+6. Write a function like the previous one, except this time return the last `count` elements as a new array.
+
+   ```javascript
+   function lastNOf(arr, count) {
+     // …
+   }
+   
+   let digits = [4, 8, 15, 16, 23, 42];
+   lastNOf(digits, 3);    // returns [16, 23, 42]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function lastNOf(arr, count) {
+   	let startIndex = arr.length - count;
+     let endIndex = startIndex + count;
+     return arr.slice(startIndex, endIndex);
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function lastNOf(arr, count) {
+     return arr.slice(arr.length - count);
+   }
+   
+   let digits = [4, 8, 15, 16, 23, 42];
+   lastNOf(digits, 3);			// returns [16, 23, 42]
+   ```
+
+7. Using the function from the previous problem, what happens if you pass a `count` greater than the length of the array? How can you fix the function so it returns a new instance of the entire array when `count` is greater than the array length?
+
+   ###### My Solution
+
+   Passing a `count` greater than the length of the array produces some odd results.  
+
+   Here is a refactored function to return the entire array if the `count` is greater than the length of the array.
+
+   ```javascript
+   function lastNOf(arr, count) {
+     if (count > arr.length) {
+       count = arr.length;
+     }
+     
+   	let startIndex = arr.length - count;
+     let endIndex = startIndex + count;
+     return arr.slice(startIndex, endIndex);
+   }
+   ```
+
+   ###### LS Solution
+
+   When you pass a `count` greater than the array length, the arithmetic in the function becomes a negative value. `slice` interprets a negative value as a position relative to the end of the array. Thus, if we pass a count of 9 with our `digits` array, `lastNOf` calls `slice` with an argument of `-3`. `slice` thus returns the final three elements of `digits`.  
+
+   To change this behaviour, we can calculate the starting position, then adjust it to 0 if it is negative. We can pass the resulting value to `slice`, which returns a new copy of the array when the value is 0.
+
+8. Write a function that accepts two arrays as arguments and returns an array with the first element from the first array and the last element from the second array.
+
+   ```javascript
+   function endsOf(beginningArr, endingArr) {
+     // ...
+   }
+   
+   endsOf([4, 8, 15], [16, 23, 42]);		// returns [4, 42]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function endsOf(beginningArr, endingArr) {
+     let firstElement = beginningArr[0];
+     let lastElement = endingArr[endingArr.length - 1];
+     
+     return [firstElement, lastElement];
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function endsOf(beginningArr, endingArr) {
+     return [beginningArr[0], endingArr[endingArr.length - 1]];
+   }
+   
+   endsOf([4, 8, 15], [16, 23, 42]);		// returns [4, 42]
+   ```
+
+---
+
+## 10. Practice Problems: Intermediate Array Uses
+
