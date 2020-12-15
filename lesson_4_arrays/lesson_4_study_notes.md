@@ -967,3 +967,209 @@ In the problems below, we ask you to write functions that work with Arrays. You 
 
 ## 10. Practice Problems: Intermediate Array Uses
 
+1. Write a function that creates and returns a new array from its array argument. The new array should contain all values from the argument array whose positions have an odd index.
+
+   ```javascript
+   function oddElementsOf(arr) {
+     // …
+   }
+   
+   let digits = [4, 8, 15, 16, 23, 42];
+   
+   oddElementsOf(digits);    // returns [8, 16, 42]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function oddElementsOf(arr) {
+     let newArray = [];
+   
+     for (let index = 1; index < arr.length; index += 2) {
+       newArray.push(arr[index]);
+     }
+   
+     return newArray;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function oddElementsOf(arr) {
+     let oddElements = [];
+     let length = arr.length;
+     
+     for (let index = 1; index < length; index += 2) {
+       oddElements.push(arr[index]);
+     }
+     
+     return oddElements;
+   }
+   
+   let digits = [4, 8, 15, 16, 23, 42];
+   
+   oddElementsOf(digits);		// returns [8, 16, 42]
+   ```
+
+2. Write a function that takes an array argument and returns a new array that contains all the argument's elements in their original order followed by all the argument's elements in reverse order.
+
+   ###### My Solution
+
+   ```javascript
+   function originalAndReversed(arr) {
+     let newArray = arr.slice();
+     let length = arr.length;
+   
+     for (let index = length - 1; index >= 0; index -= 1) {
+       newArray.push(arr[index]);
+     }
+   
+     return newArray;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function mirroredArray(arr) {
+     return arr.concat(arr.slice().reverse());
+   }
+   
+   let digits = [4, 8, 15, 16, 23, 42];
+   mirroredArray(digits);	// returns [4, 8, 15, 16, 23, 42, 42, 23, 16, 15, 8, 4]
+   ```
+
+3. Use the [array sort method](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) to create a function that takes an array of numbers and returns a new array of the numbers sorted in descending order. Do not alter the original array.
+
+   ```javascript
+   function sortDescending(arr) {
+     // …
+   }
+   
+   let array = [23, 4, 16, 42, 8, 15];
+   let result = sortDescending(array);  // returns [42, 23, 16, 15, 8, 4]
+   console.log(result);                 // logs    [42, 23, 16, 15, 8, 4]
+   console.log(array);                  // logs    [23, 4, 16, 42, 8, 15]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function sortDescending(arr) {
+     let newArray = arr.slice();
+     return newArray.sort((a, b) => b - a);
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function sortDescending(arr) {
+     let arrCopy = arr.slice();
+     return arrCopy.sort((a, b) => b - a);
+   }
+   
+   let array = [23, 4, 16, 42, 8, 15];
+   let result = sortDescending(array);		// returns [42, 23, 16, 15, 8, 4]
+   console.log(result);									// logs		 [42, 23, 16, 15, 8, 4]
+   console.log(array);										// logs 	 [23, 4, 16, 42, 8, 15]
+   ```
+
+4. Write a function that takes an array of arrays as an argument, and returns a new array that contains the sums of each of the sub-arrays.
+
+   ```javascript
+   function matrixSums(arr) {
+     // …
+   }
+   
+   matrixSums([[2, 8, 5], [12, 48, 0], [12]]);  // returns [15, 60, 12]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function matrixSums(arr) {
+     const reducer = (accumulator, currentValue) => accumulator + currentValue;
+     let sumsArray = [];
+   
+     arr.forEach(function(element) {
+       sumsArray.push(element.reduce(reducer));
+     });
+   
+     return sumsArray;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function matrixSums(arr) {
+     let sums = [];
+     let outerLen = arr.length;
+     
+     for (let mainIndex = 0; mainIndex < outerLen; mainIndex += 1) {
+       let currentSum = 0;
+       let innerLen = arr[mainIndex].length;
+       for (let subIndex = 0; subIndex < innerLen; subIndex += 1) {
+         currentSum += arr[mainIndex][subIndex];
+       }
+       
+       sums.push(currentSum);
+     }
+     
+     return sums;
+   }
+   
+   matrixSums([[2, 8, 5], [12, 48, 0], [12]]);	// returns [15, 60, 12]
+   ```
+
+5. Write a function that takes an array, and returns a new array with duplicate elements removed.
+
+   ```javascript
+   function uniqueElements(arr) {
+     // …
+   }
+   
+   uniqueElements([1, 2, 4, 3, 4, 1, 5, 4]);  // returns [1, 2, 4, 3, 5]
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function uniqueElements(arr) {
+     let newArray = [];
+   
+     for (let index = 0; index < arr.length; index += 1) {
+       if (newArray.indexOf(arr[index]) === -1) {
+         newArray.push(arr[index]);
+       }
+     }
+   
+     return newArray;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function uniqueElements(arr) {
+     let uniques = [];
+     let len = arr.length;
+     
+     for (let index = 0; index < len; index += 1) {
+       if (uniques.indexOf(arr[index]) === -1) {
+         uniques.push(arr[index]);
+       }
+     }
+     
+     return uniques;
+   }
+   
+   uniqueElements([1, 2, 4, 3, 4, 1, 5, 4]); // returns [1, 2, 4, 3, 5]
+   ```
+
+---
+
+## 11. Practice Problems: Find Missing Numbers
+
