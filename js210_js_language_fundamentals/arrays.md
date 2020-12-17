@@ -225,3 +225,67 @@ console.log(newArray);        // [1, 2, 3, "a", "b", "c", { obj: "yourObject" },
 
 ## 4. Array Concat Part 2
 
+The `concat` function from the previous exercise could only concatenate a maximum of two arrays. For this exercise, you are going to extend that functionality. Refactor the `concat` function to allow for the concatenation of two or more arrays or values.  
+
+Examples:
+
+```javascript
+concat([1, 2, 3], [4, 5, 6], [7, 8, 9]);    // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+concat([1, 2], 'a', ['one', 'two']);        // [1, 2, "a", "one", "two"]
+concat([1, 2], ['three'], 4);               // [1, 2, "three", 4]
+```
+
+###### My Solution
+
+**Algorithm**
+
+* I will want to take the first argument and use it to form a new array.
+* Then, I will need to use the `arguments` key word to determine how many arguments there are.
+* Using this number, I will then iterate from `1` to that ...
+
+**Code**
+
+```javascript
+function concat() {
+  let concatenated = arguments[0].slice();
+
+  let numOfArguments = arguments.length;
+
+  for (let index = 1; index < numOfArguments; index += 1) {
+    if (Array.isArray(arguments[index])) {
+      let arrayArg = arguments[index];
+      for (let subIndex = 0; subIndex < arrayArg.length; subIndex += 1) {
+        concatenated.push(arrayArg[subIndex]);
+      }
+    } else {
+      concatenated.push(arguments[index]);
+    }
+  }
+
+  return concatenated;
+}
+```
+
+###### LS Solution
+
+```javascript
+function concat(...args) {
+  const newArray = [];
+  
+  for (let argIndex = 0; argIndex < args.length; argIndex += 1) {
+    let currentArg = args[argIndex];
+    if (Array.isArray(currentArg)) {
+      let arraySize = currentArg.length;
+      for (let arrayIndex = 0; arrayIndex < arraySize; arrayIndex += 1) {
+        newArray[newArray.length] = currentArg[arrayIndex];
+      }
+    } else {
+      newArray[newArray.length] = currentArg;
+    }
+  }
+  
+  return newArray;
+}
+```
+
+The main differences in this solution are the addition of another loop and the removal of the initial iteration; given that there is a variable number of arguments, the solution just delegates the initial iteration to the outer loop. The outer loop iterates over the arguments passed using the [rest parameter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters) syntax. Using this syntax you can prepend the last parameter of a function with `...`, which will cause all remaining arguments passed to the function to be represented as an array.
