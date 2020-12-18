@@ -289,3 +289,277 @@ function concat(...args) {
 ```
 
 The main differences in this solution are the addition of another loop and the removal of the initial iteration; given that there is a variable number of arguments, the solution just delegates the initial iteration to the outer loop. The outer loop iterates over the arguments passed using the [rest parameter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters) syntax. Using this syntax you can prepend the last parameter of a function with `...`, which will cause all remaining arguments passed to the function to be represented as an array.
+
+---
+
+## 5. Array Pop and Push
+
+In this exercise, you will implement your own version of two Array methods: `Array.prototype.pop` and `Array.prototype.push`. The `pop` method removes the last element from an array and returns that element. If `pop` is called on an empty array, it returns `undefined`. The `push` method, on the other hand, adds one or more elements to the end of an array and returns the new `length` of the array.  
+
+Examples:  
+
+```javascript
+// pop
+const array1 = [1, 2, 3];
+pop(array1);                        // 3
+console.log(array1);                // [1, 2]
+pop([]);                           // undefined
+pop([1, 2, ['a', 'b', 'c']]);      // ["a", "b", "c"]
+
+// push
+const array2 = [1, 2, 3];
+push(array2, 4, 5, 6);              // 6
+console.log(array2);                // [1, 2, 3, 4, 5, 6]
+push([1, 2], ['a', 'b']);          // 3
+push([], 1);                       // 1
+push([]);                          // 0
+```
+
+###### My Solution
+
+**pop**
+
+```javascript
+function pop(arr) {
+  let value = arr[arr.length - 1];
+  
+  if (arr.length > 0) {
+    arr.length = arr.length -1;
+  }
+
+  return value;
+}
+```
+
+**push**
+
+```javascript
+function push(...args) {
+  let newArray = args[0];
+  let startIndex = args[0].length;
+  let endIndex = startIndex + args.length - 2;
+  let argsIndex = 1;
+
+  for (let index = startIndex; index <= endIndex; index += 1) {
+    newArray[index] = args[argsIndex];
+    argsIndex += 1;
+  }
+
+  return newArray.length;
+}
+```
+
+###### LS Solution (buggy code)
+
+This is a buggy version of the solution implemented for this exercise. You may try looking for the bug(s) first as an extra challenge.
+
+```javascript
+function pop(array) {
+  const poppedElement = array[array.length];
+  array.splice[array.length];
+
+  return poppedElement;
+}
+
+function push(array, ...args) {
+  const length = args.length;
+
+  for (let i = 1; i < length; i += 1) {
+    array[i] = args[i];
+  }
+
+  return array.length;
+}
+```
+
+###### My Refactoring of the Buggy Code
+
+**pop**
+
+```javascript
+function pop(array) {
+  if (array[0] === undefined) {
+    return undefined;
+  }
+  
+  return array.splice(array.length - 1)[0];
+}
+```
+
+**push**
+
+```javascript
+function push(array, ...args) {
+  const argsLength = args.length;
+  const arrayLength = array.length;
+  
+  for (let i = 0; i < argsLength; i += 1) {
+    array[arrayLength + i] = args[i];
+  }
+  
+  return array.length;
+}
+
+```
+
+###### LS Solution (refactored)
+
+```javascript
+function pop(array) {
+  const poppedElement = array[array.length - 1];
+  array.splice(array.length - 1);
+
+  return poppedElement;
+}
+
+function push(array, ...args) {
+  const length = args.length;
+
+  for (let i = 0; i < length; i += 1) {
+    array[array.length] = args[i];
+  }
+
+  return array.length;
+}
+```
+
+---
+
+## 6. Array and String Reverse
+
+In this exercise, you will implement your own version of the `Array.prototype.reverse` method. Your implementation should differ from the built-in method in the following two ways:
+
+* It should accept either a string or an array as an argument.
+* It should return a new string or array.
+
+Examples:  
+
+```javascript
+function reverse(inputForReversal) {
+  // ...
+}
+
+reverse('Hello');           // "olleH"
+reverse('a');               // "a"
+reverse([1, 2, 3, 4]);      // [4, 3, 2, 1]
+reverse([]);                // []
+
+const array = [1, 2, 3];
+reverse(array);             // [3, 2, 1]
+array;                      // [1, 2, 3]
+```
+
+###### My Solution
+
+```javascript
+function reverse(arg) {
+  let startIndex = arg.length - 1;
+
+  if (Array.isArray(arg)) {
+    let arr = [];
+    for (let index = startIndex; index >= 0; index -= 1) {
+      arr.push(arg[index]);
+    }
+
+    return arr;
+  } else {
+    let str = '';
+    for (let index = startIndex; index >= 0; index -= 1) {
+      str += arg[index];
+    }
+
+    return str;
+  }
+}
+```
+
+###### LS Solution
+
+This is a buggy version of the solution implemented for this exercise. You may try looking for the bug(s) first as an extra challenge.
+
+```javascript
+function reverse(inputForReversal) {
+  if (Array.isArray(inputForReversal)) {
+    return reverseArray(inputForReversal);
+  } else {
+    return reverseString(inputForReversal);
+  }
+}
+
+function reverseArray(inputForReversal) {
+  const reversed = [];
+  const length = inputForReversal.length;
+
+  for (let i = 0; i < length; i += 1) {
+    reversed[length - i] = inputForReversal[i];
+  }
+
+  return reversed;
+}
+
+function reverseString(inputForReversal) {
+  const stringArray = inputForReversal.split(' ');
+  return reverseArray(stringArray).join(' ');
+}
+```
+
+###### My Refactoring of the Buggy Solution
+
+```javascript
+function reverse(inputForReversal) {
+  if (Array.isArray(inputForReversal)) {
+    return reverseArray(inputForReversal);
+  } else {
+    return reverseString(inputForReversal);
+  }
+}
+
+function reverseArray(inputForReversal) {
+  const reversed = [];
+  const indexReference = inputForReversal.length - 1;
+
+  for (let i = 0; i <= indexReference; i += 1) {
+    reversed[indexReference - i] = inputForReversal[i];
+  }
+
+  return reversed;
+}
+
+function reverseString(inputForReversal) {
+  const stringArray = inputForReversal.split('');
+  return reverseArray(stringArray).join('');
+}
+```
+
+###### LS Refactoring
+
+```javascript
+function reverse(inputForReversal) {
+  if (Array.isArray(inputForReversal)) {
+    return reverseArray(inputForReversal);
+  } else {
+    return reverseString(inputForReversal);
+  }
+}
+
+function reverseArray(inputForReversal) {
+  const reversed = [];
+  const length = inputForReversal.length;
+
+  for (let i = 0; i < length; i += 1) {
+    reversed[length - 1 - i] = inputForReversal[i];
+  }
+
+  return reversed;
+}
+
+function reverseString(inputForReversal) {
+  const stringArray = inputForReversal.split('');
+  return reverseArray(stringArray).join('');
+}
+```
+
+---
+
+## 7. Array Shift and Unshift
+
