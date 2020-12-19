@@ -563,3 +563,106 @@ function reverseString(inputForReversal) {
 
 ## 7. Array Shift and Unshift
 
+In this exercise, you will implement your own versions of the `Array.prototype.shift` and `Array.prototype.unshift` methods. These methods manipulate the contents of an array starting from the first index.  
+
+The `shift` method removes the *first* element from an array and returns that element; if the array is empty, `shift` returns `undefined`. The `unshift` method *adds one or more* elements to the start of an array and returns the new `length` of the array. Both methods mutate the original array.  
+
+Examples:
+
+```javascript
+shift([1, 2, 3]);                // 1
+shift([]);                       // undefined
+shift([[1, 2, 3], 4, 5]);        // [1, 2, 3]
+
+unshift([1, 2, 3], 5, 6);        // 5
+unshift([1, 2, 3]);              // 3
+unshift([4, 5], [1, 2, 3]);      // 3
+
+const testArray = [1, 2, 3];
+shift(testArray);                // 1
+testArray;                       // [2, 3]
+unshift(testArray, 5);           // 3
+testArray;                       // [5, 2, 3]
+```
+
+###### My Solution
+
+**shift**
+
+```javascript
+function shift (arr) {
+  return arr.splice(0, 1)[0];
+}
+```
+
+**unshift**
+
+```javascript
+function unshift(arr, ...args) {
+  for (let index = args.length - 1; index >= 0; index -= 1) {
+    arr.splice(0, 0, args[index]);
+  }
+
+  return arr.length;
+}
+```
+
+###### LS Solution
+
+```javascript
+function shift(array) {
+  let result;
+  
+  if (array.length !== 0) {
+    result = array.splice(0, 1).pop();
+  }
+  
+  return result;
+}
+
+function unshift(array, ...args) {
+  for (let i = 0; i < args.length; i += 1) {
+    array.splice(i, 0, args[i]);
+  }
+  
+  return array.length;
+}
+```
+
+###### Further Exploration
+
+If you haven't yet done so, reimplement the `shift` and `unshift` methods without using the `splice` method.
+
+###### My FE Solution
+
+**shift**
+
+```javascript
+function shift(arr) {
+  let shiftedElement = arr.reverse().pop();
+  arr.reverse();
+  return shiftedElement;
+}
+```
+
+**unshift**
+
+```javascript
+function unshift(arr, ...args) {
+  arr.reverse();
+  args.reverse();
+  
+  for (let index = 0; index < args.length; index += 1) {
+    arr.push(args[index]);
+  }
+
+  arr.reverse();
+
+  return arr.length;
+}
+```
+
+---
+
+## 8. Array Slice and Splice
+
