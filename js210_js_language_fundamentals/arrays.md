@@ -839,3 +839,107 @@ function splice(array, start, deleteCount, ...args) {
 
 ## 9. Oddities
 
+The `oddities` function takes an array as an argument and returns a new array containing every other element from the input array. The values in the returned array are the first (index `0`), third, fifth, and so on, elements of the input array. The program below uses the array returned by `oddities` as part of a comparison. Can you explain the results of these comparisons?  
+
+Examples:
+
+```javascript
+function oddities(array) {
+  const oddElements = [];
+
+  for (let i = 0; i < array.length; i += 2) {
+    oddElements.push(array[i]);
+  }
+
+  return oddElements;
+}
+
+oddities([2, 3, 4, 5, 6]) === [2, 4, 6];      // false
+oddities(['abc', 'def']) === ['abc'];         // false
+```
+
+###### My Solution
+
+The reason the comparison's return `false` is that we are comparing two different objects. Thus, although each object is an Array and contains the same elements, the fact that they are still two distinct objects pointing to two separate spaces in memory results in their comparison of equality returning `false`.  
+
+###### LS Solution
+
+Both of these comparisons return `false` because the arrays being compared are two different objects, even though they contain the same values. Recall that Arrays are Objects, so the only way for the equality operator to return `true` for array comparison is if they are the same object or if the comparison is done on the contents of the arrays and not on the arrays themselves.  
+
+---
+
+## 10. Array Comparison
+
+The array comparison function that we implemented in the [Arrays lesson](https://launchschool.com/lessons/e15c92bb/assignments/a52dfe90) (Alternate [link](https://launchschool.com/lessons/e2c71a47/assignments/91e2c5cf) if the previous link doesn't work) implicitly assumed that when comparing two arrays, any matching values must also have matching index positions. The objective of this exercise is to reimplement the function so that two arrays containing the same values—but in a different order—are considered equal. For example, `[1, 2, 3] === [3, 2, 1]` should return `true`.  
+
+Examples:
+
+```javascript
+function areArraysEqual(array1, array2) {
+  // ...
+}
+
+areArraysEqual([1, 2, 3], [1, 2, 3]);                  // true
+areArraysEqual([1, 2, 3], [3, 2, 1]);                  // true
+areArraysEqual(['a', 'b', 'c'], ['b', 'c', 'a']);      // true
+areArraysEqual(['1', 2, 3], [1, 2, 3]);                // false
+areArraysEqual([1, 1, 2, 3], [3, 1, 2, 1]);            // true
+areArraysEqual([1, 2, 3, 4], [1, 1, 2, 3]);            // false
+areArraysEqual([1, 1, 2, 2], [4, 2, 3, 1]);            // false
+areArraysEqual([1, 1, 2], [1, 2, 2]);                  // false
+areArraysEqual([1, 1, 1], [1, 1]);                     // false
+areArraysEqual([1, 1], [1, 1]);                        // true
+```
+
+###### My Solution
+
+**Algorithm**
+
+* The function will need to employ a nested loop. The first loop will iterate over each of the elements of the first array, while the second loop will iterate over each of the elements of the second array and compare each of those elements to each element of the first array.
+* We need to keep track of whether or not 
+
+**Code:**
+
+```javascript
+function areArraysEqual(array1, array2) {
+  if (array1.length !== array2.length) {
+    return false;
+  }
+
+  let length = array1.length;
+
+  let newArray1 = array1.slice().sort();
+  let newArray2 = array2.slice().sort();
+
+  for (let index = 0; index < length; index += 1) {
+    if (newArray1[index] !== newArray2[index]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+```
+
+###### LS Solution
+
+```javascript
+function areArraysEqual(array1, array2) {
+  if (array1.length !== array2.length) {
+    return false;
+  }
+  
+  let array2Copy = array2.slice();
+  for (let i = 0; i < array1.length; i += 1) {
+    let index = array2Copy.indexOf(array1[i]);
+    if (index >= 0) {
+      array2Copy.splice(index, 1);
+    } else {
+      return false;
+    }
+  }
+  
+  return true;
+}
+```
+
