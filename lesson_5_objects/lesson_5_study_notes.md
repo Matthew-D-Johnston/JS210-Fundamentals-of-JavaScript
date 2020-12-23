@@ -127,3 +127,313 @@ Once again, these are only guidelines. We bring this to your attention only beca
 
 ## 2. Object Properties
 
+### Property Names and Values
+
+A property name for an object can be any valid string, and a property value can be any valid expression:
+
+```javascript
+let object = {
+  a: 1,														// a is a string with quotes omitted
+  'foo': 2 + 1,										// property name with quotes
+  'two words': 'this works too',	// a two word string
+  true: true,											// property name is implicitly converted to string "true"
+  b: {														// object as property value
+  	name: 'Jane',
+  	gender: 'female',
+	},
+  c: function () {								// function expression as property value
+    return 2;
+  },
+  d() {
+    return 4;											// compact method syntax
+  }
+};
+```
+
+### Accessing Property Values
+
+You can access property values using "dot notation" or "bracket notation":
+
+```javascript
+let object = {
+  a: 'hello',
+  b: 'world',
+};
+
+object.a;									// "hello", dot notation
+object['b']								// "world", bracket notation
+object.c									// undefined when property is not defined
+
+let foo = {
+  a: 1,
+  good: true,
+  'a name': 'hello',
+  person: {
+    name: 'Jane',
+    gender: 'female',
+  },
+  c: function () {				// function expression as property value	
+    return 2;
+  },
+  d() {										// compact method syntax
+    return 4;
+  }
+};
+
+foo['a name'];	// "hello", use bracket notation when property name is an invalid identifier
+foo['goo' + 'd']; 			// true, bracket ntation can take expressions
+let a = 'a';
+foo[a];					// 1, bracket notation works with variables since they are expressions
+foo.person.name;			// "Jane", dot notation can be chained to "dig into" nested objects
+foo.c();							// 2, Call the method 'c'
+foo.d();							// 4, Call the method 'd'
+```
+
+JavaScript style guides usually recommend using dot notation when possible.  
+
+### Adding and Updating Properties
+
+To add a new property to an object, use "dot notation" or "bracket notation" and assign a value to the result:  
+
+```javascript
+let object = {} 						// empty object
+
+object.a = 'foo';
+object.a; 									// "foo"
+
+object['a name'] = 'hello';
+object['a name'];						// "hello"
+
+object;											// { a: "foo", "a name": "hello" }
+```
+
+If the named property exists, the assignment updates the property's value:  
+
+```javascript
+let object = {};
+
+object.a = 'foo';
+object.a;									// "foo"
+
+object.a = 'hello';
+object.a;									// "hello"
+
+object['a'] = 'world';
+object.a;									// "world"
+```
+
+You can use the reserved keyword `delete` to delete properties from objects:  
+
+```javascript
+let foo = {
+  a: 'hello',
+  b: 'world',
+};
+
+delete foo.a;
+foo;									// { b: "world" }
+```
+
+---
+
+## 3. Stepping Through Object Properties
+
+Objects are a collection type. This means a single Object can store multiple values. A common task is to perform some action for each element in a collection. You can do this with a `for…in` loop:
+
+```javascript
+let nicknames = {
+  joseph: 'Joey',
+  margaret: 'Maggie',
+};
+
+for (let nick in nicknames) {
+  console.log(nick);
+  console.log(nicknames[nick]);
+}
+
+// logs on the console:
+joseph
+Joey
+margaret
+Maggie
+```
+
+You can also retrieve the names of all properties in an object with `Object.keys`:
+
+```javascript
+let nicknames = {
+  joseph: 'Joey',
+  margaret: 'Maggie',
+};
+
+Object.keys(nicknames);  // [ 'joseph', 'margaret' ]
+```
+
+---
+
+## 4. Practice Problems: Working with Object Properties
+
+1. Write a function named `objectHasProperty` that takes two arguments: an Object and a String. The function should return true if the Object contains a property with the name given by the String, false otherwise.
+
+   ```javascript
+   let pets = {
+     cat: 'Simon',
+     dog: 'Dwarf',
+     mice: null,
+   };
+   
+   objectHasProperty(pets, 'dog');				// true
+   objectHasProperty(pets, 'lizard');		// false
+   objectHasProperty(pets, 'mice');			// true
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function objectHasProperty(object, name) {
+     for (let n in object) {
+       if (n === name) {
+         return true;
+       }
+     }
+   
+     return false;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function objectHasProperty(object, propertyName) {
+     let keys = Object.keys(object);
+     return keys.indexOf(propertyName) !== -1;
+   }
+   ```
+
+2. Write a function named `incrementProperty` that takes two arguments: an Object and a String. If the Object contains a property with the specified name, the function should increment the value of that property. If the property does not exist, the function should add a new property with a value of `1`. The function should return the new value of the property.
+
+   ###### My Solution
+
+   ```javascript
+   function incrementProperty(object, string) {
+     if (object[string] === undefined) {
+       object[string] = 1;
+     } else {
+       object[string] += 1;
+     }
+   
+     return object[string];
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function incrementProperty(object, propertyName) {
+     if (object[propertyName]) {
+       object[propertyName] += 1;
+     } else {
+       object[propertyName] = 1;
+     }
+     
+     return object[propertyName];
+   }
+   ```
+
+   If you try to access a property that doesn't exist in an object, JavaScript returns `undefined`:
+
+   ```javascript
+   wins.kai; 		//undefined
+   ```
+
+   Since `undefined` is falsy and any non-zero Number is truthy, we can use this in the `if` statement's condition to learn whether the property exists.  
+
+   This works well provided falsy (i.e. `null` and `undefined`) values aren't present in the object. Otherwise, we need to check `Object.keys` to see whether the property exists.
+
+3. Write a function named `copyProperties` that takes two Objects as arguments. The function should copy all properties from the first object to the second. The function should return the number of properties copied.
+
+   ```javascript
+   let hal = {
+     model: 9000,
+     enabled: true,
+   };
+   
+   let sal = {};
+   copyProperties(hal, sal);		// 2
+   sal;												// { model: 9000, enabled: true }
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   function copyProperties(object1, object2) {
+     let numberOfPropertiesCopied = 0;
+   
+     for (let name in object1) {
+       object2[name] = object1[name];
+       numberOfPropertiesCopied += 1;
+     }
+   
+     return numberOfPropertiesCopied;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function copyProperties(source, destination) {
+     let count = 0;
+     for (let property in source) {
+       destination[property] = source[property];
+       count += 1;
+     }
+     
+     return count;
+   }
+   ```
+
+4. Write a function named `wordCount` that takes a single String as an argument. The function should return an Object that contains the counts of each word that appears in the provided String. In the returned Object, you should use the words as keys, and the counts as values.
+
+   ###### My Solution
+
+   ```javascript
+   function wordCount(string) {
+     let names = string.split(' ');
+     let object = {};
+   
+     for (let index = 0; index < names.length; index += 1) {
+       if (object[names[index]]) {
+         object[names[index]] += 1;
+       } else {
+         object[names[index]] = 1;
+       }
+     }
+   
+     return object;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function wordCount(text) {
+     let count = {};
+     let words = text.split(' ');
+     
+     for (let index = 0; index < words.length; index += 1) {
+       let word = words[index];
+       if (!count[word]) {
+         count[word] = 0;
+       }
+       
+       count[word] += 1;
+     }
+     
+     return count;
+   }
+   ```
+
+---
+
+## 5. Arrays and Objects
+
