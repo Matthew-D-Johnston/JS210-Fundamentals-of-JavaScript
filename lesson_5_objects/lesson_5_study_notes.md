@@ -437,3 +437,394 @@ Object.keys(nicknames);  // [ 'joseph', 'margaret' ]
 
 ## 5. Arrays and Objects
 
+JavaScript uses arrays and objects as data structures to represent compound data. But when should you use one over the other?
+
+### Array
+
+You should use an array if your data is more like a list that contains many items (usually of the same type, but can be different types too):
+
+```javascript
+[1, 2, 3];
+['Monday', 'Tuesday', 'Wednesday'];
+['Jan', 31, [2015, 2016]];
+```
+
+### Object
+
+You should use an object if your data is more like an entity with many parts:
+
+```javascript
+{
+  firstName: 'Joe',
+  lastName: 'Smith',
+  gender: 'Male',
+  age: 30,
+  married: false,
+}
+```
+
+### Arrays are Objects
+
+In JavaScript, arrays are actually objects! Let's demonstrate this:
+
+```javascript
+let a = ['hello', 'world'];
+
+console.log(typeof a);        // "object"
+console.log(a['1']);          // "world", object's bracket notation to access value
+console.log(Object.keys(a));  // ["0", "1"], the keys of the object!
+
+// line 1 is equivalent of:
+
+let a = {
+  '0': 'hello',
+  '1': 'world',
+};
+
+console.log(typeof a);        // "object"
+console.log(a['1']);          // "world", object's bracket notation to access value
+console.log(Object.keys(a));  // ["0", "1"], the keys of the object!
+```
+
+The two are equivalent in the above code snippet in so far as the logged statements are concerned. However, you'll soon see, as you read to the remainder of the assignment, that there are slight nuances between two.  
+
+Since you now understand that arrays are objects, you should understand why you can use the `length` property on arrays. It's just an object property that JavaScript maintains to track the array's size.  
+
+### Arrays and the Length Property
+
+JavaScript's built-in Array methods (`join`, `forEach`, `push`, `splice`, etc.) take the value of the `length` property into consideration while performing their operations. Some methods just use the value, others set it, and some even do both. Let's take a closer look at how JavaScript manages the `length` property.  
+
+Referring to the [ECMAScript documentation](http://www.ecma-international.org/ecma-262/5.1/#sec-15.4), here are some key points about `Array.length`:
+
+- Its value is always a non-negative integer less than 232 (roughly 4.2 billion).
+- The value of the `length` property is numerically one greater than the largest **array index** in the Array. If you take all of the property names from the Array that represent non-negative integer values, then the property name with the largest numeric value is the largest array index.
+- You can set the value of the `length` property explicitly.
+
+Let's examine the first two points with this code:  
+
+```javascript
+let myArray = [];
+myArray.length;                  // returns 0
+
+myArray = ['foo', 'bar', 'baz'];
+myArray.indexOf('baz');          // returns 2 (this is the largest index)
+myArray.length;                  // returns 3
+```
+
+This code demonstrates that the `length` property is initially set to `0`, a non-negative integer. It also demonstrates that `length` is one greater than the largest index (when the largest index is `2`, the `length` is `3`).  
+
+What's more interesting and not obvious concerns which keys of the array object are array indexes and which are not. Take this example:
+
+```javascript
+let myArray = [];
+myArray['foo'] = 'bar';
+myArray[0] = 'baz';
+myArray[1] = 'qux';
+
+console.log(myArray);         // logs ['baz', 'qux', foo: 'bar']
+myArray.length;               // returns 2 since foo: 'bar' is not an element
+myArray.indexOf('bar');       // returns -1 since 'bar' isn't in an element
+
+myArray[-1] = 'hello';
+myArray[-2] = 'world';
+myArray.length;               // returns 2
+myArray.indexOf('hello');     // returns -1 since 'hello' is not in an element
+                              // the fact that myArray[-1] is 'hello' is
+                              // coincidental
+myArray.indexOf('world');     // returns -1 since 'world' is not in an element
+
+console.log(myArray);         // logs ['baz', 'qux', foo: 'bar', '-1': 'hello', '-2': 'world']
+Object.keys(myArray).length;  // returns 5 (there are 5 keys at this point)
+myArray.length;               // returns 2 (but only 2 keys are indexes)
+```
+
+The important points here are:
+
+* A property name is an array index when it is a non-negative integer. Values that have been assigned to index properties are called **elements** of the array. All other property names and their associated values are _not_ considered to be elements of the array.
+* `Array.prototype.indexOf` returns `-1` if the value it is passed is not an element of the array, even if the value is associated with a non-index property.
+* The value of `length` is entirely dependent on the largest array index. In the code, the largest valid index is `1` (see line 4). Therefore, `length` returns `2` (`1 + 1`).
+* Logging an array logs all the indexed values and every `key: value` pair that the object contains. It logs only the value (e.g., `'baz'`, `'qux'`) if it's an element. Otherwise, it logs the `key: value` pair (e.g., `foo: 'bar'`) if it isn't an element (see line 18).
+* To count all of the properties in an Array object, use `Object.keys(array).length` (see line 19). Don't use `array.length`.
+
+Finally, let's examine the implications of explicitly setting an array's `length` property:  
+
+```javascript
+let myArray = [1, 2, 3];
+myArray.length;         // returns 3
+
+// setting to a larger value than the current largest array index
+myArray.length = 5;
+console.log(myArray);   // logs (5) [1, 2, 3, empty × 2] on Chrome Console
+                        // logs [1, 2, 3, <2 empty slots>] on Firefox console
+                        // logs [1, 2, 3, ,] on node REPL
+myArray.length;         // returns 5
+
+myArray[6] = 'foo';
+myArray.length;         // returns 7
+console.log(myArray);   // logs (7) [1, 2, 3, empty × 3, "foo"] on Chrome Console
+                        // logs [1, 2, 3, <3 empty slots>, "foo"] on Firefox console
+                        // logs [1, 2, 3, , , , 'foo'] on node REPL
+
+// setting to a smaller value than the current largest array index with value
+myArray.length = 2;
+console.log(myArray);   // logs [1, 2]
+
+myArray.length = 5;
+console.log(myArray);   // logs (5) [1, 2, empty × 3] on Chrome Console
+                        // logs [1, 2, <3 empty slots>] on Firefox console
+                        // logs [1, 2, , ,] on node REPL
+myArray.length;         // returns 5
+```
+
+Note that the array loses data when you set the `length` property to a value equal to or smaller than the current largest array index. For example, on line 18, the array loses two elements: `3` and `'foo'`. It also loses three "empty slots", but these do not count as elements because they have never been assigned a value—they're only displayed to indicate that there are gaps between the actual elements.
+
+Also note that, just like with objects, you can directly set the value of an array element with bracket notation (see line 11). If the property name you use is a valid array index that's greater than the current largest array index, JavaScript sets the `length` value to `1` greater than the array index you provided. Note that the `length` property does *not* only count elements (the array indexes that have been assigned values)—the number of "empty slots" is also included in the count. In other words, the value of `length` is not necessarily the same as the number of elements in an array. For example, on line 13, there are only four actual elements, even though `length` value is `7` (as seen on line 12).  
+
+### Using Object Operations with Arrays
+
+Since arrays are objects, you can use object operations such as `in` and `delete` on arrays. However, just because you can doesn't mean you should: using `in` and `delete` on an array introduces confusion and—particularly with `in`—may yield surprising results. You should usually use more idiomatic ways to accomplish the same tasks.  
+
+You can use the `in` operator to see whether an Object contains a specific key. It works fine with Arrays:
+
+```javascript
+0 in [];			// false
+0 in [1]; 		// true
+```
+
+However, you should instead make the intent of the code clear. If you want to check whether an array has a certain index, compare it directly to the array's `length`:
+
+```javascript
+let numbers = [4, 8, 1, 3];
+2 < numbers.length;          // true
+```
+
+You can also use `delete` on Arrays but it isn't usually a good idea. If you need to remove a value from an Array, use [Array.prototype.splice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) instead of `delete`.  
+
+Just like with arrays, the arithmetic and comparison operators are not very useful with objects and often lead to surprising results. When one operand is an object and the other is not an object, JavaScript typically coerces the object to the string `'[object Object]'`:  
+
+```javascript
+[] + {};                  // "[object Object]" -- becomes "" + "[object Object]"
+[] - {};                  // NaN -- becomes "" - "[object Object]", then 0 - NaN
+'[object Object]' == {};  // true
+'' == {};                 // false
+false == {};              // false
+0 == {};                  // false
+```
+
+However, if an object literal is used in certain contexts—such as at the beginning of a line—JavaScript interprets it as a block of code instead of as an object:  
+
+```javascript
+{} + [];                  // 0 -- becomes +[]
+{}[0];                    // [0] -- the object is ignored, so the array [0] is returned
+{ foo: 'bar' }['foo'];    // ["foo"]
+{} == '[object Object]';  // SyntaxError: Unexpected token ==
+```
+
+Like with arrays, two objects are considered equal by the `==` and `===` operators only if they are the same object:
+
+```javascript
+let a = {};
+let b = a;
+a == a;                   // true
+a == b;                   // true
+a === b;                  // true
+a == {};                  // false
+a === {};                 // false
+```
+
+---
+
+## 6. Arrays: What is an Element?
+
+In the previous assignment, we mentioned that arrays are also objects. Thus, all of the indexes of an array are properties of the object, after translation to a string value. This fact has surprising consequences: some, but not all, properties are elements of the array. That leads to ambiguities, such as "What do we mean by an empty array?"  
+
+### Array Keys
+
+Consider, for instance, the following code:
+
+```javascript
+let arr = [];
+console.log(arr);              // []
+console.log(arr.length);       // 0
+console.log(Object.keys(arr))  // []
+```
+
+It's easy to see here that `arr` should be treated as an empty array. The array has no elements, as shown on line #2, and it has a length of `0` as shown on line #3. Furthermore, `Object.keys` returns no property keys for the array. (Note, however, that arrays have a `length` property; `Object.keys` does not include this property in the return value. Don't worry about why that is.)  
+
+Let's see what happens when the array contains elements:
+
+```javascript
+let arr = [2, 4, 6];
+console.log(arr);              // [2, 4, 6]
+console.log(arr.length);       // 3
+console.log(Object.keys(arr))  // ['0', '1', '2']
+```
+
+Lines 2 and 3 display the values you likely expect: we see that the array has 3 elements with values `2`, `4`, and `6`, and the total length is `3`. Line 4 shows that the property keys are `'0'`, `'1'`, and `'2'`; these string values correspond to the indexes of the array.  
+
+We can add properties to the object `arr` that are not elements of the array. All we have to do is use a key that is not an unsigned integer; it doesn't even have to be a number:  
+
+```javascript
+let arr = [2, 4, 6]
+arr[-3] = 5;
+arr['foo'] = 'a';
+console.log(arr);              // [ 2, 4, 6, '-3': 5, foo: 'a' ]
+console.log(arr.length);       // 3
+console.log(Object.keys(arr))  // [ '0', '1', '2', '-3', 'foo' ]
+arr.map(x => x + 1);           // [ 3, 5, 7 ]
+```
+
+Notice how it looks like we're adding two elements to the array, one with an "index" of `-3` and one with an index of `'foo'`. Both of these "elements" show up when we log `arr`, though the output looks a little strange. However, the length of the array is still `3`: the count does not include the new "elements" since neither key is an unsigned integer. If we use `Object.keys`, we see all 5 property keys, both the real element indexes, plus the two non-element keys.  
+
+In the last line above, we can see that `map` ignores the non-element values. All built-in Array methods ignore properties that are not elements, so `map` does nothing with `arr[-3]` and `arr['foo']`.  
+
+This weird behavior leads to some ambiguity:  
+
+```javascript
+let arr = [];
+arr[-3] = 5;
+arr['foo'] = 'a';
+
+// Is arr empty?
+console.log(arr.length);       // 0                Yes
+console.log(Object.keys(arr))  // [ '-3', 'foo' ]  No
+```
+
+To determine whether `arr` is empty on lines 6 and 7, we first need to define what we mean by an empty array. If we're only interested in elements, then we can use `length` to determine whether the array is empty. However, if we need to include non-elements, then we need to look at the object keys to learn whether the array is empty. **There is no one right answer here.** That's a decision you have to make when writing the code.  
+
+### Sparse Arrays
+
+Another consideration with arrays is that they are "sparse". The number of elements in an array isn't necessarily the same as its length: there can be gaps in the array. One way to create these gaps is by increasing the size of the `length` property without adding any values to the array:  
+
+```javascript
+let arr = [2, 4, 6];
+arr.length = 5;
+console.log(arr);              // [2, 4, 6, <2 empty items> ]
+console.log(arr.length);       // 5
+console.log(Object.keys(arr))  // ['0', '1', '2']
+```
+
+Notice that the array now contains 5 elements, as shown on lines #3 and #4. Curiously, though, two of the elements are shown as **empty items**. The empty items, `arr[3]` and `arr[4]`, have no value at all. In fact, those elements don't exist; you can see that on line #5 where `Object.keys` makes no mention of keys `'3'` and `'4'`.  
+
+If you try to access either value, JavaScript will tell you that it is `undefined`.
+
+```javascript
+console.log(arr[3]);           // undefined
+```
+
+However, that does not mean its value is `undefined`. The value is not set at all. Let's see what happens when we change one of these elements to an explicit `undefined` value:  
+
+```javascript
+let arr = [2, 4, 6];
+arr.length = 5;
+arr[4] = undefined
+console.log(arr);              // [2, 4, 6, <1 empty item>, undefined ]
+console.log(arr.length);       // 5
+console.log(Object.keys(arr))  // ['0', '1', '2', '4']
+```
+
+Do you see the difference? `arr[3]` is still an empty item, but `arr[4]` is `undefined`. `arr[4]` has a value; `arr[3]` does not. Note, also, that `Object.keys` includes the key of the explicitly `undefined` element (`'4'`) in the return value. Still, it does not include the key for the gap at `arr[3]`.  
+
+This behaviour again leads to ambiguity about what arrays are empty and which are not:  
+
+```javascript
+let arr = [];
+arr.length = 3;
+
+// Is arr empty?
+console.log(arr.length);				// 3			NO
+console.log(Object.keys(arr))		// []			Yess
+```
+
+To determine whether `arr` is empty on lines 5 and 6, we again need to determine what we mean by an empty array. If we want to include the gaps, then we can use `length` to determine whether the array is empty. However, if we need to ignore the gaps, then we must look at the object keys to learn whether the array is empty, keeping in mind that some of the object keys may not be unsigned integers. **Again, there is no one right answer here.** You have to decide what empty means.
+
+---
+
+## 7. Mutability of Values and Objects
+
+Some values in JavaScript programs are *primitive* types: numbers, string, booleans, `null` and `undefined`. The distinction between primitive values and Objects that interests us right now is *mutability*.  
+
+- Primitive values are *immutable*: you cannot modify them. Operations on these values return a new value of the same type.
+- Objects are *mutable*: you can modify them without changing their identity. Objects contain data inside themselves; it's this inner data that you can change.  
+
+Let's compare similar operations on both a String and an Array. We first declare a variable named `alpha` and set its value to the String `'abcde'`:  
+
+```javascript
+let alpha = 'abcde';
+```
+
+![img](https://dbdwvr6p7sskw.cloudfront.net/210/images/mutable_objects0.png)
+
+```javascript
+alpha[0] = 'z';				// "z"
+alpha;								// "abcde"
+```
+
+`alpha[0] = 'z'` doesn't do anything except return the string `"z"`. The problem here is that `alpha` contains a String, which is a primitive type, and hence immutable.  
+
+Now, consider an analogous operation on an Array instead of a String. Here's the Array:  
+
+```javascript
+alpha = ['a', 'b', 'c', 'd', 'e'];
+```
+
+The variable `alpha` holds a reference to an Array, which in turn holds five string values (one for each letter):
+
+![img](https://dbdwvr6p7sskw.cloudfront.net/210/images/mutable_objects1_rev.png)
+
+Now, let's try to change an element in the Array:  
+
+```javascript
+alpha[0] = 'z';       // "z"
+alpha;                // [ "z", "b", "c", "d", "e" ]
+```
+
+Here, we see something different happen. Since Arrays are Objects and not primitive values, we can change the components (the elements) of the Array; this modifies the Array, but does not change the identity of the array. Here, element 0 (the `0` property of `alpha`) now points to a new String; the old value no longer belongs to `alpha`:  
+
+![img](https://dbdwvr6p7sskw.cloudfront.net/210/images/mutable_objects2.png)
+
+This ability to modify values within an Array can cause complications, especially when passing the Array to a Function.  
+
+Now, consider the following code:  
+
+```javascript
+function lessExcitable(text) {
+  return text.replace(/!+/g, '.');  // replaces ! with .
+}
+
+let message = 'Hello!';
+lessExcitable(message);             // "Hello."
+message;                            // "Hello!"
+```
+
+Since calling `replace` on a String returns a new String with a different value, this code doesn't modify the local variable `message`.  
+
+Some of the functions we've written so far illustrate how Arrays exhibit different behavior. Consider our implementation of `push` from an earlier assignment:  
+
+```javascript
+function push(array, value) {
+  array[array.length] = value;
+  return array.length;
+}
+
+let numbers = [1, 6, 27, 34];
+push(numbers, 92);                  // 5
+numbers;                            // [ 1, 6, 27, 34, 92 ]
+```
+
+This function uses the mutability of Arrays. Instead of creating a new Array that includes all the old elements as well as the new value, it simply modifies the Array directly. This also modifies the original Array, `numbers`. If Arrays weren't mutable, you would not be able to do this, and would have to return a completely new Array.  
+
+Here is what things look like before we call `push`:
+
+![img](https://dbdwvr6p7sskw.cloudfront.net/210/images/mutable_objects3.png)
+
+When we return from `push`, we have:  
+
+![img](https://dbdwvr6p7sskw.cloudfront.net/210/images/mutable_objects4.png)
+
+We'll talk more about this topic when we talk about Functions in depth. For now, be sure you understand that primitive types are immutable, and that Arrays (and other Objects) are not.
+
+---
+
+## 8. Pure Functions and Side Effects
+
