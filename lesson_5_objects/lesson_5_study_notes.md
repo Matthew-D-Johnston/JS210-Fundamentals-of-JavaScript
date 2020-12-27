@@ -1066,7 +1066,7 @@ Pure functions are essential in functional programming, a programming paradigm t
    ###### My Solution
 
    * The 1st function is **not** a pure function because it has the side effect of writing something to the console.
-   * The 2nd functino is **not** a pure function because it does not return a value that is dependent on the arguments; it returns `undefined`.
+   * The 2nd function is **not** a pure function because it does not return a value that is dependent on the arguments; it returns `undefined`.
    * The 3rd function **is a pure function** because it has no side effects, returns a value that is dependent on the arguments given, and always returns the same value given the same arguments over its lifetime.
    * The 4th function is **not** a pure function because it has the side effect of accessing the system's random number generator.
    * The 5th function is **not** a pure function because its return value is not dependent on the arguments given.
@@ -1075,4 +1075,175 @@ Pure functions are essential in functional programming, a programming paradigm t
 
 ## 9. Working with Math Objects
 
- 
+ Let's familiarize ourselves with the `Math` object and its methods. You can refer to the [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math) as you go through these practice problems.  
+
+1. The `Math` methods that deal with angle measurements all expect and return values in radians instead of degrees. Mathematically, radians are easier to work with, so nearly all languages use radians for circle and arc calculations. To read more about radians, [check out this article](http://www.mathsisfun.com/geometry/radians.html). Use the `Math.PI` property to create a function that converts radians to degrees.
+
+   ###### My Solution
+
+   ```javascript
+   function radianToDegrees(angle) {
+     return (angle * 180) / Math.PI;
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   let radiansToDegrees = radians => radians / (Math.PI / 180);
+   ```
+
+   or
+
+   ```javascript
+   let radiansToDegrees = radians => (radians * 180) / Math.PI;
+   ```
+
+2. To convert a positive integer to a negative integer, you can just place a minus sign in front of the variable that contains the integer. However, if you don't know whether the original value is negative you may inadvertently convert your variable to the wrong value. You can use the `Math.abs` method to simplify matters by forcing a value positive. For this problem, create a variable with a value of `-180`, then use `Math.abs` to log the positive value of the variable.
+
+   ###### My Solution
+
+   ```javascript
+   let value = -180;
+   
+   Math.abs(value);  // returns 180
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   let degrees = -180;
+   console.log(Math.abs(degrees));
+   ```
+
+3. You can calculate the square of a number by multiplying the number by itself. Calculating the square root takes more work. Fortunately, the `Math.sqrt` method makes this easier than it would otherwise be. Use this method to find the square root of `16777216`.
+
+   ###### My Solution
+
+   ```javascript
+   Math.sqrt(16777216);		// returns 4096
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   console.log(Math.sqrt(16777216));	// 4096
+   ```
+
+4. Suppose, instead, that we want to calculate the 6th power of a number. We could multiply a number by itself six times with a function. However, it is easier to just use `Math.pow`. `Math.pow` takes two arguments, the base and the exponent, and returns the result. Use `Math.pow` to compute and log the value of `16` to the 6th power.
+
+   ###### My Solution
+
+   ```javascript
+   console.log(Math.pow(16, 6)); // returns 16777216
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   console.log(Math.pow(16, 6)); // 16777216
+   ```
+
+5. Rounding numbers up or down in JavaScript is easy, but there are three methods that perform different types of rounding. `Math.round` takes any decimal value and rounds it to the nearest integer. If the fractional part of the number is less than `0.5`, `Math.round` rounds the value downwards; otherwise, it rounds the value upwards. Note: if the fractional part is exactly `0.5`, `Math.round` rounds upwards. `Math.floor` rounds any number downward to the next lower integer. `Math.ceil` rounds any number upward to the next higher integer.  
+
+   Use the appropriate method on each of these variables to return a value of 50. Make sure you use each method once.
+
+   ```javascript
+   let a = 50.72;
+   let b = 49.2;
+   let c = 49.86;
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   Math.floor(a);	// 50
+   Math.ceil(b);	  // 50
+   Math.round(c);	// 50
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   console.log(Math.floor(a));
+   console.log(Math.ceil(b));
+   console.log(Math.round(c));
+   ```
+
+6. `Math.random` returns a random floating-point number between `0` and `1`, excluding the exact value of `1`. This isn't helpful on its own, since you usually want a random integer between two other integer values. Create a function that takes two arguments, a minimum and a maximum value, and returns a random integer between those numbers (including both of the numbers). Your solution should handle the scenario that the user inadvertently swaps the positions of the `min` and `max` values or the scenario that the `min` and `max` values are equal. You may assume that the user always provides the `min` and `max` values.  
+
+   ###### My Solution
+
+   ```javascript
+   function randomNumber(limit1, limit2) {
+     let min;
+     let max;
+     
+     if (limit1 <= limit2) {
+       min = limit1;
+       max = limit2;
+     } else {
+       min = limit2;
+       max = limit1;
+     }
+     
+     return Math.floor(Math.random() * (max - min + 1) + min);
+   }
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   const randomInt = function(min, max) {
+     if (min === max) {
+       return min;
+     } else if (min > max) {
+       let swap = min;
+       min = max;
+       max = swap;
+     }
+     
+     let difference = max - min + 1;
+     return Math.floor(Math.random() * difference) + min;
+   };
+   
+   console.log(randomInt(1, 5));
+   ```
+
+   As you learned in an earlier lesson, you can also use destructuring assignment to swap the `min` and `max` values on lines 5-7:
+
+   ```javascript
+   const randomInt = function(min, max) {
+     if (min === max) {
+       return min;
+     } else if (min > max) {
+       [min, max] = [max, min];
+     }
+     
+     let difference = max - min + 1;
+     return Math.floor(Math.random() * difference) + min;
+   }
+   
+   console.log(randomInt(1, 5));
+   ```
+
+---
+
+## 10. Working With Dates
+
+Let's do some practice problems with the `Date` object and its methods. You can refer to the [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) as you go through these.
+
+1. Create a variable named `today` with the current date and time as its value.
+2. Log a string, "Today's day is 5", that tells the current day of the week as a number between 0 and 6 (Sunday is 0, Saturday is 6). Use the `getDay` method to obtain the number of the day of week.
+3. The `getDay` method, like many of the get methods on the date object, returns a zero-based index of the current day of week instead of the day name. This enables support for multiple locales and formats. Modify the output message of the previous problem to show the 3-letter day name abbreviation. You may use the following array:
+4. Let's add the calendar date (the day of month) to our log message: "Today's date is Mon, the 6th". Use the `getDate` method to obtain the current day of month. Don't worry about using different suffixes for numbers that end with `1`, `2`, or `3` just yet; we'll deal with that in the next problem.
+5. Ideally, the suffix on the day number needs to adjust to the proper suffix for days like the `1st`, `22nd`, and `3rd`. Write a function named `dateSuffix` that takes the day of month as a numeric value and returns the formatted day of month and suffix. Make sure you use the correct suffixes.
+6. Change your output to include the value from the `getMonth` method. Thus, the logged string will read "Today's date is Mon, 11 6th", where `11` is the month number returned by `getMonth`.
+7. Let's make the month readable. Using the same technique we used in problem 3, convert the month number in the output string to a 3-letter month name abbreviation. You may use the following array:
+8. Our call to `console.log` is getting cluttered. Let's clean things up a bit and refactor the code into a few formatting functions that we can call from anywhere in our code. Create `formattedMonth` and `formattedDay` functions to format the month and day, then write a `formattedDate` function that pulls everything together and logs the fully formatted date.
+9. Log the values returned from the `getFullYear` and `getYear` methods. Note how these values differ. Note especially that `getYear` is deprecated: you should avoid using deprecated methods as they may one day disappear.
+10. Use the `getTime` method and log the current date and time in total milliseconds since Jan. 1st 1970.
+11. Create a new date object variable named `tomorrow` that contains a Date object. Initialize the variable by setting it to the value of `today`. You can get the value of `today` using the `getTime` method. Next, change the date on the `tomorrow` object to the day after today: you should use `setDate` to change the date. Finally, log the `tomorrow` object with your `formattedDate` function.
+12. Create a new variable named `nextWeek` that is a new Date copied from the `today` object. Compare `nextWeek` and `today`, and log the results. Are they equal? Why or why not?
+13. The `===` operator only returns `true` with Date objects if the objects are the same object. Since we have two different objects (with the same values), we must instead compare the values represented by those objects. Compare the values returned by `toDateString` to determine whether the two objects are equal. Finally, add 7 days to the `nextWeek` date and compare the two objects again.
+14. Finally, write a function named `formatTime` that takes a date object as an argument and returns a string formatted with the hours and minutes as "15:30". Make sure you handle the case where the hours or minutes has only one digit: you need to pad the value with a leading zero in such cases, e.g., "03:04". You can use the `getHours` and `getMinutes` methods to obtain the hours and minutes.
