@@ -1364,18 +1364,264 @@ Let's do some practice problems with the `Date` object and its methods. You can 
 
 6. Change your output to include the value from the `getMonth` method. Thus, the logged string will read "Today's date is Mon, 11 6th", where `11` is the month number returned by `getMonth`.
 
+   ###### My Solution
+
+   ```javascript
+   console.log(`Today's date is ${daysOfWeek[today.getDay()]}, ${today.getMonth()} ${dateSuffix(today.getDate())}`);
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   console.log("Today's date is " + daysOfWeek[today.getDay()] + ', ' +
+              											 String(today.getMonth()) + ' ' +
+              											 dateSuffix(today.getDate()));
+   ```
+
+   Note that `getMonth` returns a 0-based month number: January is month 0, while December is month 11.
+
 7. Let's make the month readable. Using the same technique we used in problem 3, convert the month number in the output string to a 3-letter month name abbreviation. You may use the following array:
 
-8. Our call to `console.log` is getting cluttered. Let's clean things up a bit and refactor the code into a few formatting functions that we can call from anywhere in our code. Create `formattedMonth` and `formattedDay` functions to format the month and day, then write a `formattedDate` function that pulls everything together and logs the fully formatted date.
+   ```javascript
+   let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+   ```
+
+   ###### My Solution
+
+   ```javascript
+   console.log(`Today's date is ${daysOfWeek[today.getDay()]}, ${months[today.getMonth()]} ${dateSuffix(today.getDate())}`);
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+   
+   console.log("Today's date is " + daysOfWeek[today.getDay()] + ', ' +
+              											 months[today.getMonth()] + ' ' +
+              											 dateSuffix(today.getDate()));
+   ```
+
+8. Our call to `console.log` is getting cluttered. Let's clean things up a bit and refactor the code into a few formatting functions that we can call from anywhere in our code. Create `formattedMonth` and `formattedDay` functions to format the month and day, then write a `formattedDate` function that pulls everything together and logs the fully formatted date.  
+
+   ###### My Solution
+
+   ```javascript
+   function dateSuffix(dayOfMonth) {
+     let remainder = dayOfMonth % 10;
+     let day = String(dayOfMonth);
+   
+     if (dayOfMonth >= 11 && dayOfMonth <= 13) {
+       return day + 'th';
+     } else if (remainder >= 1 && remainder <= 3) {
+       switch (remainder) {
+         case 1:
+           return day + 'st';
+         case 2:
+           return day + 'nd';
+         case 3:
+           return day + 'rd';
+       }
+     } else {
+       return day + 'th';
+     }
+   }
+   
+   function formattedDay(day) {
+     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+   
+     return daysOfWeek[day];
+   }
+   
+   function formattedMonth(month) {
+     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+   
+     return months[month];
+   }
+   
+   function formattedDate(date) {
+     let day = formattedDay(date.getDay());
+     let month = formattedMonth(date.getMonth());
+     let dayOfMonth = dateSuffix(date.getDate());
+   
+     return day + ', ' + month + ' ' + dayOfMonth;
+   }
+   
+   let today = new Date();
+   
+   console.log(formattedDate(today));
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   function formattedDate(date) {
+     let day = formattedDay(date);
+     let month = formattedMonth(date);
+     
+     console.log("Today's date is " + day + ', ' + month + ' ' + dateSuffix(date.getDate()));
+   }
+   
+   function formattedMonth(date) {
+     let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+     
+     return months[date.getMonth()];
+   }
+   
+   function formattedDay(date) {
+   	let daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+   
+     return daysOfWeek[date.getDay()];
+   }
+   
+   formattedDate(today);
+   ```
 
 9. Log the values returned from the `getFullYear` and `getYear` methods. Note how these values differ. Note especially that `getYear` is deprecated: you should avoid using deprecated methods as they may one day disappear.
 
+   ###### My Solution
+
+   ```javascript
+   today.getFullYear(); 		// 2020
+   today.getYear();				// 120
+   ```
+
+   ###### LS Solution
+
+   ```javascript
+   console.log(today.getFullYear());
+   console.log(today.getYear());
+   ```
+
 10. Use the `getTime` method and log the current date and time in total milliseconds since Jan. 1st 1970.
+
+    ###### My Solution
+
+    ```javascript
+    console.log(today.getTime());			// 1609248984153
+    ```
+
+    ###### LS Solution
+
+    ```javascript
+    console.log(today.getTime());
+    ```
 
 11. Create a new date object variable named `tomorrow` that contains a Date object. Initialize the variable by setting it to the value of `today`. You can get the value of `today` using the `getTime` method. Next, change the date on the `tomorrow` object to the day after today: you should use `setDate` to change the date. Finally, log the `tomorrow` object with your `formattedDate` function.
 
-12. Create a new variable named `nextWeek` that is a new Date copied from the `today` object. Compare `nextWeek` and `today`, and log the results. Are they equal? Why or why not?
+    ###### My Solution
+
+    ```javascript
+    let tomorrow = today;
+    tomorrow.setDate(30);
+    
+    console.log(formattedDate(tomorrow));
+    ```
+
+    ###### LS Solution
+
+    ```javascript
+    let tomorrow = new Date(today.getTime());
+    
+    tomorrow.setDate(today.getDate() + 1);
+    formattedDate(tomorrow);
+    ```
+
+    JavaScript has four (4) ways to create a date object:
+
+    1. `new Date();`
+    2. `new Date(value);`
+    3. `new Date(dateString);`
+    4. `new Date(year, month[, date[, hours[, minutes[, seconds[, milliseconds]]]]]);`
+
+    Passing in the date object directly also works (e.g. `new Date(today)`). However, this employs implicit coercion which we don't recommend. Using the `Date.prototype.getTime` method makes it clear what is going on.
+
+12. Create a new variable named `nextWeek` that is a new Date copied from the `today` object. Compare `nextWeek` and `today`, and log the results. Are they equal? Why or why not?  
+
+    ###### My Solution
+
+    ```javascript
+    let nextWeek = new Date(today.getTime());
+    
+    console.log(today === nextWeek);
+    ```
+
+    No, they are not equal. `nextWeek` references a completely new Date object than that of `today` so despite the fact that they refer to the exact same time and date, they are two separate objects.
+
+    ###### LS Solution
+
+    ```javascript
+    let nextWeek = new Date(today.getTime());
+    
+    console.log(today === nextWeek);
+    ```
 
 13. The `===` operator only returns `true` with Date objects if the objects are the same object. Since we have two different objects (with the same values), we must instead compare the values represented by those objects. Compare the values returned by `toDateString` to determine whether the two objects are equal. Finally, add 7 days to the `nextWeek` date and compare the two objects again.
 
+    ###### My Solution
+
+    ```javascript
+    console.log(today.toDateString() === nextWeek.toDateString());  // true
+    
+    nextWeek.setDate(today.getDate() + 7);
+    
+    console.log(today.toDateString() === nextWeek.toDateString());  // false
+    ```
+
+    ###### LS Solution
+
+    ```javascript
+    console.log(today.toDateString() === nextWeek.toDateString());
+    
+    nextWeek.setDate(today.getDate() + 7);
+    
+    console.log(today.toDateString() === nextWeek.toDateString());
+    ```
+
 14. Finally, write a function named `formatTime` that takes a date object as an argument and returns a string formatted with the hours and minutes as "15:30". Make sure you handle the case where the hours or minutes has only one digit: you need to pad the value with a leading zero in such cases, e.g., "03:04". You can use the `getHours` and `getMinutes` methods to obtain the hours and minutes.
+
+    ###### My Solution
+
+    ```javascript
+    function formatTime(date) {
+      let hours = formatPadding(date.getHours());
+      let minutes = formatPadding(date.getMinutes());
+    
+      return hours + ':' + minutes;
+    }
+    
+    function formatPadding(number) {
+      if (number < 10) {
+        number = '0' + String(number);
+      } else {
+        number = String(number);
+      }
+    
+      return number;
+    }
+    
+    let today = new Date();
+    
+    console.log(formatTime(today));
+    ```
+
+    ###### LS Solution
+
+    ```javascript
+    function formatTime(date) {
+      return addZero(date.getHours()) + ':' + addZero(date.getMinutes());
+    }
+    
+    function addZero(value) {
+      let timeComponent = String(value);
+      return timeComponent.length < 2 ? '0' + timeComponent : timeComponent;
+    }
+    
+    // Date value passed: 2013-03-01T01:10:00
+    console.log(formatTime(new Date(2013, 2, 1, 1, 10)));
+    ```
+
+---
+
+## 11. Working with Function Arguments
+
