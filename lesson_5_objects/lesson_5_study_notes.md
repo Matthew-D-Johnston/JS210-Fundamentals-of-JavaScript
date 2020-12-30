@@ -1625,3 +1625,249 @@ Let's do some practice problems with the `Date` object and its methods. You can 
 
 ## 11. Working with Function Arguments
 
+### The Traditional Approach
+
+The `arguments` object is an *Array-like* (more on this in a bit) local variable that is available inside all Functions. It contains all the arguments passed to the Function, no matter how many arguments you provided, and no matter how many arguments the Function's definition includes:
+
+```javascript
+function logArgs(a) {
+  console.log(arguments[0]);
+  console.log(arguments[1]);
+  console.log(arguments.length);
+}
+
+logArgs(1, 'a');
+
+// logs:
+1
+a
+2
+```
+
+Remember when we said that `arguments` was "Array-like," but not a real Array? Notice that we can access argument values using the same bracket notation that we use with Arrays, and that `arguments` also has a `length` property. Unfortunately, this is where the similarities between `arguments` and Arrays end:
+
+```javascript
+function logArgs() {
+  console.log(typeof arguments);
+  console.log(Array.isArray(arguments));
+  arguments.pop();
+}
+
+logArgs(1, 2);
+
+// logs:
+object				// arguments is an "object"
+false					// but it is not an Array
+TypeError: Object #<Object> has no method 'pop' // and it doesn't have the usual Array methods
+```
+
+You can create an Array from the `arguments` object with this code:
+
+```javascript
+let args = Array.prototype.slice.call(arguments);
+```
+
+We'll discuss object prototypes in a future topic, but, for now, think of this as "borrowing" the `slice` method from the `Array` global object. When we apply `slice` to the `arguments` object, it creates an Array that contains the same values as those present in `arguments`. This gives us an Array that we can use just like any other Array.
+
+```javascript
+function logArgs() {
+  let args = Array.prototype.slice.call(arguments);
+  console.log(typeof args);
+  console.log(Array.isArray(args));
+  args.pop();
+}
+
+logArgs(1, 2);
+
+// logs:
+object
+true					// args is a proper Array now
+```
+
+#### Functions that Accept Any Number of Arguments
+
+Let's say we have a Function that adds two numbers together:
+
+```javascript
+function sum(a, b) {
+  return a + b;
+}
+
+sum(40, 2);				// 42
+```
+
+If we want to add three numbers together instead, we need a separate Function:
+
+```javascript
+function sum3(a, b, c) {
+  return a + b + c;
+}
+```
+
+What if we need to add four numbers? Now, we need yet another Function. Ideally, we would like to pass in any number of arguments, and have the Function add them all up. Here's a version of `sum` that does just that:
+
+```javascript
+function sum() {
+  let result = 0;
+  for (let index = 0; index < arguments.length; index += 1) {
+    result += arguments[index];
+  }
+  
+  return result;
+}
+```
+
+```javascript
+sum();									// 0
+sum(1, 2, 3);						// 6
+sum(1, 2, 3, 4, 5);			// 15
+```
+
+Notice that the definition of `sum` doesn't list any arguments at all, though you can call the Function with any number of arguments. That makes this function slightly difficult to read and understand. This is an inherent weakness of using the `arguments` object that you should be aware of; we recommend only using it when you really need to deal with an arbitrary number of arguments. Note that ES6 addresses this problem with its rest parameter syntax: `(...args)`.  
+
+### The Modern Approach
+
+The `arguments` object is the traditional way to access an arbitrary number of argumnets. ES6 introduced a new way to do that: **rest parameters**. This feature looks like this:
+
+```javascript
+function logArgs(...args) { // 3 periods followed by an array name
+	console.log(args[0]);
+  console.log(args[1]);
+  console.log(args.length);
+}
+
+logArgs(1, 'a');
+
+// logs:
+1
+a
+2
+```
+
+Essentially, `...args` tells JavaScript to expect an arbitrary number of arguments (0 or more), and to stick them in the array specified by `args`. For instance, in the above example, `1` gets put in `args[0]`, while `'a'` gets stored in `args[1]`.  
+
+Unlike the `arguments` object, the array used in rest parameters is a genuine array -- it is not Array-like. Furthermore, the name isn't fixed -- you can use any valid name except for `arguments` (which refers to the object, not an array).  
+
+You can mix rest parameters with other named parameters. For instance:  
+
+```javascript
+function logArgs(foo, bar, ...args) {
+  console.log(foo);
+  console.log(bar);
+  console.log(args[0]);
+  console.log(args[1]);
+  console.log(args.length);
+}
+
+logArgs('oof', 'rab', 1, 'a');
+
+// logs:
+oof
+rab
+1
+a
+2
+```
+
+In general, you should use rest parameters in preference to the `arguments` object, provided you're not limited by project requirements.
+
+---
+
+## 12. Practice Problem: Welcome Stranger
+
+Write a function that takes two arguments, an array and an object. The array will contain two or more elements that, when combined with spaces, produce a person's full name. The object will contain two keys, `title` and `occupation`, and suitable values for both items. Your function should log a greeting to the console that uses the person's full name, and mentions the person's title and occupation.  
+
+Example:
+
+```javascript
+greetings(['John', 'Q', 'Doe'], { title: 'Master', occupation: 'Plumber' });
+
+// console output
+Hello, John Q Doe! Nice to have a Master Plumber around.
+```
+
+###### My Solution
+
+```javascript
+function greetings(names, specs) {
+  let name = names.join(' ');
+  let title = `${specs.title} ${specs.occupation}`;
+  let text = `Hello, ${name}! Nice to have a ${title} around.`;
+
+  console.log(text);
+}
+```
+
+###### LS Solution
+
+```javascript
+function greetings(name, status) {
+  let nameGreet = 'Hello, ' + name.join(' ') + '!';
+  let statusGreet = 'Nice to have a ' status.title + ' ' + status.occupation + ' around.';
+  
+  console.log(nameGreet + ' ' + statusGreet);
+}
+```
+
+---
+
+## 13. Practice Problem: Repeated Characters
+
+Implement a function that takes a `String` as an argument and returns an object that contains a count of the **repeated** characters.  
+
+```javascript
+repeatedCharacters('Programming');    // { r: 2, g: 2, m: 2 }
+repeatedCharacters('Combination');    // { o: 2, i: 2, n: 2 }
+repeatedCharacters('Pet');            // {}
+repeatedCharacters('Paper');          // { p: 2 }
+repeatedCharacters('Baseless');       // { s: 3, e: 2 }
+```
+
+Note that `repeatedCharacters` does a bit more than simply count the frequency of each character: it determines the counts, but only returns counts for characters that have a count of 2 or more. It also ignores the case.
+
+###### My Solution
+
+```javascript
+function repeatedCharacters(string) {
+  let result = {};
+
+  for (let index = 0; index < string.length; index += 1) {
+    let regex = RegExp(string[index], 'gi');
+    let total = string.match(regex).length;
+
+    if (total > 1) {
+      result[string[index].toLowerCase()] = total;
+    }
+  }
+
+  return result;
+}
+```
+
+###### LS Solution
+
+```javascript
+function repeatedCharacters(string) {
+  let result = {};
+  let lowerCaseString = string.toLowerCase();
+  
+  for (let index = 0; index < lowerCaseString.length; index += 1) {
+    if (result[lowerCaseString[index]] !== undefined) {
+      result[lowerCaseString[index]] += 1;
+    } else {
+      result[lowerCaseString[index]] = 1;
+    }
+  }
+  
+  for (let key in result) {
+    if (result[key] === 1) {
+      delete result[key];
+    }
+  }
+  
+  return result;
+}
+```
+
+---
+
