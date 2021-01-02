@@ -293,9 +293,99 @@ console.log(`There are ${phraseLength} characters in "${phrase}".`);
 
 ### 7. Convert a String to a Number
 
+For this exercise we're going to learn more about type conversion by implementing our own `parseInt` function that converts a string of numeric characters (including an optional plus or minus sign) to a number.  
 
+The function takes a string of digits as an argument, and returns the appropriate number. Do not use any of the built-in functions for converting a string to a number type.  
 
+For now, do not worry about leading `+` or `-` signs, nor should you worry about invalid characters; assume all characters will be numeric.  
 
+Examples:
 
+```javascript
+stringToInteger('4321');      // 4321
+stringToInteger('570');       // 570
+```
 
+###### My Solution
 
+```javascript
+function stringToInteger(numberStr) {
+  let digits = numberStr.split('');
+  let stringLength = numberStr.length;
+  let multiplier = 1;
+
+  for (let index = 1; index < stringLength; index += 1) {
+    multiplier *= 10;
+  }
+
+  let integer = 0;
+
+  for (let index = 0; index < stringLength; index += 1) {
+    integer += digits[index] * multiplier;
+    multiplier /= 10;
+  }
+
+  return integer;
+}
+```
+
+###### LS Solution
+
+```javascript
+const DIGITS = {
+  '0': 0, '1': 1, '2': 2, '3': 3, '4': 4,
+  '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
+}
+
+function stringToInteger(string) {
+  let value = 0;
+  const numbers = stringToNumbers(string);
+  
+  for (let i = 0; i < numbers.length; i += 1) {
+    value = 10 * value + numbers[i];
+  }
+  
+  return value;
+}
+
+function stringToNumbers(string) {
+  const result = [];
+  
+  for (let i = 0; i < string.length; i += 1) {
+    result.push(DIGITS[string[i]]);
+  }
+  
+  return result;
+}
+```
+
+###### Discussion
+
+The solution isn't one of the more concise ones, but it is explicit in its intention. The approach uses a `DIGITS` object as a lookup table to convert each of the digit characters into a digit number. The `stringToNumbers` function handles this conversion. The function iterates over every character and correspondingly gets the digit number equivalent. The `stringToNumbers` function returns an array of digit numbers.  
+
+Using this array, the solution performs the computation of the value of the digits when put together. The actual computation of the numeric value of the `string` is strictly mechanical. The solution takes each digit and adds it to `10` times the previously calculated value, which quickly and easily gives the desired result. For example, if the digits are `4`, `3`, and `1`, then the final result is computed as follows: 
+
+```javascript
+10 * 0 + 4  --> 4
+10 * 4 + 3  --> 43
+10 * 43 + 1 --> 431
+```
+
+###### The Built-in Function
+
+There are a number of built-in functions that you can use to convert a string to a number. For this one, let's have a look at `parseInt`. This [built-in function](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/parseInt) is called in the global/window context. It takes two arguments: a string and a radix.
+
+```javascript
+parseInt('E', 16);        // 14
+parseInt('015', 10);      // 15
+parseInt('F5');           // NaN
+parseInt('F5', 16);       // 245
+```
+
+Compared to the built-in function, the one the solution implements is less robust. The built-in function is able to accurately convert from a wider range of string inputs via the radix parameter.
+
+---
+
+## 8. Convert a String to a Signed Number
+
+s

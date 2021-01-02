@@ -550,3 +550,99 @@ For this exercise, the solution leverages the `Date.prototype.getTime` method. T
 
 ## 10. After Midnight Part 2
 
+As seen in the previous exercise, the time of day can be represented as the number of minutes before or after midnight. If the number of minutes is positive, the time is after midnight. If the number of minutes is negative, the time is before midnight.  
+
+The two functions below do the reverse of the previous exercise. They take a 24-hour time argument and return the number of minutes before or after midnight, respectively. Both functions should return a value between `0` and `1439` (inclusive). Refactor the functions using the `Date` object.  
+
+Examples:
+
+```javascript
+afterMidnight('00:00');       // 0
+beforeMidnight('00:00');      // 0
+afterMidnight('12:34');       // 754
+beforeMidnight('12:34');      // 686
+```
+
+Note: Disregard Daylight Saving Time, Standard Time, and other irregularities.
+
+```javascript
+const MINUTES_PER_HOUR = 60;
+const HOURS_PER_DAY = 24;
+const MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;
+
+function afterMidnight(timeStr) {
+  const timeComponents = timeStr.split(':');
+  const hours = parseInt(timeComponents[0], 10);
+  const minutes = parseInt(timeComponents[1], 10);
+  
+  returns hours * MINUTES_PER_HOUR + minutes;
+}
+
+function beforeMidnight(timeStr) {
+  let deltaMinutes = MINUTES_PER_DAY - afterMidnight(timeStr);
+  if (deltaMinutes === MINUTES_PER_DAY) {
+    deltaMinutes = 0;
+  }
+  
+  return deltaMinutes;
+}
+```
+
+###### My Solution
+
+```javascript
+const MINUTES_PER_MILLISECOND = 1 / 60000;
+
+function afterMidnight(timeStr) {
+  let baseDate = new Date('January 1, 2000 00:00:00');
+  let date = new Date(`January 1, 2000 ${timeStr}:00`);
+
+  let minutes = (date.getTime() - baseDate.getTime()) * MINUTES_PER_MILLISECOND;
+
+  if (minutes === 1440) {
+    return 0;
+  } else {
+    return minutes;
+  }
+}
+
+function beforeMidnight(timeStr) {
+  let minutes = 1440 - afterMidnight(timeStr);
+  if (minutes === 1440) {
+    return 0;
+  } else {
+    return minutes;
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+const MILLISECONDS_PER_MINUTE = 60000;
+const MINUTES_PER_HOUR = 60;
+const HOURS_PER_DAY = 24;
+const MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;
+const DATE_PART = '1/1/2000';
+
+function afterMidnight(timeStr) {
+  const midnight = new Date(`${DATE_PART} 00:00`);
+  const currentDateTime = new Date(`${DATE_PART} ${timeStr}`);
+  
+  return (currentDateTime.getTime() - midnight.getTime()) / MILLISECONDS_PER_MINUTE;
+}
+
+function beforeMidnight(timeStr) {
+  let deltaMinutes = MINUTES_PER_DAY - afterMidnight(timeStr);
+  if (deltaMinutes === MINUTES_PER_DAY) {
+    deltaMinutes = 0;
+  }
+  
+  return deltaMinutes;
+}
+```
+
+###### Discussion
+
+Since the `beforeMidnight` function relies on the `afterMidnight` function to provide most of its behavior, the solution only makes changes to `afterMidnight`. In `afterMidnight`, the solution starts off by creating two `Date` objects to represent `midnight` and the `currentDateTime` derived from the `timeStr` argument. Next, it calls `Date.prototype.getTime` to convert the two `Date` objects to milliseconds, then subtracts the `midnight` milliseconds from the `currentDateTime` milliseconds. Finally, the solution divides the result by `MILLISECONDS_PER_MINUTE` to convert it to minutes, then returns it.
+
