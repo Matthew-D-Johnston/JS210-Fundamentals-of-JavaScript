@@ -388,4 +388,74 @@ Compared to the built-in function, the one the solution implements is less robus
 
 ## 8. Convert a String to a Signed Number
 
-s
+The previous exercise mimics the `parseInt` function to a lesser extent. In this exercise, you're going to extend that function to work with signed numbers.  
+
+Write a function that takes a string of digits, and returns the appropriate number as an integer. The string may have a leading `+` or `-` sign; if the first character is a `+`, your function should return a positive number; if it is a `-`, your function should return a negative number. If there is no sign, return a positive number.  
+
+You may assume the string will always contain a valid number.  
+
+Examples:
+
+```javascript
+stringToSignedInteger('4321');      // 4321
+stringToSignedInteger('-570');      // -570
+stringToSignedInteger('+100');      // 100
+```
+
+###### My  Solution
+
+```javascript
+function stringToSignedInteger(numberStr) {
+  let sign = '';
+  let digits = numberStr.split('');
+  
+  if (digits[0] === '+' || digits[0] === '-') {
+    sign = digits.shift();
+  }
+
+  let numberOfDigits = digits.length;
+  let multiplier = 1;
+
+  for (let index = 1; index < numberOfDigits; index += 1) {
+    multiplier *= 10;
+  }
+
+  let integer = 0;
+
+  for (let index = 0; index < numberOfDigits; index += 1) {
+    integer += digits[index] * multiplier;
+    multiplier /= 10;
+  }
+
+  if (sign === '-') {
+    integer *= -1;
+  }
+
+  return integer;
+}
+```
+
+###### LS Solution
+
+```javascript
+function stringToSignedInteger(string) {
+  switch (string[0]) {
+    case '-': return -stringToInteger(string.slice(1));
+    case '+': return stringToInteger(string.slice(1));
+    default: return stringToInteger(string);
+  }
+}
+```
+
+###### Discussion
+
+The solution reuses the `stringToInteger` function from the previous exercise. Why waste effort reinventing the wheel? (Oh, wait. That's exactly what we're doing, isn't it?)  
+
+The solution is reasonably straightforward: it simply looks at the first character of the `string`, then reuses the function from the previous exercise. If the character is a `-`, then the solution just negates the result of the `stringToInteger` function. If the character is a `+` or if there is no sign, then the solution returns the result of `stringToInteger` as is.  
+
+Note that the solution uses the expression, `string.slice(1)`, to obtain the remainder of the `string` after a leading `+` or `-`. This notation simply means to extract the characters starting from index `1` of the `string` up to and including the last character. When there is a second argument (e.g., `string.slice(1, 5)`), the `String.prototype.slice` method will extract the characters starting from index `1` up to but excluding index `5`.  
+
+---
+
+## 9. Convert a Number to a String
+
