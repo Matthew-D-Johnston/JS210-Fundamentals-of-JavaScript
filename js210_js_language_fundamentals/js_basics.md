@@ -548,3 +548,48 @@ One final note: the [Airbnb Style Guide](https://github.com/airbnb/javascript) c
 ---
 
 ## 10. Convert a Signed Number to a String
+
+In the previous exercise, you reimplemented a function that converts non-negative numbers to strings. In this exercise, you're going to extend that function by adding the ability to represent negative numbers.  
+
+You may not use any of the standard conversion functions available in JavaScript, such as `String()`, `Number.prototype.toString`, or an expression such as `'' + number`. You may, however, use the `integerToString` function from the previous exercise.  
+
+Examples:  
+
+```javascript
+signedIntegerToString(4321);      // "+4321"
+signedIntegerToString(-123);      // "-123"
+signedIntegerToString(0);         // "0"
+```
+
+###### My Solution
+
+```javascript
+function signedIntegerToString(num) {
+  if (num > 0) {
+    return '+' + integerToString(num);
+  } else if (num < 0) {
+    return '-' + integerToString(Math.abs(num));
+  } else {
+    return '0';
+  }
+}
+```
+
+###### LS Solution
+
+```javascript
+function signedIntegerToString(number) {
+  if (number < 0) {
+    return ('-' + integerToString(-number));
+  } else if (number > 0) {
+    return ('+' + integerToString(number));
+  } else {
+    return integerToString(number);
+  }
+}
+```
+
+###### Discussion
+
+This solution is similar to the `stringToSignedInteger` function from two exercises ago. This solution simply checks the sign of the `number`, then passes control to `integerToString` for the heavy lifting. One thing to notice is that when the `number` has a negative value, the solution multiplies the `number` by `-1` before passing it to the `integerToString` function. This is done to ensure that the math performed inside the `integerToString` function will work as expected.
+
