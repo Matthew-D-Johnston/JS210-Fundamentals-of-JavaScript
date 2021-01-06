@@ -103,3 +103,107 @@ In JavaScript, every object literal creates a new object. When this object is as
 
 ### 3. Amount Payable
 
+What does the following code log? Why is this so?
+
+```javascript
+let startingBalance = 1;
+const chicken = 5;
+const chickenQuantity = 7;
+
+function totalPayable(item, quantity) {
+  return startingBalance + (item * quantity);
+}
+
+startingBalance = 5;
+console.log(totalPayable(chicken, chickenQuantity));
+
+startingBalance = 10;
+console.log(totalPayable(chicken, chickenQuantity));
+```
+
+###### My Solution
+
+This program logs:
+
+```
+40
+45
+```
+
+The first logged value, `40`, is a result of logging the return value of the `totalPayable()` function when passed the variables `chicken` and `chickenQuantity` as arguments. However, the second logged value, `45`, results from the exact same operation: logging the return value of the `totalPayable()` function with `chicken` and `chickenQuantity` as arguments. The difference in the values comes from the fact that we have reassigned the `startingBalance` variable, which is called within the function, and thus resulting in different ultimate return values of the function despite passing the same values as arguments.
+
+###### LS Solution
+
+This code logs `40` and `45`.  
+
+###### Discussion
+
+You may want to review the concept of [closures](https://launchschool.com/lessons/511a561c/assignments/a480ef58). Closures have functions *"retain access"* to variables defined in an *"enclosing scope"*. In the code above, the *enclosing scope* is the global (window) scope containing the variables `startingBalance`, `chicken`, and `chickenQuantity`. *Retaining access* means that a variable's value is not fixed at the time when the function is defined or first executed. Instead, the variable's value is dynamically looked up each time the function is called. Therefore, the value of `startingBalance` on line 6 is not `1`; instead, the value is a reference to the value stored in the `startingBalance` variable in the global scope.  
+
+As a result of how closures work, the first time the `totalPayable` function is called, the value of `startingBalance` is `5`; the second time the function is called, the value of `startingBalance` is `10`.
+
+---
+
+### 4. Caller
+
+The `doubler` function in the code below takes two arguments: a `number` to double and return, and a string containing the name of the function's `caller`.
+
+```javascript
+function doubler(number, caller) {
+  console.log(`This function was called by ${caller}.`);
+  return number + number;
+}
+
+doubler(5, 'Victor');										// returns 10
+// logs:
+// This function was called by Victor.
+```
+
+Write a `makeDoubler` function that takes a `caller` name as an argument, and returns a function that has the same behavior as `doubler`, but with a preset `caller`.  
+
+Example:
+
+```javascript
+const doubler = makeDoubler('Victor');
+doubler(5);															// returns 10
+// logs:
+// This function was called by Victor.
+```
+
+###### My Solution
+
+```javascript
+function makeDoubler(caller) {
+  const doubling = function(number) {
+    console.log(`This function was called by ${caller}.`);
+    return number + number;
+  };
+
+  return doubling;
+}
+```
+
+###### LS Solution
+
+This solution leverages that functions in JavaScript are first-class. It satisfies the requirement that `makeDoubler` must take a `caller` name and it returns a variation of the `doubler` function.  
+
+```javascript
+function makeDoubler(caller) {
+  return number => {
+    console.log(`This function was called by ${caller}.`);
+    return number + number;
+  };
+}
+
+const doubler = makeDoubler('Victor');
+doubler(5);																// returns 10
+// logs:
+// This function was called by Victor.
+```
+
+Notice that the returned anonymous function expression assigned to the `doubler` variable still retains access to the `caller` variable in its closure, even after the `makeDoubler` function returns.  
+
+---
+
+### 5. What's My Value?
+
