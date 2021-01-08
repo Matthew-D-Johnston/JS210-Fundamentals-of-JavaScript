@@ -207,3 +207,67 @@ Notice that the returned anonymous function expression assigned to the `doubler`
 
 ### 5. What's My Value?
 
+What will the following program log to the console? Can you explain why?
+
+```javascript
+const array = ['Apples', 'Peaches', 'Grapes'];
+
+array[3.4] = 'Oranges';
+console.log(array.length);
+console.log(Object.keys(array).length);
+
+array[-2] = 'Watermelon';
+console.log(array.length);
+console.log(Object.keys(array).length);
+```
+
+###### My Solution
+
+This program logs:
+
+```
+3
+4
+
+3
+5
+```
+
+The first result, `3`, corresponds to the number of elements that have a non-negative integer as an index. The second result, `4`, corresponds to the number of keys pertaining to `array`, regardless of whether those keys are non-negative integers or not. The third result, `3`, again correpsonds to the number of elements that have a non-negative integer as an index. The last result, `5`, once again corresponds to the number of keys pertaining to `array`, regardless of whether those keys are non-negative integers or not. Both of the additions of new elements to the array do not change the length of the array because each of those elements use indexes that are not non-negative integers, in the first case we have a decimaled index, `3.4`, and in the second case we have a negative integer, `-2`. These additions, however, do increase the number of keys.
+
+###### LS Solution
+
+```
+3
+4
+3
+5
+```
+
+Recall that [Arrays are implemented with Objects](https://launchschool.com/lessons/0539330a/assignments/8630526d) internally in JavaScript. One thing that differentiates the two is that arrays have a `length` property, while objects do not. Arrays can be thought of as special objects that have only non-negative integer values (from 0 up to 2 32 - 1) as keys, and have an extra `length` property that keeps track of how many such key-value pairs exist in the object.
+
+```javascript
+const array = ['Apples', 'Peaches', 'Grapes'];
+array[3.4] = 'Oranges';
+array[-2] = 'Watermelon';
+
+console.log(array);  // ["Apples", "Peaches", "Grapes", 3.4: "Oranges", -2: "Watermelon"]
+
+console.log(Object.keys(array));      // ["0", "1", "2", "3.4", "-2"]
+
+// "0", "1", "2" are the indices/keys/property names for "Apples", "Peaches", "Grapes"
+console.log(array[0]);                // Apples
+console.log(array[1]);                // Peaches
+console.log(array[2]);                // Grapes
+console.log(array['2']);              // Grapes
+
+// "3.4" and "-2" are keys/property names that exist in the 'Array Object'
+console.log(array[3.4]);              // Oranges
+console.log(array[-2]);               // Watermelon
+console.log(array['-2']);             // Watermelon
+```
+
+---
+
+### 6. Length
+
