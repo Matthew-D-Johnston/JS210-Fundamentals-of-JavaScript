@@ -271,3 +271,115 @@ console.log(array['-2']);             // Watermelon
 
 ### 6. Length
 
+Read through the code below. What values will be logged to the console? Can you explain these results?  
+
+```javascript
+const languages = ['JavaScript', 'Ruby', 'Python'];
+console.log(languages);
+console.log(languages.length);
+
+languages.length = 4;
+console.log(languages);
+console.log(languages.length);
+
+languages.length = 1;
+console.log(languages);
+console.log(languages.length);
+
+languages.length = 3;
+console.log(languages);
+console.log(languages.length);
+
+languages.length = 1;
+languages[2] = 'Python';
+console.log(languages);
+console.log(languages[1]);
+console.log(languages.length);
+```
+
+###### My Solution
+
+```
+['JavaScript', 'Ruby', 'Python']
+3
+
+['JavaScript', 'Ruby', 'Python', <1 empty item>]
+4
+
+['JavaScript']
+1
+
+['JavaScript', <2 empty items>]
+3
+
+['JavaScript', <1 empty item>, 'Python']
+undefined
+3
+```
+
+The first two lines that are logged to the console result from having assigned the constant variable `languages` to the array `['JavaScript', 'Ruby', 'Python']`. The first one simply logs the array, which is the value referenced by `languages`, and the second one logs the length of that array, which is `3`.  
+
+For the next two lines we must take into account the fact that we have reassigned the length property of the array to `4`. This adds another entry to the array, which will show up as `<1 empty item>` when we log the return value of calling the `languages` variable to the console. Since we have changed the length property to `4`, that is the value that is logged when we retrieve the length of the `languages` variable.  
+
+In the third grouping of code, we begin by setting the length property to `1`. This will chop our array so that it has only one element, the first one. Thus, logging the array to the console produces the output `['JavaScript']`. Again, since we have changed the length property to `1`, that is the output we get when logging the result of retreiving the length property.  
+
+In the fourth grouping, we set the length property to `3`. We should now have 2 empty items augmented to the end of our array object. However, rather than two `<1 empty item>` entries, we get one `<2 empty items>` entry. And again, logging the length property to the console gives us `3`, which is the value we just set.  
+
+The last grouping begins by setting the length property to `1` and then assigns the string `'Python'` to the element with the index of 2, which is the third element in the array. Logging the value associated with the `languages` variable should return an array with three entries, the first of which is `'JavaScript'`, the second `<1 empty item>`, and the third `'Python'`. Logging the return value of the second element of the array, the one with an index of 1, results in the output of `undefined`, since it is referencing the empty item entry. And now when we log the length to the console, we should get an output return of `3` since there are now three entries.
+
+###### LS Solution
+
+Using Node REPL (v8.8.1):
+
+```javascript
+['JavaScript', 'Ruby', 'Python']
+3
+['JavaScript', 'Ruby', 'Python', <1 empty item>]
+4
+['JavaScript']
+1
+['JavaScript', <2 empty items>]
+3
+['JavaScript', <1 empty item>, 'Python']
+undefined
+3
+```
+
+Using Chrome Console (v62):
+
+```javascript
+["JavaScript", "Ruby", "Python"]
+3
+["JavaScript", "Ruby", "Python", empty]
+4
+["JavaScript"]
+1
+["JavaScript", empty × 2]
+3
+["JavaScript", empty, "Python"]
+undefined
+3
+```
+
+###### Discussion
+
+The key takeaway for this exercise is that the `length` property can be explicitly set (recall that arrays are zero-indexed). Setting the `length` to a value that is less than the current `length` truncates the array; re-setting the `length` to a higher value does not bring back the truncated elements. Setting the `length` to a value greater than the current `length` creates 'empty slots' in the array, but the number of actual elements does not increase. Furthermore, since the value of the `length` is always equal to the last index plus `1`, adding an element to index 2 of a one-element array changes the array's `length` to `3`, even though the array only has two actual elements (at indices 0 and 2).  
+
+Arrays with 'empty slots' are sometimes referred to as 'sparse arrays'. You may see them represented in a variety of different ways. For example:  
+
+```javascript
+const sparseArray = [, , 'a', , 'b'];
+console.log(sparseArray);
+
+// logs
+[<2 empty items>, 'a', <1 empty item>, 'b']		// Node REPL v8.8.1
+[ , , 'a', , 'b']															// older version of Node
+[empty x 2, "a", empty, "b"]									// Chrome Console v62
+[undefined x 2, "a", undefined x 1, "b"]			// older version of Chrome
+[<2 empty slots>, "a", <1 empty slot>, "b"]		// Firefox 57.0
+```
+
+---
+
+### 7. The Red Pill
+
