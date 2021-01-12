@@ -615,3 +615,291 @@ function logTransaction() {
 
 ### 6. Full Moon
 
+Run the following code. Why is every warning displayed twice? Change the code so that each warning is displayed only once, as intended.  
+
+```javascript
+const species = ['wolf', 'human', 'wasp', 'squirrel', 'weasel', 'dinosaur'];
+const isMidnight = true;
+const isFullmoon = true;
+
+function isTransformable(species) {
+  return species[0] === 'w';
+}
+
+function transform(species) {
+  return `were${species}`;
+}
+
+for (let i = 0; i < species.length; i++) {
+  const thisSpecies = species[i];
+  var newSpecies;
+  
+  if (isMidnight && isFullmoon && isTransformable(thisSpecies)) {
+    newSpecies = transform(thisSpecies);
+  }
+  
+  if (newSpecies) {
+    console.log(`Beware of the ${newSpecies}!`);
+  }
+}
+```
+
+I believe the reason that the warnings are output twice is because we have declared the variable `newSpecies` inside the `for` loop. Thus, when we reach a non-transformable species, which occurs on every second iteration, the `newSpecies` variable is not reassigned and still references the previous value. Thus the `if` conditional statement returns `true` and the block of code with which it is associated gets executed with the value referenced by `newSpecies` from the previous iteration.  
+
+I think that one fix is by changing `var` to `let`.  
+
+##### change `var` to `let`
+
+```javascript
+const species = ['wolf', 'human', 'wasp', 'squirrel', 'weasel', 'dinosaur'];
+const isMidnight = true;
+const isFullmoon = true;
+
+function isTransformable(species) {
+  return species[0] === 'w';
+}
+
+function transform(species) {
+  return `were${species}`;
+}
+
+for (let i = 0; i < species.length; i++) {
+  const thisSpecies = species[i];
+  let newSpecies;
+  
+  if (isMidnight && isFullmoon && isTransformable(thisSpecies)) {
+    newSpecies = transform(thisSpecies);
+  }
+  
+  if (newSpecies) {
+    console.log(`Beware of the ${newSpecies}!`);
+  }
+}
+```
+
+That works!
+
+###### LS Solution
+
+```javascript
+const species = ['wolf', 'human', 'wasp', 'squirrel', 'weasel', 'dinosaur'];
+const isMidnight = true;
+const isFullmoon = true;
+
+function isTransformable(species) {
+  return species[0] === 'w';
+}
+
+function transform(species) {
+  return `were${species}`;
+}
+
+for (let i = 0; i < species.length; i++) {
+  const thisSpecies = species[i];
+  let newSpecies;
+
+  if (isMidnight && isFullmoon && isTransformable(thisSpecies)) {
+      newSpecies = transform(thisSpecies);
+  }
+
+  if (newSpecies) {
+    console.log(`Beware of the ${newSpecies}!`);
+  }
+}
+```
+
+###### Discussion
+
+In our original code we wrongly assume that `newSpecies` would be re-declared and initially reference `undefined` upon each iteration of our `for` loop. But recall that in JavaScript, functions create a new variable scope, while blocks do not. Since in our original code we declare the variables `thisSpecies` and `newSpecies` inside of a block, not within any function, these variable declarations are [hoisted](https://launchschool.com/lessons/511a561c/assignments/529cf31a) to the top of their scope, which is the *global* scope.  
+
+What happened in our original `for` loop therefore was the following:
+
+- On the first iteration, `newSpecies` is initially `undefined`, as it has not been assigned a value yet. All of the conditions provided to the `if` statement on line 18 are truthy, and therefore `newSpecies` is assigned to the string `'werewolf'`. Because `'werewolf'` is truthy, the `console.log` on line 23 is executed.
+- On the next iteration of our loop, `newSpecies` will *continue* to reference `'werewolf'` unless re-assigned, because the variable declaration has been hoisted to the top of the global scope. Because a condition provided to the `if` statement on line 18 evaluates as `false` on this iteration, `newSpecies` is not re-assigned to `'werehuman'`. However, `newSpecies` still references a truthy value, `'werewolf'`, and thus the code within our `if` statement on line 23 is executed and we again log `'Beware of the werewolf!'`.
+- The process continues analogously for the other values in `species`.
+
+You may wish to review the assignment on [functional scopes](https://launchschool.com/lessons/7cd4abf4/assignments/0b1349b7).
+
+---
+
+### 7. Space Design
+
+We're putting together some information about our new company *Space Design*. Not all roles have been filled yet. But although we have a CEO and Scrum Master, displaying them shows `undefined`. Why is that?  
+
+```javascript
+// Roles (salary still to be determined)
+
+const ceo = {
+  tasks: ['company strategy', 'resource allocation', 'performance monitoring'],
+  salary: 0,
+};
+
+const developer = {
+  tasks: ['turn product vision into code'],
+  salary: 0,
+};
+
+const scrumMaster = {
+  tasks: ['organize scrum process', 'manage scrum teams'],
+  salary: 0,
+};
+
+// Team -- we're hiring!
+
+const team = {};
+
+team[ceo] = 'Kim';
+team[scrumMaster] = 'Alice';
+team[developer] = undefined;
+
+const company = {
+  name: 'Space Design',
+  team,
+  projectedRevenue: 500000,
+};
+
+console.log(`----{ ${company.name} }----`);
+console.log(`CEO: ${company.team[ceo]}`);
+console.log(`Scrum master: ${company.team[scrumMaster]}`);
+console.log(`Projected revenue: $${company.projectedRevenue}`);
+
+// ----{ Space Design }----
+// CEO: undefined
+// Scrum master: undefined
+// Projected revenue: $500000
+```
+
+###### My Solution
+
+My initial suspicion, before running any code, is that there is a problem with the code that tries to assign the names to the different positions within the `team` object. We are actually referencing the values associated with the variables `ceo` and `scrumMaster`, rather than string versions of these variable names, when we try to assign names to them as properties of the `team` object (e.g. `team[ceo] = 'Kim'` rather than `team['ceo'] = 'Kim'`).  
+
+After running the code, that does appear to be the issue.
+
+###### LS Solution
+
+```javascript
+const team = {};
+
+team['ceo'] = 'Kim';
+team['scrumMaster'] = 'Alice';
+team['developer'] = undefined;
+
+console.log('----{ ' + company.name + ' }----');
+console.log('CEO: ' + company.team['ceo']);
+console.log('Scrum master: ' + company.team['scrumMaster']);
+console.log('Projected revenue: $' + company.projectedRevenue);
+```
+
+Or:
+
+```javascript
+const team = {};
+
+team.ceo = 'Kim';
+team.scrumMaster = 'Alice';
+team.developer = undefined;
+
+console.log('----{ ' + company.name + ' }----');
+console.log('CEO: ' + company.team.ceo);
+console.log('Scrum master: ' + company.team.scrumMaster);
+console.log('Projected revenue: $' + company.projectedRevenue);
+```
+
+###### Discussion
+
+Recall from the assignment on [object properties](https://launchschool.com/lessons/0539330a/assignments/4ef54bb4) that property names are always strings. To assign and access the property value, we can use either dot notation or strings with bracket notation, as shown in the two solutions above. (JavaScript style guides typically recommend using dot notation when possible.)  
+
+Most relevant here is that when we use bracket notation to assign or access an object property, the expression inside the brackets must be a string value; if it is not, JavaScript will convert it into one. Our original code unintentionally references the *variables* `ceo`, `scrumMaster`, and `developer` rather than passing in strings. JavaScript looks up the values assigned to those variables, and since the values are objects, converts them to strings. The string representation of all three values is `[object Object]`, so on lines 22-24 we were actually repeatedly re-assigning the value of `team['[object Object]']`. The last assignment, on line 24, assigned it to `undefined`. As a result, the value of `team` ended up as follows:
+
+```javascript
+{ '[object Object]': undefined }
+```
+
+###### Further Exploration
+
+You may wish to take a look at the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors) for accessing object properties via bracket or dot notation.
+
+---
+
+### 8. Expensive Study Preparation
+
+We make a few purchases to prepare for our study session, but the amount charged upon checkout seems too high. Run the following code and find out why we are charged incorrectly.  
+
+```javascript
+// The shopping cart is a list of items, where each item
+// is an object { name: <string>, amount: <number> }.
+let shoppingCart = [];
+
+// Currently available products with prices.
+const prices = {
+  'notebook': 9.99,
+  'pencil': 1.70,
+  'coffee': 3.00,
+  'smoothie': 2.10,
+};
+
+function price({name}) {
+  return prices[name];
+}
+
+// Adding an item to the shopping cart.
+// The amount is optional and defaults to 1.
+// If the item is already in the cart, its amount is updated.
+function updateCart(name, amount) {
+  amount = amount || 1;
+  
+  let alreadyInCart = false;
+  
+  for (let i = 0; i < shoppingCart.length; i += 1) {
+    let item = shoppingCart[i];
+    
+    if (item.name === name) {
+      item.amount = amount;
+      alreadyInCart = true;
+      break;
+    }
+  }
+  
+  if (!alreadyInCart) {
+    shoppingCart.push({ name, amount });
+  }
+}
+
+// Calculating the price for the whole shopping cart.
+function total() {
+  let total = 0;
+  
+  for (let i = 0; i < shoppingCart.length; i += 1) {
+    let item = shoppingCart[i];
+    
+    total += (item.amount * price(item));
+  }
+  
+  return total.toFixed(2);
+}
+
+function pay() {
+  // omitted
+
+  console.log(`You have been charged $${total()}.`);
+}
+
+function checkout() {
+  pay();
+  shoppingCart = {};
+}
+
+// Example purchase.
+
+updateCart('notebook');
+updateCart('pencil', 2);
+updateCart('coffee', 1);
+// "Oh, wait, I do have pencils..."
+updateCart('pencil', 0);
+
+checkout();
+// You have been charged $14.69.
+```
+
+
+
