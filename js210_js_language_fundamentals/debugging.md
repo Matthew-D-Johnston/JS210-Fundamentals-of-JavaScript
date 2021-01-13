@@ -901,5 +901,187 @@ checkout();
 // You have been charged $14.69.
 ```
 
+###### My Solution
 
+I believe the reason we are incorrectly charged is that when we update the cart to reflect the fact that we no longer need pencils, the `updateCart` function accidentally changes the `0` value that we pass as an argument to the value of `1`. The first line of that function reassigns the `amount` variable to the value of `1` if the value passed in as an argument is falsy. In JavaScript, `0` is a falsy value.  
+
+Thus, we must fix the `updateCart()` function so that it does not reassign `amount` if we pass an argument value of `0`.
+
+```javascript
+function updateCart(name, amount) {
+  if (amount !== 0) {
+    amount = amount || 1;
+  }
+
+// ... rest of code omitted for brevity
+```
+
+###### LS Solution
+
+```javascript
+// prior code omitted
+
+function updateCart(name, amount) {
+  if (amount === undefined) {
+    amount = 1;
+  }
+
+  let alreadyInCart = false;
+
+  for (let i = 0; i < shoppingCart.length; i += 1) {
+    let item = shoppingCart[i];
+
+    if (item.name === name) {
+      item.amount = amount;
+      alreadyInCart = true;
+      break;
+    }
+  }
+
+  if (!alreadyInCart) {
+    shoppingCart.push({ name, amount });
+  }
+}
+
+// code omitted
+
+checkout();
+// You have been charged $12.99.
+```
+
+###### Discussion
+
+The problem was that one pencil remained in the shopping cart, although we intended to update the quantity of pencils to 0 on line 70. The reason is the following: When we call `updateCart` on line 70, the `amount` passed in is `0`. Since `0` is treated as falsy in JavaScript, `amount || 1` (line 21) returns `1`. So every time we want to set the amount of some item to `0`, it is set to `1` instead.  
+
+Our solution instead checks whether the parameter `amount` is `undefined`. If so, `amount` is given a default value of 1.  
+
+###### Further Exploration
+
+Can you come up with an alternative solution to the one above by using a [default parameter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters)?
+
+###### My FE Solution
+
+```javascript
+function updateCart(name, amount = 1) {
+  let alreadyInCart = false;
+
+  for (let i = 0; i < shoppingCart.length; i += 1) {
+    let item = shoppingCart[i];
+
+    if (item.name === name) {
+      item.amount = amount;
+      alreadyInCart = true;
+      break;
+    }
+  }
+
+  if (!alreadyInCart) {
+    shoppingCart.push({ name, amount });
+  }
+}
+```
+
+In the above code we completely eliminate the lines of code that check to see if an argument was passed for the `amount` parameter, and simply use a default parameter that will assign a value of `1` to `amount` if no argument is passed.
+
+---
+
+### 9. Stuck on Page 18
+
+The following code is a simplified (and not so serious) model of how we read a software development book. But running this code results in a stack overflow. What is wrong?
+
+```javascript
+const totalPages = 364;
+let energy = 100;
+
+function read() {
+  let currentPage = 1;
+  
+  while (energy > 0 && currentPage < totalPages) {
+    currentPage += 1;
+    energy -= (5 + currentPage * 0.1);
+  }
+  
+  console.log(`Made it to page ${String(currentPage)}.`)
+  
+  // Drink a cup of coffee.
+  energy = 100;
+  
+  // Continue reading.
+  if (currentPage < totalPages) {
+    read();
+  } else {
+    console.log('Done!');
+  }
+}
+
+read();
+```
+
+###### My Solution
+
+The problem is that we have defined a recursive function and at the start of that function the `currentPage` variable is always set to `1`, so we will never get to the end of the book--we just end up reading the same first 18 pages over and over again. We need to move the `currentPage` declaration and assignment to outside of the `read()` function.
+
+```javascript
+const totalPages = 364;
+let energy = 100;
+let currentPage = 1;
+
+function read() {
+  while (energy > 0 && currentPage < totalPages) {
+    currentPage += 1;
+    energy -= (5 + currentPage * 0.1);
+  }
+
+  console.log(`Made it to page ${String(currentPage)}.`);
+
+  // Drink a cup of coffee.
+  energy = 100;
+
+  // Continue reading.
+  if (currentPage < totalPages) {
+    read();
+  } else {
+    console.log('Done!');
+  }
+}
+
+read();
+```
+
+That works! And man, that's a lot of coffee!
+
+###### LS Solution
+
+```javascript
+const totalPages = 364;
+let currentPage = 1;
+let energy = 100;
+
+function read() {
+  while (energy > 0 && currentPage < totalPages) {
+    currentPage += 1;
+    energy -= (5 + currentPage * 0.1);
+  }
+
+  console.log(`Made it to page ${String(currentPage)}.`);
+
+  // Drink a cup of coffee.
+  energy = 100;
+
+  // Continue reading.
+  if (currentPage < totalPages) {
+    read();
+  } else {
+    console.log('Done!');
+  }
+}
+
+read();
+```
+
+###### Discussion
+
+Notice that on line 5 of the original code, within our function body, we declare the variable `currentPage` and assign it to 1. We increment `currentPage` on line 8 within our `while` loop and then invoke `read` recursively on line 19 if `currentPage` is still less than `totalPages`. The problem arises because each time `read` is executed, `currentPage` is assigned to 1. Therefore, the comparison provided as a condition to our `if` statement on line 18 of the original code will always return `true` and `read` will continue to be invoked repeatedly until the stack overflows.  
+
+To solve this problem, we move the declaration and initial assignment of `currentPage` outside of our function body, to line 2.  
 

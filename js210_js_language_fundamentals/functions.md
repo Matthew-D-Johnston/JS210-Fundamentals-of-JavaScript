@@ -276,7 +276,38 @@ As with the previous exercise, Arguments Part 1, the code logs `7` to the consol
 
 ## 8. Arguments Part 3
 
-(Skip this exercise until after you've gone through the Objects lesson.)
+What will the following code log to the console and why? Don't run the code until after you have tried to answer.
+
+```javascript
+let a = [1, 2, 3];
+
+function myValue(b) {
+  b[2] += 7;
+}
+
+myValue(a);
+console.log(a);
+```
+
+###### My Solution
+
+The output from logging the value associated with variable `a` to the console is...
+
+```
+[1, 2, 10]
+```
+
+The reason is that the `myValue` function takes the third entry of the array object and increments it by `7`. Array objects are mutable, and thus we can reassign third entry.
+
+###### LS Solution
+
+```javascript
+[1, 2, 10]
+```
+
+###### Discussion
+
+The code logs `[1, 2, 10]` to the console. This is because arrays and objects, in JavaScript, are mutable. When the value assigned to `a`, an array, is passed to the function on line 7, a local variable `b` is initialized (on line 3) to the same array that `a` is assigned. Therefore, when the program executes the statement `b[2] += 7` on line 4, it is actually being executed on the array assigned to `a`. Consequently, when the value of `a` is logged on line 8, we can see the result of this mutation: `[1, 2, 10]`.
 
 ---
 
