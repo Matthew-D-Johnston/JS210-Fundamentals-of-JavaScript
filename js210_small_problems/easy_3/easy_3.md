@@ -383,3 +383,369 @@ Recall that strings are compared based on standard lexicographical ordering, usi
 
 ### 6. Palindromic Number
 
+Write a function that returns `true` if its integer argument is palindromic, or `false` otherwise. A palindromic number reads the same forwards and backwards.  
+
+Examples:  
+
+```javascript
+isPalindromicNumber(34543);        // true
+isPalindromicNumber(123210);       // false
+isPalindromicNumber(22);           // true
+isPalindromicNumber(5);            // true
+```
+
+###### My Solution
+
+```javascript
+function isPalindrome(text) {
+  let textArray = text.split('');
+  let reversedText = textArray.reverse().join('');
+
+  return text === reversedText;
+}
+
+function isPalindromicNumber(number) {
+  return isPalindrome(String(number));
+}
+```
+
+###### LS Solution
+
+```javascript
+function isPalindromicNumber(number) { return isPalindrome(String(number)) }
+```
+
+###### Discussion
+
+The hardest part of this exercise is recognizing that the easiest way to tell if a number is palindromic is by first converting it to a string, and then checking if that string is palindromic. Realizing this, the solution just uses the `isPalindrome` function from the previous exercise.  
+
+###### Further Exploration
+
+Suppose the number argument begins with one or more `0`s. Will the solution still work? Why or why not? Is there any way to address this?  
+
+###### My FE Solution
+
+No, the solution will not work. Numbers beginning with zero are treated as having an octal base. Octal literals are not allowed in _strict mode_.  
+
+---
+
+### 7. Running Totals
+
+Write a function that takes an array of numbers, and returns an array with the same number of elements, with each element's value being the running total from the original array.  
+
+Examples:  
+
+```javascript
+runningTotal([2, 5, 13]);             // [2, 7, 20]
+runningTotal([14, 11, 7, 15, 20]);    // [14, 25, 32, 47, 67]
+runningTotal([3]);                    // [3]
+runningTotal([]);                     // []
+```
+
+###### My Solution
+
+```javascript
+function runningTotal(numbers) {
+  if (numbers[0] === undefined) {
+    return [];
+  }
+  
+  let currentTotal = numbers[0];
+  let totals = [currentTotal];
+
+  for (let index = 1; index < numbers.length; index += 1) {
+    currentTotal += numbers[index];
+    totals.push(currentTotal);
+  }
+
+  return totals;
+}
+```
+
+###### LS Solution
+
+```javascript
+function runningTotal(array) {
+  const resultArray = [];
+  let sum = 0;
+  
+  for (let i = 0; i < array.length; i += 1) {
+    sum += array[i];
+    resultArray.push(sum);
+  }
+  
+  return resultArray;
+}
+```
+
+###### Discussion
+
+The solution makes use of an array and a number variable. The array, `resultArray`, stores the values of the running total, while `sum` keeps track of the current value as we move through each item in the original `array` argument. During each iteration, the solution updates the value of `sum`, incrementing it by the value at the current index of the input `array`.  
+
+###### Further Exploration
+
+Can you rewrite the solution using the `Array.prototype.map` method? What types of problems do you think are well-suited for the `Array.prototype.map` method?  
+
+###### My FE Solution
+
+```javascript
+function runningTotal(numbers) {
+  let sum = 0;
+  return numbers.map(number => sum += number);
+}
+```
+
+The types of problem that are suited for the `Array.prototype.map` method are ones that take an array and need to return an array populated with some variation of the individual elements of the original array.
+
+---
+
+### 8. Letter Swap
+
+Given a string of words separated by spaces, write a function that swaps the first and last letters of every word.  
+
+You may assume that every word contains at least one letter, and that the string will always contain at least one word. You may also assume that each string contains nothing but words and spaces, and that there are no leading, trailing, or repeated spaces.  
+
+Examples:  
+
+```javascript
+swap('Oh what a wonderful day it is');  // "hO thaw a londerfuw yad ti si"
+swap('Abcde');                          // "ebcdA"
+swap('a');                              // "a"
+```
+
+###### My Solution
+
+```javascript
+function swap(text) {
+  let words = text.split(' ');
+
+  for (let index = 0; index < words.length; index += 1) {
+    let word = words[index];
+
+    if (word.length > 1) {
+      let firstLetter = word[0];
+      let lastLetter = word[word.length - 1];
+      let wordMiddle = word.slice(1, word.length - 1)
+      words[index] = lastLetter + wordMiddle + firstLetter;
+    }
+  }
+
+  return words.join(' ');
+}
+```
+
+###### LS Solution
+
+```javascript
+function swap(words) {
+  const wordsArray = words.split(' ');
+  
+  for (let i = 0; i < wordsArray.length; i += 1) {
+    wordsArray[i] = swapFirstLastCharacters(wordsArray[i]);
+  }
+  
+  return wordsArray.join(' ');
+}
+
+function swapFirstLastCharacters(word) {
+  if (word.length === 1) {
+    return word;
+  }
+  
+  return word[word.length - 1] + word.slice(1, -1) + word[0];
+}
+```
+
+###### Discussion
+
+The solution splits the string into words using a space `( )` as a separator. It then iterates through all of the words and produces an array of modified words. It then applies `Array.prototype.join` to that array to produce the return value.  
+
+The tricky part is the swapping of the first and last characters. During the iteration, the `swapFirstLastCharacters` function handles this. The function takes a `word` argument and returns the swapped word. The swap happens by building a string composed of the last character (`word[word.length - 1]`), the middle characters (`word.slice(1, -1)`), and the first character (`word[0]`). The function also has a guard clause that checks if the `word` argument is only a single character; if it is, it immediately returns that value since it does not need to swap the letters.  
+
+The solution uses the `String.prototype.slice` method. If you haven't seen this method before, you may refer to the following:
+
+- [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice)
+- [Build your own slice method exercise](https://launchschool.com/lessons/e2c71a47/assignments/74373a7e) -- this is for an array, but it's very similar
+
+###### Further Exploration
+
+How can you refactor this problem using the `Array.prototype.map` method instead?
+
+###### My FE Solution
+
+```javascript
+function swapFirstLastCharacters(word) {
+  if (word.length === 1) {
+    return word;
+  }
+
+  return word[word.length - 1] + word.slice(1, -1) + word[0];
+}
+
+function swap(text) {
+  let words = text.split(' ');
+
+  let swapped = words.map(word => swapFirstLastCharacters(word));
+
+  return swapped.join(' ');
+}
+```
+
+---
+
+### 9. Letter Counter Part 1
+
+Write a function that takes a string consisting of one or more space separated words, and returns an object that shows the number of words of different sizes.  
+
+Words consist of any sequence of non-space characters.  
+
+Examples:  
+
+```javascript
+wordSizes('Four score and seven.');                       // { "3": 1, "4": 1, "5": 1, "6": 1 }
+wordSizes('Hey diddle diddle, the cat and the fiddle!');  // { "3": 5, "6": 1, "7": 2 }
+wordSizes("What's up doc?");                              // { "2": 1, "4": 1, "6": 1 }
+wordSizes('');                                            // {}
+```
+
+###### My Solution
+
+##### Algorithm
+
+* Split into array of separate words.
+* Count letters in each word; this number will become a key in the object array.
+* Create object.
+* Iterate over the array of words; if a key does not exist, add it and initialize with a value of 1; if it does exist, increment by 1.
+
+```javascript
+function wordSizes(text) {
+  let words = text.split(' ');
+  let sizes = {};
+
+  if (text === '') {
+    return {};
+  }
+
+  for (let i = 0; i < words.length; i += 1) {
+    let size = words[i].length;
+
+    if (sizes[size]) {
+      sizes[size] += 1;
+    } else {
+      sizes[size] = 1;
+    }
+  }
+
+  return sizes;
+}
+```
+
+###### LS Solution
+
+```javascript
+function wordSizes(words) {
+  const wordsArray = words.split(' ');
+  const count = {};
+  
+  for (let i = 0; i < wordsArray.length; i += 1) {
+    let wordSize = wordsArray[i].length;
+    if (wordSize === 0) {
+      continue;
+    }
+    
+    count[wordSize] = count[wordSize] || 0;
+    count[wordSize] += 1;
+  }
+  
+  return count;
+}
+```
+
+###### Discussion
+
+The goal of this exercise is to count the number of words of each size. To do that, the solution first obtains a list of words by splitting the `words` argument string into an array of words. Computing the size of a word is easy, but incrementing the count for that word size is slightly trickier.  
+
+The solution stores the counts of word sizes as properties of the `count` object. It does this by iterating over the list of words and performing the following:  
+
+1. Initialize the `wordSize` variable to the `length` of the current word.
+2. Check if `wordSize` is equal to `0`. If yes, proceed immediately to the next iteration since there is no need to account for words of zero length.
+3. Initialize the property for the current `wordSize` in the `count` object. If the property does not exist (i.e., `count[wordSize]` evaluates to `undefined`), set it to `0`.
+4. Increment the count for a particular `wordSize` by `1`.
+
+---
+
+### 10. Letter Count Part 2
+
+Modify the `wordSizes` function from the previous exercise to exclude non-letters when determining word size. For instance, the word size of `"it's"` is `3`, not `4`.
+
+Examples: 
+
+```javascript
+wordSizes('Four score and seven.');                       // { "3": 1, "4": 1, "5": 2 }
+wordSizes('Hey diddle diddle, the cat and the fiddle!');  // { "3": 5, "6": 3 }
+wordSizes("What's up doc?");                              // { "5": 1, "2": 1, "3": 1 }
+wordSizes('');                                            // {}
+```
+
+###### My Solution
+
+```javascript
+function wordSizes(text) {
+  let words = text.split(' ');
+  let sizes = {};
+
+  for (let i = 0; i < words.length; i += 1) {
+    let onlyAlphaChars = words[i].match(/[a-z]/ig) || [];
+    let size = onlyAlphaChars.length;
+
+    if (size === 0) {
+      continue;
+    }
+
+    sizes[size] = sizes[size] || 0;
+    sizes[size] += 1;
+  }
+
+  return sizes;
+}
+```
+
+###### LS Solution
+
+```javascript
+function wordSizes(words) {
+  const wordsArray = words.split(' ');
+  const count = {};
+  
+  for (let i = 0; i < wordsArray.length; i += 1) {
+    let cleanWordSize = removeNonLetters(wordsArray[i].toLowerCase()).length;
+    if (cleanWordSize === 0) {
+      continue;
+    }
+    
+    count[cleanWordSize] = count[cleanWordSize] || 0;
+    count[cleanWordSize] += 1;
+  }
+  
+  return count;
+}
+
+function removeNonLetters(string) {
+  let result = '';
+  
+  for (let i = 0; i < string.length; i += 1) {
+    if (isLetter(string[i])) {
+      result += string[i];
+    }
+  }
+  
+  return result;
+}
+
+function isLetter(char) {return char >= 'a' && char <= 'z' };
+```
+
+###### Discussion
+
+The only change this solution makes to the function, is to make sure that it does not count non-letter characters in determining word sizes. It does this by first removing all non-letter characters from each word using the `removeNonLetters` function. Then it performs the tallying of the word sizes.
+
