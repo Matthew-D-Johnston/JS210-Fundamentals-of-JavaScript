@@ -278,3 +278,254 @@ function negative(number) {
 
 ### 6. Counting Up
 
+Write a function that takes an integer argument, and returns an array containing all integers between `1` and the argument (inclusive), in ascending order.  
+
+You may assume that the argument will always be a positive integer.  
+
+Examples:
+
+```javascript
+sequence(5);    // [1, 2, 3, 4, 5]
+sequence(3);    // [1, 2, 3]
+sequence(1);    // [1]
+```
+
+###### My Solution
+
+```javascript
+function sequence(integer) {
+  let integers = [];
+
+  for (let currentInt = 1; currentInt <= integer; currentInt += 1) {
+    integers.push(currentInt);
+  }
+
+  return integers;
+}
+```
+
+###### LS Solution
+
+```javascript
+function sequence(limit) {
+  const result = [];
+  
+  for (let i = 1; i <= limit; i += 1) {
+    result.push();
+  }
+  
+  return result;
+}
+```
+
+###### Discussion
+
+The solution uses a `for` loop to create the sequence and store it in the `result` array. The key parts are determining the starting value of the loop (`i = 1`) and determining the stopping condition (`i <= limit`).
+
+---
+
+### 7. Name Swapping
+
+Write a function that takes a string argument consisting of a first name, a space, and a last name, and returns a new string consisting of the last name, a comma, a space, and the first name.  
+
+Examples:
+
+```javascript
+swapName('Joe Roberts');    // "Roberts, Joe"
+```
+
+###### My Solution
+
+```javascript
+function swapName(name) {
+  return name.split(' ').reverse().join(', ');
+}
+```
+
+###### LS Solution
+
+```javascript
+function swapName(name) {
+  return name.split(' ').reverse().join(', ');
+}
+```
+
+###### Discussion
+
+Given a full name as a string and a space as a separator, the solution uses the `String.prototype.split` method to get an array of words (e.g., `['Joe', 'Roberts']`). The solution then uses `Array.prototype.reverse` to get `['Roberts', 'Joe']`, and finally, uses `Array.prototype.join`, with a separator string containing a comma and a space (`', '`), to return the desired result.  
+
+###### Further Exploration
+
+What if the person had more than one first name? Refactor the current solution so that it can accommodate this.  
+
+###### My FE Solution
+
+```javascript
+function swapName(name) {
+  let names = name.split(' ');
+  let lastName = names[names.length - 1];
+  let firstNames = names.slice(0, names.length - 1);
+
+  return `${lastName}, ${firstNames.join(' ')}`;
+}
+```
+
+---
+
+### 8. Sequence Count
+
+Create a function that takes two integers as arguments. The first argument is a `count`, and the second is the starting number of a sequence that your function will create. The function should return an array containing the same number of elements as the `count` argument. The value of each element should be a multiple of the starting number.  
+
+You may assume that the `count` argument will always be an integer greater than or equal to `0`. The starting number can be any integer. If the `count` is `0`, the function should return an empty array.  
+
+Examples:
+
+```javascript
+sequence(5, 1);          // [1, 2, 3, 4, 5]
+sequence(4, -7);         // [-7, -14, -21, -28]
+sequence(3, 0);          // [0, 0, 0]
+sequence(0, 1000000);    // []
+```
+
+###### My Solution
+
+```javascript
+function sequence(count, start) {
+  let result = [];
+
+  for (let i = 1; i <= count; i += 1) {
+    result.push(start * i);
+  }
+
+  return result;
+}
+```
+
+###### LS Solution
+
+```javascript
+function sequence(count, startNum) {
+  const result = [];
+  let sum = 0;
+  
+  for (let i = 0; i < count; i += 1) {
+    result.push(sum += startNum);
+  }
+  
+  return result;
+}
+```
+
+###### Discussion
+
+The solution uses a `for` loop to create the sequence and store it in the `result` array. The loop uses the `count` argument to determine the appropriate number of iterations. During each iteration, the solution increments `sum` by `startNum`, and pushes the new value of `sum` to the `result` array. After the loop, the solution returns the `result` array.  
+
+---
+
+### 9. Reverse It Part 1
+
+Write a function that takes a string argument, and returns a new string containing the words from the string argument in reverse order.  
+
+Examples:  
+
+```javascript
+reverseSentence('');                       // ""
+reverseSentence('Hello World');            // "World Hello"
+reverseSentence('Reverse these words');    // "words these Reverse"
+```
+
+###### My Solution
+
+```javascript
+function reverseSentence(text) {
+  return text.split(' ').reverse().join(' ');
+}
+```
+
+###### LS Solution
+
+A buggy version of the solution for this exercise is shown below. For an extra challenge, try debugging this solution before looking at the real solution.
+
+##### buggy solution
+
+```javascript
+function reverseSentence(string) {
+  return string.split('').reverse.join('');
+}
+```
+
+##### real solution
+
+```javascript
+function reverseSentence(string) {
+  return string.split(' ').reverse().join(' ');s
+}
+```
+
+###### Discussion
+
+The solution uses one `String` method and two `Array` methods: `String.prototype.split`, `Array.prototype.reverse`, and `Array.prototype.join`. The `split` method converts the `string` argument into an array of words. The `reverse` method returns the words in reverse order. Finally, the `join` method joins the words back together into a space separated string, which is returned by the function.  
+
+For this exercise, the main thing to be careful of is making sure that the separator argument passed to `split` and `join` is a space, not an empty string; otherwise the `string` would be split into an array of characters instead of words, and the array would be joined together without any spaces.  
+
+---
+
+### 10. Reverse It Part 2
+
+Write a function that takes a string argument containing one or more words, and returns a new string containing the words from the string argument. All five-or-more letter words should have their letters in reverse order. The string argument will consist of only letters and spaces. Words will be separated by a single space.  
+
+Examples:
+
+```javascript
+reverseWords('Professional');             // "lanoisseforP"
+reverseWords('Walk around the block');    // "Walk dnuora the kcolb"
+reverseWords('Launch School');            // "hcnuaL loohcS"
+```
+
+###### My Solution
+
+```javascript
+function reverseWords(string) {
+  let result = [];
+  let words = string.split(' ');
+
+  for (let i = 0; i < words.length; i += 1) {
+    let word = words[i];
+
+    if (word.length >= 5) {
+      result.push(word.split('').reverse().join(''));
+    } else {
+      result.push(word);
+    }
+  }
+
+  return result.join(' ');
+}
+```
+
+###### LS Solution
+
+```javascript
+function reverseWords(string) {
+  const words = string.split(' ');
+  const reversedWords = [];
+  
+  for (let i = 0; i < words.length; i += 1) {
+    let currentWord = words[i];
+    if (currentWord.length >= 5) {
+      reversedWords.push(currentWord.split('').reverse().join(''));
+    } else {
+      reversedWords.push(currentWord);
+    }
+  }
+  
+  return reversedWords.join(' ');
+}
+```
+
+###### Discussion
+
+This version of the "Reverse It" exercise is a little bit more complicated. The solution still splits the string argument into an array of words, but instead of reversing the order of words within the string, the solution reverses the order of letters within words containing five-or-more letters.  
+
+During each iteration of the `for` loop, the solution checks if the `length` of the `currentWord` is greater than or equal to `5`; if it is, the solution reverses the letters of the `currentWord` using a similar approach as the previous "Reverse It" exercise, but with a different separator argument. The solution then pushes the reversed word to the `reversedWords` array. If the `currentWord` is less than `5` letters, the solution pushes the `currentWord` to the array as-is.  
+
