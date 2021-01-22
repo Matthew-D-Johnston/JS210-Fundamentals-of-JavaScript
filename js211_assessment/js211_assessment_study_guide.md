@@ -10,6 +10,65 @@
 
 There is a subtle difference in terminology surrounding the `=` token. When used in a declaration, the `=` is just a syntactic token that tells JavaScript that you're going to supply an initial value for the variable. However, in an assignment, the `=` is called the **assignment operator**.  
 
+###### Comparisons
+
+Let's look at the comparison operators in some more depth so you can build more complicated conditional statements. One thing to remember is that comparison operators return a boolean value: `true` or `false`. We'll play with them in `node` to see how they work.  
+
+The expressions or values an operatur uses are its **operands**. In comparisons, the expressions to the left and right of the operator are the operands.  
+
+`===` : the **strict equality operator**, also known as the **identity operator**, returns `true` when the operands have the same type _and_ value, `false` otherwise.  
+
+`!==` : the **strict inequality operator** returns `false` when the operands have the same type and value, `true` otherwise.  
+
+`==` : the **non-strict equality operator**, also known as the **loose equality operator**, is similar to `===`. However, when the operands have different types, `==` coerces one of the operands to the other operand's type before it compares them.  The result is `true` when the final values are the same, `false` otherwise.  
+
+`!=` : the **non-strict inequality operator**, also known as the **loose inequality operator**, is similar to `!==`. However, when the operands have different types, `!=` coerces one of the operands to the other operand's type before it compares them. The result is `false` when the final values are the same, `true` otherwise.  
+
+###### Return Value of a Comparison
+
+The `&&` and `||` logical operators, as you'll recall, use short-circuit evaluation. These operators work with truthy and falsy values too, and they can also return truthy values instead of boolean values. When using `&&` and `||`, the return value is always the value of the operand evaluated last:  
+
+```javascript
+> 3 && 'foo' // last evaluated operand is 'foo'
+= 'foo'
+
+> 'foo' && 3 // last evaluated operand is 3
+= 3
+
+> 0 && 'foo' // last evaluated operand is 0
+= 0
+
+> 'foo' && 0 // last evaluated operand is 0
+= 0
+```
+
+```javascript
+3 || 'foo' // last evaluated operand is 3
+= 3
+> 'foo' || 3 // last evaluated operand is 'foo'
+= 'foo'
+
+> 0 || 'foo' // last evaluated operand is 'foo'
+= 'foo'
+
+> 'foo' || 0 // last evaluated operand is 'foo'
+= 'foo'
+
+> '' || 0   // last evaluated operand is 0
+= 0
+```
+
+###### Operator Precedence
+
+JavaScript has a set of **precedence** rules it uses to evaluate expressions that use multiple operators and sub-expressions. The following is a list of the comparison operations from the highest precedence (top) to lowest (bottom).  
+
+- `<=`, `<`, `>`, `>=` - Comparison
+- `===`, `!==`, `==`, `!=` - Equality
+- `&&` - Logical AND
+- `||` - Logical OR
+
+
+
 
 
 ---
@@ -220,6 +279,12 @@ A dictionary-like data structure that matches keys with specific values. The mos
 
 ### Object Properties and Mutation
 
+Mutation is a concern when dealing with arrays and objects, but not with primitive values like numbers, strings, and booleans. Primitive values are **immutable**. That means their values never change: operations on immutable values always return new values. Operations on **mutable** values (arrays and objects) may or may not return a new value and may or may not mutate data.  
+
+How do you know which methods mutate the caller and which don't? It's useful to know that all primitive values are immutable, so this question never arises when dealing with them. However, there's no way to tell whether a function mutates an array or object. You have to use the documentation or memorize it through repetition.  
+
+JavaScript is both a pass-by-value and pass-by-reference language. It uses pass-by-value when dealing with primitive values and pass-by-reference with objects and arrays.  
+
 
 
 ---
@@ -266,6 +331,22 @@ A variable is simply a named area of a program's memory space where the program 
 
 ### Truthiness: `false` and `true` vs. falsy and truthy
 
+###### Falsy Values
+
+When coercing a value to a boolean, JavaScript treats the following values as false:
+
+* `false`
+* The number `0`. This includes all 3 variations of zero in JavaScript:
+  - `0`: The ordinary zero value.
+  - `-0`: A negative zero. That's mathematical nonsense, but a real thing in JavaScript.
+  - `0n`: The `BigInt` version of zero.
+* An empty string (`''`)
+* `undefined`
+* `null`
+* `NaN`
+
+Everything else evaluates as true.
+
 
 
 ---
@@ -283,6 +364,77 @@ Programmers often talk about function **invocation** and **invoking** functions.
 ---
 
 ### Function Declarations, Function Expressions, and Arrow Functions
+
+###### Function Declaration
+
+Example:
+
+```javascript
+function functionName(zeroOrMoreArguments...) {
+  // function body
+}
+```
+
+In JavaScript, we call a function definition that looks like that a **function declaration**. A notable property of function declarations is that you can call the function before you declare it. We'll learn why that is in the Core Curriculum; for now, all you need to know is that you don't have to declare functions before calling them.  
+
+###### Function Expression
+
+Example:
+
+```javascript
+let greetPeople = function () {
+  console.log("Good Morning!");
+}
+
+greetPeople();
+```
+
+That might look a little strange, but it's JavaScript that you'll see often. Most of it looks like a standard function declaration. However, since we're saving it to a variable, it's a function expression instead. **Function expressions have one key difference from a function declaration: you cannot invoke a function expression before it appears in your program.**  
+
+Our example declares a variable named `greetPeople` and assigns it to the function expression after the `=` sign. We can do that since JavaScript functions are **first-class functions**. The key feature of first-class functions is that you can treat them like any other value. In fact, **all JavaScript functions are objects**. Thus, you can assign them to variables, pass them as arguments to other functions, and return them from a function call. The implications are far-reaching, though you won't really appreciate why that is until later in the Core Curriculum.  
+
+Any function definition that doesn't have the word `function` at the very beginning of a statement is a function expression. Even wrapping what looks like a function declaration in parentheses creates a function expression: 
+
+```javascript
+(function greetPeople() { // this is a function expression, not a declaration
+	console.log("Good Morning!");
+});
+```
+
+###### Arrow Function
+
+There's a third kind of function in JavaScript called an **arrow function**. Syntactically, arrow functions look radically different from function declarations and expressions. Let's look at one:
+
+```javascript
+let greetPeople = () => console.log("Good Morning!");
+greetPeople();
+```
+
+Wow! That's quite a departure from the functions we've seen so far. Arrow functions are similar to function expressions, but they use a different syntax. The differences are not merely syntactic, however. We'll discuss them in more detail in the Core Curriculum.  
+
+For now, let's look at one interesting property of arrow functions: implicit returns. First, we'll convert the `add` function from the previous section to use arrow function syntax:  
+
+```javascript
+let add = (a, b) => a + b;
+```
+
+That's much shorter! Note the lack of a `return` statement. We can omit it in arrow functions _when and only when the function body contains a single expression_. Suppose it contains two or more expressions or statements. In that case, you must explicitly return a value if you need it, and you must also use curly braces:
+
+```javascript
+let add = (a, b) => a + b;
+let getNumber = (text) => {
+  let input = prompt(text);
+  return Number(input);
+};
+
+let number1 = getNumber("Enter a number: ");
+let number2 = getNumber("Enter another number: ");
+console.log(add(number1, number2));
+```
+
+On line #2, we define an arrow function that requires one parameter. The parentheses around the parameter name are optional in this case and are often omitted.  
+
+
 
 
 
