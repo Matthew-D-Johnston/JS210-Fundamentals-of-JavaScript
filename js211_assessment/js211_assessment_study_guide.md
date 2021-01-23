@@ -305,6 +305,176 @@ JavaScript is both a pass-by-value and pass-by-reference language. It uses pass-
 
 #### In particular, be thoroughly familiar with the basic Array iteration methods (`forEach`, `map`, `filter`, and `find`) and how to use Object methods to access the keys and values in an Object as an Array.  
 
+###### Arrays
+
+An array is an ordered list of **elements**; each element has a value of any type. You can define an array by placing a list of values between brackets (`[]`):
+
+```javascript
+> let myArray = [2, 'Pete', 2.99, 'another string']
+```
+
+This example demonstrates that arrays are **heterogenous**; `myArray` has both number and string values. Arrays can have anything in them, including objects and even other arrays.  
+
+Each element in an array has a unique index number that gives the position of the element in the array. Thus, we can say that arrays are **indexed lists** as well as ordered lists.  
+
+##### Some Array Oddities
+
+- **Arrays are objects**: One side effect of this is that the `typeof` operator doesn't return `'array'` when applied to an array, rather `'object'`. If you really need to detect whether a variable references an array, you need to use `Array.isArray` instead.  
+
+- If you change an array's `length` property to a new, larger value, the array expands to the new size. The new elements **do not get initialized**, which leads to some strange behaviour. In general, JavaScript treats the unset array elements as missing, but the `length` property includes the unset elements.
+
+- You can create array "elements" with indexes that use negative or non-integer values, or even non-numeric values:
+
+  ```javascript
+  > arr = [1, 2, 3]
+  = [ 1, 2, 3 ]
+  
+  > arr[-3] = 4
+  = 4
+  
+  > arr
+  = [ 1, 2, 3, '-3': 4 ]
+  
+  > arr[3.1415] = 'pi'
+  = [ 1, 2, 3, '-3': 4, '3.1415': 'pi' ]
+  
+  > arr["cat"] = 'Fluffy'
+  = 'Fluffy'
+  
+  > arr
+  = [ 1, 2, 3, '-3': 4, '3.1415': 'pi', cat: 'Fluffy' ]
+  ```
+
+  These "elements" aren't true elements; they are properites on the array object, which we'll discuss later. Only index values (0, 1, 2, 3, and so on) count toward the length of the array.
+
+- Since arrays are objects, you can use the `Object.keys` method to return an array's keys -- its index values -- as an array of strings. Even negative, non-integer, and non-numeric indexes are included.  
+
+  One quirk of this method is that it treats unset values in arrays differently from those that merely have a value of `undefined`. Unset values are set to `undefined` by JavaScript as an after effect of calling another method, while explicit `undefined` are ones that are purposely set in an array.  
+
+  ```javascript
+  > let a = new Array(3);
+  > a
+  = [ <3 empty items> ]
+  
+  > a[0] === undefined;
+  = true
+  
+  > let b = [];
+  > b.length = 3;
+  > b
+  = [ <3 empty items> ]
+  
+  > b[0] === undefined;
+  = true
+  
+  > let c = [undefined, undefined, undefined]
+  > c
+  = [ undefined, undefined, undefined ]
+  
+  > c[0] === undefined;
+  = true
+  ```
+
+  While the `length` property of Array includes `undefined` in the count regardless of how it got set, `Object.keys` only counts those that were set explicitly.
+
+  ```javascript
+  > let aKeys = Object.keys(a)
+  > a.length
+  = 3
+  > aKeys.length;
+  = 0
+  
+  > let bKeys = Object.keys(b)
+  > b.length
+  = 3
+  > bKeys.length;
+  = 0
+  
+  > let cKeys = Object.keys(c)
+  > c.length
+  = 3
+  > cKeys.length;
+  = 3
+  ```
+
+  
+
+- 
+
+
+
+###### `forEach`
+
+Example:
+
+```javascript
+let names = ['Chris', 'Kevin', 'Naveed', 'Pete', 'Victor'];
+
+names.forEach(function(name) {
+  console.log(name);
+})
+```
+
+The most glaring item in need of explanation above is that we seem to be passing a function definition as an argument to `forEach`. Think about that. How in the world could that be valid, or even useful?  
+
+If you study this code long enough, you may recognize that the function definition is, in fact, a function expression: we talked about them back in the _Functions_ chapter. This function expression doesn't have a name: it's an **anonymous function**.  
+
+One feature of JavaScript that sets it apart from most other languages is that it has first-class functions. That means that functions are values: you can assign them to variables, pass them around as arguments to other functions, and even use them as return values in other functions. In our example, we're passing the anonymous function as an argument to `forEach`. That explains why the code is valid.  
+
+When you pass a function as an argument to another function, that other function can call the function represented by the argument.  That's what `forEach` does, and it's why this code is useful. As its name suggests, `forEach` loops through each element in an array, in sequence, starting with the first element. For each name, `forEach` invokes the anonymous function with the name as an argument. The anonymous function can do whatever it needs to do with the argument. In this case, it merely logs the name.  
+
+To use `forEach`, you need a **callback** function that you pass to `forEach` as an argument. A callback function is a function that you pass to another function as an argument. The called function invokes the callback function when it runs. The `forEach` method invokes its callback once for each element, passing it the element's value as an argument.  `forEach` always returns undefined.  
+
+A callback is a function that you pass to another function as an argument. The called function subsequently invokes the callback function at certain times while it runs.  
+
+```javascript
+let array = [1, 2, 3];
+array.forEach(function(num)) {
+  console.log(num);	// on first iteration => 1
+										// on second iteration => 2
+										// on third iteration =>
+}); // returns `undefined`
+```
+
+This code invokes the callback function once for each element in the array. `forEach`, during each iteration, invokes the callback with the element's value as an argument. The callback then logs it to the console. In the end, `forEach` returns `undefined`.  
+
+###### `map`
+
+`forEach` works well when you want to use the value of an array's elements. Suppose, though, that you want to create a new array whose values depend on the original contents of the array.  
+
+```javascript
+> let numbers = [1, 2, 3, 4]
+> let squares = numbers.map(num => num * num);
+> squares
+= [1, 4, 9, 16]
+
+> squares = numbers.map(num => num * num);
+= [1, 4, 9, 16]
+```
+
+###### `filter`
+
+The `filter` method is another array iteration method. It returns a new array that includes all elements from the calling array for which the callback returns a truthy value. That's a mouthful. Some code should help clarify what `filter` does:  
+
+```javascript
+> let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2]
+> numbers.filter(num => num > 4)
+= [5, 6, 7, 8, 9, 10]
+
+> numbers
+= [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2]
+```
+
+`filter` iterates over the elements of the array. During each iteration, it invokes the callback function, using the value of the current element as an argument. If the callback returns a truthy value, `filter` appends the element's value to a new array. Otherwise, it ignores the element's value and does nothing.  When `filter` finishes iterating, it returns the array of _selected_ elements: the elements for which the callback returned a truthy value. In our example, `filter` selects all of the elements with a value greater than 4.  
+
+`filter` doesn't mutate the caller.  
+
+
+
+
+
+
+
 
 
 ---
@@ -448,7 +618,7 @@ On line #2, we define an arrow function that requires one parameter. The parenth
 
 ### First-class Functions
 
-
+One feature of JavaScript that sets it apart from most other languages is that it has first-class functions. That means that functions are values: you can assign them to variables, pass them around as arguments to other functions, and even use them as return values in other functions.
 
 ---
 
