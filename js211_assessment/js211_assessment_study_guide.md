@@ -285,6 +285,106 @@ How do you know which methods mutate the caller and which don't? It's useful to 
 
 JavaScript is both a pass-by-value and pass-by-reference language. It uses pass-by-value when dealing with primitive values and pass-by-reference with objects and arrays.  
 
+###### What are Objects?
+
+Objects store a collection of **key-value pairs**: each item in the collection has a name that we call the **key** and an associated **value**. Contrast this with arrays, which associate values with ordered indexes. Other languages have similar key-value data structures, but they may use different names like dictionaries, associative arrays, maps, and hashes.  Some developers may even use these terms regarding JavaScript objects, but it's better to use the correct name: objects.  
+
+An object's keys are strings, but the values can be any type, including other objects. We can create an object using **object literal** syntax:  
+
+```javascript
+let person = {
+  name: 		'Jane',
+  age: 			37,
+  hobbies:  ['photography', 'geneaology'],
+}
+```
+
+The comma that follows the last pair is optional.  
+
+You can also write that on a single ine, which is handy in `node`:
+
+```
+> let person = { name: 'Jane', age: 37, hobbies: ['photography', 'geneaology'] }
+```
+
+Though the keys are strings, we typically omit the quotes when the key consists entirely of alphanumeric characters and underscores. The values of each pair can be any type.  
+
+Key-value pairs are also called **properties** in JavaScript. We can also use "property" to refer to the key name; the meaning is typically clear from context. For instance, we can talk about the `name` property for the `person` object without mentioning the value.  
+
+If a variable declared with `const` is initialized with an object, you can't change what object that variable refers to. You can, however, modify that object's properties and property values:  
+
+```javascript
+> const MyObj = { foo: "bar", qux: "xyz" }
+> MyObj.qux = "hey there"
+> MyObj.pi = 3.1415,
+> MyObj
+= { foo: 'bar', qux: 'hey there', pi: 3.1415 }
+
+> MyObj = {} // Uncaught TypeError: Assignment to constant variable.
+```
+
+As with arrays, this behavior can be confusing, and it occurs because of the same "variables are pointers" concept that we'll discuss in the next chapter. Essentially, a `const` declaration prohibits changing what thing the `const` points to, but it does not prohibit changing the content of that thing. Thus, we can change a property in a `const` object, but we can't change which object the `const` points to.  
+
+You can use `Object.freeze` with objects to freeze the property values of an object, just like you can with arrays:  
+
+```javascript
+> const MyObj = Object.freeze({ foo: "bar", qux: "xyz" })
+> MyObj.qux = "hey there"
+> MyObj
+= { foo: 'bar', qux: 'xyz' }
+```
+
+As with arrays, `Object.freeze` only works one level deep in the object. If your object contains nested arrays or other objects, the values inside them can still be changed unless they are also frozen.  
+
+###### Objects vs. Primitives
+
+You may remember that JavaScript has two categories of data types: primitives and objects. The primitive types are strings, numbers, booleans, `null`, and `undefined`, bigints, and symbols. Primitive types are teh simplest, most basic types in JavaScript.  
+
+Objects include, but aren't limited to, the following types:
+
+* Simple Objects
+* Arrays
+* Dates
+* Functions
+
+Objects are complex values composed of primitive values or other objects. For example, an array object (remember: arrays are objects) has a `length` property that contains a number: a primitive value. Objects are usually (but not always) mutable: you can add, remove, and change their various component values.  
+
+Primitive values are always immutable; they don't have parts that one can change. Such values are said to be **atomic**; they're indivisible. If a variable contains a primitive value, all you can do to that variable is use it in an expression or reassign it: give it an entirely new value. All operations on primitive values evaluate as new values. Even something like `0 + 0` evaluates to a new value of `0`.  
+
+```javascript
+> let number = 20
+> let newNumber = number + 1
+> newNumber
+= 21
+
+> number
+= 20
+
+> let object = { a: 1, b: 2, c: 3 }
+> object.c = object.c + 1
+
+> object
+= { a: 1, b: 2, c: 4 }
+```
+
+The above example illustrates the difference between an immutable primitive value and a mutable object. The `+` operation on line 2 returns a new value (`21`), and assigns it to `newNumber`; the original value of `number` (`20`), remains unchanged. In contrast, writing a new value to the `object`'s `c` property on line 10 changes the object's value. Note, however, that the `c` property has an entirely new number in it, precisely like what happened on line 2.  
+
+##### What Things Aren't Objects or Primitives?
+
+Objects and primitive values are the data and functions that you use in your program. Anything that isn't data or a function is neither a primitive value nor an object. That includes:
+
+* variables and other identifiers such as function names
+* statements such as `if`, `return`, `try`, `while`, and `break`
+* keywords such as `new`, `function`, `let`, `const`, and `class`
+* comments
+* anything else that is neither data nor a function
+
+Note that variables and other identifiers have or reference objects or primitive values, but the names, by themselves, are not.  
+
+
+
+
+
 
 
 ---
@@ -397,13 +497,27 @@ Each element in an array has a unique index number that gives the position of th
   = 3
   ```
 
-  
+##### Array Equality
 
-- 
+```javascript
+> [1, 2, 3] === [1, 2, 3]
+= false
+```
+
+However,
+
+```javascript
+> let a = [1, 2, 3]
+> let b = a
+> a === b
+= true
+```
+
+JavaScript treats two arrays as equal only when they are the same array: they must occupy the same spot in memory. This rule holds for JavaScript objects in general; objects must be the same object. For this reason, the second example returns `true` while the first one returns `false`. Assigning `a` to `b` makes `b` refer to the  same array as `a`; it doesn't create a new array.  
 
 
 
-###### `forEach`
+###### `forEach()`
 
 Example:
 
@@ -438,7 +552,7 @@ array.forEach(function(num)) {
 
 This code invokes the callback function once for each element in the array. `forEach`, during each iteration, invokes the callback with the element's value as an argument. The callback then logs it to the console. In the end, `forEach` returns `undefined`.  
 
-###### `map`
+###### `map()`
 
 `forEach` works well when you want to use the value of an array's elements. Suppose, though, that you want to create a new array whose values depend on the original contents of the array.  
 
@@ -452,7 +566,7 @@ This code invokes the callback function once for each element in the array. `for
 = [1, 4, 9, 16]
 ```
 
-###### `filter`
+###### `filter()`
 
 The `filter` method is another array iteration method. It returns a new array that includes all elements from the calling array for which the callback returns a truthy value. That's a mouthful. Some code should help clarify what `filter` does:  
 
@@ -468,6 +582,88 @@ The `filter` method is another array iteration method. It returns a new array th
 `filter` iterates over the elements of the array. During each iteration, it invokes the callback function, using the value of the current element as an argument. If the callback returns a truthy value, `filter` appends the element's value to a new array. Otherwise, it ignores the element's value and does nothing.  When `filter` finishes iterating, it returns the array of _selected_ elements: the elements for which the callback returned a truthy value. In our example, `filter` selects all of the elements with a value greater than 4.  
 
 `filter` doesn't mutate the caller.  
+
+###### `find()`
+
+The `find()` method returns the value of the first element in the provided array that satisfies the provided testing function. If no value satisfies the testing function, `undefined` is returned.
+
+```javascript
+const array1 = [5, 12, 8, 130, 44];
+
+const found = array1.find(element => element > 10);
+
+console.log(found);
+```
+
+###### Objects
+
+Here is an object definition:
+
+```javascript
+let person = {
+  name: 		'Jane',
+  age: 			37,
+  hobbies:  ['photography', 'geneaology'],
+}
+```
+
+We can access a specific value in an object in two ways: 1) dot notation and 2) bracket notation:
+
+```javascript
+> person.name									// dot notation
+= 'Jane'
+
+> person['age']								// bracket notation
+= 37
+```
+
+With dot notation, we place a dot (`.`) and a key name after the variable that references the object. With bracket notation, we write the key as a quoted string and put it inside square brackets. Most developers prefer dot notation when they can use it. However, if you have a variable that contains a key's name, you must use bracket notation:  
+
+```javascript
+> let key = 'name'
+> person[key]
+```
+
+Let's add some more key-value pairs to the `person` object:  
+
+```javascript
+> person.height = '5 ft'
+= '5 ft'
+
+> person['gender'] = 'female'
+= 'female'
+
+> person
+= { name: 'Jane', age: 37, hobbies: ['photography', 'geneaology'], height: '5 ft', gender: 'female' }
+```
+
+In this example, we use both dot notation and bracket notation to add two new key-value pairs to the `person` object.  
+
+If you want to remove something from an existing object, you can use the `delete` keyword:  
+
+```javascript
+> delete person.age
+= true
+
+> delete person['gender']
+= true
+
+> delete person['hobbies']
+= true
+
+> person
+= { name: 'Jane', height: '5 ft' }
+```
+
+##### Iterating over Objects
+
+**The for/in loop**
+
+
+
+
+
+
 
 
 
