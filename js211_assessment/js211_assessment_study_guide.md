@@ -204,15 +204,21 @@ Local variables are short-lived; they go away when the function that corresponds
 
 ###### Data Types
 
-JavaScript has five so-called **primitive data types:**
+JavaScript has the following so-called **primitive data types:**
 
 * String
 * Number
 * Undefined
 * Null
 * Boolean
+* Symbols (ES6) -- not discussed in this course
+* Big Integers (ES9) -- not discussed in this course
 
-Every type that is not a primitive type is an **object type**.
+Every type that is not a primitive type is an **object type**.  
+
+JavaScript has one compounded data type:
+
+* Object
 
 ###### Undefined
 
@@ -270,6 +276,69 @@ The most important facts to remember about arrays are:
 ##### Objects
 
 A dictionary-like data structure that matches keys with specific values. The most important thing to remember about objects is that you use keys to set or retrieve values.  
+
+###### Number
+
+JavaScript uses Double Precision Floats, so the largest number that can be precisely stored is 9,007,199,254,740,991 (`Number.MAX_SAFE_INTEGER`). However, the maximum numeric value that can be represented is 1.7976931348623157e+308 (`Number.MAX_VALUE`). Any number greater than this is represented as `Infinity`.  
+
+Numbers support the basic arithmetic operations you might expect, including addition (`+`), subtraction (`-`), multiplication (`*`), and division (`/`).  
+
+JavaScript uses a floating point system to represent all numbers. This is unlike other programming languages that have distinct data types to represent integer, float, double, real, or decimal values.  
+
+Floating point values cannot precisely represent values because of how the computer represents them. This is not specific to JavaScript. It is true for all programming languages that store numbers in this manner. A common issue that arises from the use of floating point numbers is that there seems to be slight discrepancies or rounding errors when looking at results. For example:  
+
+```javascript
+0.1 + 0.2; 			// returns 0.30000000000000004, not 0.3!
+```
+
+The best practice here is avoid fractional numbers as much as you can. Instead, use an integer number of the smallest relevant units. For example, if you're working with financial numbers, represent the amount in cents. If you're working with time duration, use seconds instead of hours.  
+
+There are a few special number values:
+
+* `Infinity`: when you need a number that is greater than any other number.
+* `-Infinity`: when you need a number that is less than any other number.
+* `NaN`: means "not a number." You will see `NaN` when a math function encounters an error.  
+
+```javascript
+2 / 0;					// Infinity
+Math.sqrt(-1);	// NaN
+```
+
+###### Boolean
+
+The boolean data type represents the truth-values of logic. There are only two possible boolean values: `true` and `false`. The result of a comparison operation, for example, is a boolean value:
+
+```javascript
+2 > 1;					// true
+0 === 0;				// true
+1 > 3;					// false
+```
+
+###### String
+
+A `String` is a sequence of characters and is the data type used to represent text within a JavaScript program. Here are some examples of Strings:  
+
+```javascript
+'Hello, world'
+"Hello, world"
+'asdac ca,!'
+'c'
+'45'
+''
+'©2016 Flambé, Inc.'
+```
+
+JavaScript Strings have no size limit and can contain any amount of text.  
+
+You can use either single or double quote marks for strings. Unlike most programming languages, there is no function distinction between single and double-quoted Strings.  
+
+A common string operation is concatenation, which joins one string to another. Concatenation uses the `+` operator:  
+
+```javascript
+'Hello' + ', World'; 		// "Hello, World"
+```
+
+
 
 
 
