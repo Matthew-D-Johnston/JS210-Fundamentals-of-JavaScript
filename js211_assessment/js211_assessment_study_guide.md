@@ -10,6 +10,45 @@
 
 There is a subtle difference in terminology surrounding the `=` token. When used in a declaration, the `=` is just a syntactic token that tells JavaScript that you're going to supply an initial value for the variable. However, in an assignment, the `=` is called the **assignment operator**.  
 
+###### Variable Assignment and Initializers
+
+Once a variable is declared, you can use the `=` operator to assign a value to it:  
+
+```javascript
+let number;
+
+number = 3;  // variable `number` is assigned with value 3
+```
+
+You can also combine the variable declaration with an **initializer**:  
+
+```javascript
+let myVariable = 'Hello, World';
+var otherVariable = 23;
+let anotherVariable = true;
+const FOO = 42;
+```
+
+Initializers look a lot like an assignment, but are distinct terminology. An assignment is a standalone expression that gives a variable a new value; an initializer is the expression to the right of the `=` in a variable declaration.  
+
+Take note that a variable that is declared but not initialized or assigned a value will have the value `undefined`.   
+
+```javascript
+let foo;
+foo;			// undefined
+```
+
+Once declared, you can not assign a new value to a constant. Therefore you must initialize the contstant when you declare it:  
+
+```javascript
+const BAR; // Uncaught SyntaxError: Missing initializer in const declaration
+```
+
+```javascript
+const FOO = 3;
+FOO = 4; // Uncaught TypeError: Assignment to constant variable.
+```
+
 ###### Comparisons
 
 Let's look at the comparison operators in some more depth so you can build more complicated conditional statements. One thing to remember is that comparison operators return a boolean value: `true` or `false`. We'll play with them in `node` to see how they work.  
@@ -201,6 +240,20 @@ Local variables are short-lived; they go away when the function that corresponds
 ---
 
 ### Primitive Values, Types and Type Conversions/Coercions
+
+###### Primitive Values
+
+Many of the data types we've seen so far are _primitive types_: that is, JavaScript represents them directly at the lowest level of the language implementation.  
+
+All JavaScript primitives are immutable. You cannot change them once you create them. Primitive values, especially strings, may appear to change during the lifetime of a JavaScript program. However, this is merely an illusion. JavaScript doesn't actually change the values. Instead, it assigns wholly new values to variables that used to contain different values. This means that you should remember to assign an expression to change the value in a variable; no function, method, or other operation will modify it for you. If you don't assign the new value to the desired variable, JavaScript won't do it for you.  
+
+```javascript
+a = 'hello';
+a.toUpperCase();	// the "hello" string is not mutated, but a new "HELLO" string is returned
+a;								// still "hello"
+```
+
+All other JavaScript language constructs, including arrays and functions, are JavaScript Objects. Objects are mutable, which means you can modify them without losing their identity. We'll talk more about this in the next lesson.  
 
 ###### Data Types
 
@@ -473,6 +526,62 @@ Note that variables and other identifiers have or reference objects or primitive
 ### Working with Strings, Arrays, and Objects
 
 #### In particular, be thoroughly familiar with the basic Array iteration methods (`forEach`, `map`, `filter`, and `find`) and how to use Object methods to access the keys and values in an Object as an Array.  
+
+###### Strings
+
+##### Character Access
+
+Strings act like a collection of characters. To access a character in a string, we can use the `String.prototype.charAt` method on the string. The argument is an index value for the character we want to access:  
+
+```javascript
+'hello'.charAt(1);	// "e"
+```
+
+We can also use **bracket notation** to perform the same operation:  
+
+```javascript
+'hello'[1];				// "e"
+```
+
+In some programming languages, such as Ruby, bracket notation is a method. In JavaScript, it is actually an operator.  
+
+##### String Length
+
+Strings also have a `length` property to tell you the number of characters that are in the string:  
+
+```javascript
+'hello'.length			// 5
+```
+
+##### Working with Long Strings
+
+With long literal strings, readability is an issue when writing the string out in preparation for assignment to a variable. You can use concatenation to write the string in chunks, and make your code easier to read:
+
+```javascript
+let lipsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ' +
+             'eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut ' +
+             'enim ad minim veniam, quis nostrud exercitation ullamco laboris ' +
+             'nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor ' +
+             'in reprehenderit in voluptate velit esse cillum dolore eu fugiat ' +
+             'nulla pariatur. Excepteur sint occaecat cupidatat non proident, ' +
+             'sunt in culpa qui officia deserunt mollit anim id est laborum.';
+```
+
+Alternatively, you can place a `\` at the end of each line; this tells JavaScript to ignore the following newline, and concatenate the next line to the current string. Be careful, though: if there are any spaces or tabs after the `\`, JavaScript will treat them as literal spaces or tabs, and include them in the string. It will also fail to find the closing quote mark, and issue a syntax error. You also need to be careful of spaces and tabs at the beginning of the line after the `\`; those spaces and tabs are part of the string's content.  
+
+The following example assigns the same string as the previous example to `lipsum`:  
+
+```javascript
+let lipsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do \
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut \
+enim ad minim veniam, quis nostrud exercitation ullamco laboris \
+nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor \
+in reprehenderit in voluptate velit esse cillum dolore eu fugiat \
+nulla pariatur. Excepteur sint occaecat cupidatat non proident, \
+sunt in culpa qui officia deserunt mollit anim id est laborum.';
+```
+
+
 
 ###### Arrays
 
@@ -1162,6 +1271,130 @@ One feature of JavaScript that sets it apart from most other languages is that i
 ---
 
 ### Naming Conventions (legal vs. idiomatic)
+
+###### Variable Names
+
+Variable names should usually start with a lowercase letter.  
+
+```javascript
+// Bad
+let Book = 'Head-First JavaScript Programming';
+
+// Good
+let book = 'Head-First JavaScript Programming';
+```
+
+Variables with multiple words in their name use a style called camelCase. The first letter of the first word of a camelCase name must be lowercase; each subsequent word should begin with an uppercase letter. You may sometimes see people use uppercase for words in a name; this is simply a matter of taste and is not something that will affect your code in any way. However, for Launch School, please lowercase the first letter.
+
+```javascript
+// number, string, array, object
+let myNumber = 26;
+let myString = 'Double 13';
+let myArray = [13, 13];
+let myObject = {
+  count: 26,
+};
+
+// function names
+let addValues = function (a, b) {
+  return a + b;
+};
+
+function multiplyValues(a, b) {
+  return a * b;
+}
+```
+
+Object properties use the same convention as well.
+
+```javascript
+let myObject = {
+  myNumber: 26,
+  myMethod: function () {},
+};
+```
+
+###### Constant Names
+
+Constant names should usually start with an uppercase letter.  
+
+```javascript
+// Bad
+const title = 'Head-First JavaScript Programming';
+
+// Good
+const Title = 'Head-First JavaScript Programming';
+```
+
+In fact, constants usually have all letters in uppercase:  
+
+```javascript
+// Ok
+const Title = 'Head-First JavaScript Programming';
+
+// Better
+const TITLE = 'Head-First JavaScript Programming';
+```
+
+Constants with multiple words in their name typically use SCREAMING_SNAKE_CASE: all letters are uppercase, and words are separated by underscores:  
+
+```javascript
+// number, string, array, object
+const NUMBER_OF_LETTERS = 26;
+const DECK_OF_CARDS = ["2 of Clubs", "2 of Diamonds", …, "Ace of Spades"];
+```
+
+###### Function Names  
+
+Function names should usually use camelCase names, no matter how the function is defined:  
+
+```javascript
+function multiplyValues(a, b) {
+  return a * b;
+}
+
+let addValues = function (a, b) {
+  return a + b;
+};
+
+const subtractValues = (a, b) => a - b;
+```
+
+###### Idiomatic vs. Non-Idiomatic Variable Names
+
+Variable names that follow the above naming convention are referred to as **idiomatic names**. Less commonly, you may also see variable names containing all uppercase letters with multiple words separated by underscores, such as `MY_CONSTANT`. This style of naming is sometimes called SCREAMING_SNAKE_CASE. Such names can improve readability, but they have no effect on how JavaScript treats them.  
+
+All-caps constant names and variable names that contain acroynms are considered to be idiomatic names.  
+
+Here are some examples of idiomatic names:  
+
+```
+cat
+employee
+number1
+fizzBuzz
+validateUserInput
+tacoShack42
+MINUTES_PER_HOUR
+parseURL
+```
+
+On the other hand, syntactically valid names that do not follow these conventions are called **non-idiomatic names**. Here are some examples, each followed by a comment explaining why it is non-idiomatic:  
+
+```
+_cat                   // starts with an underscore
+Employee               // starts with an uppercase letter
+number_1               // contains an underscore
+fizzBUZZ               // second word is all uppercase
+validate_User_Input    // contains underscores
+taco$hack42            // contains a `$`
+MINUTESPERHOUR         // 'constant' - missing underscores between words
+paRseURL               // contains an uppercase letter inside of a non-acronym word
+```
+
+###### 
+
+
 
 
 
