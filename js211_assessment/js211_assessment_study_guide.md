@@ -49,6 +49,58 @@ const FOO = 3;
 FOO = 4; // Uncaught TypeError: Assignment to constant variable.
 ```
 
+###### Expressions
+
+Put simply, an expression is any valid code that resolves to a value.  
+
+Examples of expressions:
+
+```javascript
+'hello'; 		// a single string is an expression
+10 + 13;		// arithmetic operations are expressions
+sum = 10;		// assignments are expressions
+```
+
+The most common expression types are:  
+
+* Arithmetic: these are expressions that evaluate to a number (i.e. `10 + 13`)
+* String: these are expressions that evaluate to a character string (i.e. `'Hello' + ', World'`)
+* Logical: these are expressions that evaluate to `true` or `false` (i.e. `10 > 9`)
+
+###### Statements
+
+Unlike expressions, statements in JavaScript don't necessarily resolve to useful values. Instead, they control the execution of the program. For example, variable assignments are expressions, but variable declarations are statements:  
+
+```javascript
+let a; 								// a statement to declare variables
+let b;
+let c;
+let b = (a = 1);			// this works, because assignments are expressions too
+let c = (let a = 1);	// this gives an error, since a statement can't be used
+											// as part of an expression
+```
+
+There are other types of statements, such as `if ... else ...` and `switch` for branching logic (conditionals), `while` and `for` for looping, etc. We'll learn more about those in the next topics.  Just remember that statements help to "do something", instead of giving you a value to use.  
+
+Statements always evaluate as `undefined`. They differ from expressions in that you cannot use a statement as part of another expression. For instance, this code isn't valid:
+
+```javascript
+> 5 * let foo
+SyntaxError: Unexpected identifier
+
+> console.log(let bar)
+SyntaxError: missing ) after argument list
+```
+
+Some statements include expressions as part of their syntax. For example, the `let` statement can include an initializer to set the initial value of the variable:
+
+```javascript
+> let foo = 42
+= undefined
+```
+
+In the `let` statement, the code to the right of the `=` statement is an expression. That expression happents to be part of the `let` statement, but it is still an expression in its own right.  
+
 ###### Comparisons
 
 Let's look at the comparison operators in some more depth so you can build more complicated conditional statements. One thing to remember is that comparison operators return a boolean value: `true` or `false`. We'll play with them in `node` to see how they work.  
@@ -105,6 +157,23 @@ JavaScript has a set of **precedence** rules it uses to evaluate expressions tha
 - `===`, `!==`, `==`, `!=` - Equality
 - `&&` - Logical AND
 - `||` - Logical OR
+
+###### Logical Short Circuit Evaluation in Expressions
+
+When an expression contains the logical And (`&&`) or logical Or (`||`) operators, JavaScript evaluates them using "short-circuit" rules:  
+
+* For an expression like `a || b`, if `a` is `true`, the result is always `true`. Since it does not need to evaluate `b` to make this determination, JavaScript short circuits the evaluation an returns `true` without evaluating `b`.  
+* As with `a && b`, JavaScript short circuits the evaluation if `a` is `false`, and returns `false` without evaluating `b`.  
+
+```javascript
+let a = true;
+let b = false;
+
+a || (b = true);	// b is still false after this, because (b = true) is never evaluated
+b && (a = 1);			// a is still true after this, because (a = 1) is never evaluated
+```
+
+
 
 
 
@@ -314,6 +383,188 @@ The `String` function can coerce numbers into strings.
 = '20'
 ```
 
+###### Explicit Primitive Type Coercions
+
+We sometimes want to convert primitive JavaScript values into values of different types. For example, we may want to convert the string `345` into the number `345`. We call such operations **coercions** or **conversions**. However, you may recall that JavaScript primitives are immutable values: JavaScript doesn't actually convert values. Instead, it returns a new value of the proper type.  
+
+##### Converting Strings to Numbers
+
+We can use the `Number` function to turn strings that contain a numeric value into a number:
+
+```javascript
+Number('1');					// 1
+```
+
+If the string cannot be converted to a number, `Number` returns `NaN`:  
+
+```javascript
+Number('abc123');				// NaN
+```
+
+The `parseInt` and `parseFloat` global functions turn strings to numbers, with each only handling numeric values in an integer or floating-point format:  
+
+```javascript
+parseInt('123', 10);				// 123
+parseInt('123.12', 10);			// 123, will only return whole numbers
+parseInt('123.12');					// 123
+parseFloat('123.12');				// 123.12, can handle floating point values
+```
+
+Note that `parseInt` takes an optional `radix` argument. This represents the base in mathematical numeral systems. It is recommended to always specify this parameter to avoid reader confusion and to have more predictable behaviour.  
+
+##### Converting Numbers to Strings
+
+You can use the `String` function to turn numbers into strings:
+
+```javascript
+String(123);				// "123"
+String(1.23);				// "1.23"
+```
+
+You can also call the `toString` method on numbers:  
+
+```javascript
+(123).toString();				// "123"
+(123.12).toString();		// "123.12"
+```
+
+Finally, you can convert a number to a string with the `+` operator to "add" it to a string:
+
+```javascript
+123 + '';						// "123"
+'' + 123.12;				// "123.12"
+```
+
+However, this code does not make its intent clear so you should avoid using code like this.  
+
+##### Booleans to Strings
+
+To turn boolean values (`true` and `false`) into strings, you can use the `String` function:  
+
+```javascript
+String(true);				// "true"
+String(false);			// "false"
+```
+
+Alternatively, you can call the `toString` method on the boolean values:  
+
+```javascript
+true.toString();				// "true"
+false.toString(); 			// "false"
+```
+
+##### Primitives to Booleans?
+
+There is no direct coercion of strings to booleans. Therefore, if you have a string representation of a boolean, you can just compare it with `'true'` to determine whether that string is `'true'` or `'false'`:  
+
+```javascript
+let a = 'true';
+let b = 'false';
+a === 'true';					// true
+b === 'true';					// false
+```
+
+##### `Boolean`
+
+You can also use the `Boolean` function to convert any value into a boolean value based on the truthy and falsy rules in JavaScript:  
+
+```javascript
+Boolean(null);           // false
+Boolean(NaN);            // false
+Boolean(0);              // false
+Boolean('');             // false
+Boolean(false);          // false
+Boolean(undefined);      // false
+Boolean('abc');          // other values will be true
+Boolean(123);            // true
+Boolean('true');         // including the string 'true'
+Boolean('false');        // but also including the string 'false'!
+```
+
+The double `!` operator provides a simpler way to coerce a truthy or falsy value to its boolean equivalent. The `!` operator returns the opposite of the value's boolean equivalent, so a double `!` returns the value's boolean equivalent:  
+
+```javascript
+!!(null);                // false
+!!(NaN);                 // false
+!!(0);                   // false
+!!('');                  // false
+!!(false);               // false
+!!(undefined);           // false
+
+!!('abc');               // true
+!!(123);                 // true
+!!('true');              // true
+!!('false');             // this is also true! All non-empty strings are truthy in JavaScript
+```
+
+###### Implicit Primitive Type Coercions
+
+Let's look at some examples to see what we mean by implicit type coercion:
+
+```javascript
+1 + true				// true is coerced to the number 1, so the result is 2
+'4' + 3					// 3 is coerced to the string '3', so the result is '43'
+false == 0			// false is coerced to the number 0, so the result is true
+```
+
+In other programming languages, the above expressions will produce errors or exceptions, but JavaScript tries to make sense of the expression. If necessary, it converts values to types that it can operate on. This may seem convenient, but in reality, the flexibility makes bugs likelier. They can go undetected for a long time, and often only become evident in a totally different part of the program. This can make JavaScript debugging challenging.  
+
+##### The Plus (+) Operator
+
+The unary plus operator converts a value into a number, following the same rules as the `Number` function:  
+
+```javascript
++('123')        // 123
++(true)         // 1
++(false)        // 0
++('')           // 0
++(' ')          // 0
++('\n')         // 0
++(null)         // 0
++(undefined)    // NaN
++('a')          // NaN
++('1a')         // NaN
+```
+
+The binary plus operator (with two operands) means either addition for numbers or concatenation for strings. When `+` is used with mixed operands that include a string, JavaScript converts the other operand to a string as well:  
+
+```javascript
+'123' + 123			// "123123" -- if a string is present, coerce for string concatenation
+123 + '123'			// "123123"
+null + 'a'			// "nulla" -- null is coerced to string
+'' + true				// "true"
+```
+
+When both operands are a combination of numbers, booleans, `null`s, or `undefined`s, they are converted to numbers and added together:  
+
+```javascript
+1 + true				// 2
+1 + false				// 1
+true + false`		// 1
+null + false		// 0
+null + null 		// 0
+1 + undefined		// NaN
+```
+
+In the last example above, `undefined` gets coerced to `NaN`. While `NaN` means "not a number", JavaScript still considers it to be a number. The result of `1 + NaN` is thus, `NaN`.  
+
+##### Other Arithmetic Operators
+
+The other arithmetic operators, `-`, `*`, `/`, `%`, are only defined for numbers, so JavaScript convets both operands to numbers:  
+
+```javascript
+1 - true                // 0
+'123' * 3               // 369 -- the string is coerced to a number
+'8' - '1'               // 7
+-'42'                   // -42
+null - 42               // -42
+false / true            // 0
+true / false            // Infinity
+'5' % 2                 // 1
+```
+
+
+
 ###### Data Structures
 
 The two most common data structurs, complex data types, that JavaScript programmers use are arrays and objects.  
@@ -512,6 +763,95 @@ Note that variables and other identifiers have or reference objects or primitive
 ---
 
 ### Differences between Loose and Strict Equality
+
+JavaScript provides non-strict equality operators, `==` and `!=`, and strict equality operators, `===` and `!==`. The strict operators never perform type coercions. The non-strict operators have a set of rules for coercing types before performing the comparison.  
+
+###### Strict equality operators
+
+With the strict equality operators, the two operands are only equal if they are both the same type and have the same value:  
+
+```javascript
+1 === 1							// true
+1 === '1'						// false
+0 === false					// false
+'' === undefined		// false
+'' === 0						// false
+true === 1					// false
+'true' === true			// false
+```
+
+###### Non-strict equality operators
+
+The non-strict equality operators work exactly the same as the strict equality operators when both operands are the same type. However, when the operands are different types, JavaScript implicitly coerces them to the same type before comparing them, using the following rules.  
+
+When one operand is a string and the other is a number, the string is converted to a number:  
+
+```javascript
+'42' == 42						// true
+42 == '42'						// true
+42 == 'a'							// false -- becomes: 42 == NaN
+0 == ''								// true -- becomes: 0 == 0
+0 == '\n'							// true -- becomes: 0 == 0
+```
+
+When one operand is a boolean, it is converted to a number:
+
+```javascript
+42 == true						// false -- becomes: 42 == 1
+0 == false						// true -- becomes: 0 == 0
+'0' == false					// true -- becomes: '0' == 0, then: 0 == 0 (two conversions)
+'' == false						// true -- becomes: '' == 0, then: 0 == 0
+true == '1'						// true
+true == 'true'				// false -- becomes: 1 == 'true', then: 1 == NaN
+```
+
+When one operand is `null` and the other is `undefined`, the non-strict operator always returns `true`. If both operands are `null` or both are `undefined`, the return value is `true`. Comparing `null` or `undefined` to all other values returns `false`:  
+
+```javascript
+null == undefined					// true
+undefined == null					// true
+null == null 							// true
+undefined == undefined		// true
+undefined == false				// false
+null == false							// false
+undefined == ''						// false
+undefined == null					// false -- strict comparison
+```
+
+When one of the operands is `NaN`, the comparison always returns `false`:  
+
+```javascript
+NaN == 0							// false
+NaN == NaN						// false
+NaN === NaN						// false -- even with the strict operator
+NaN != NaN						// true -- NaN is the only JavaScript value not equal to itself
+```
+
+The `!=` and `!==` operators follow the same rules as above, except the result of the comparison is inverted (i.e., `true` becomes `false`).  
+
+###### Relational Operators
+
+The relational operators, `<`, `>`, `<=`, and `>=` are defined for numbers (numeric comparison) and strings (lexicographic order). There are no strict versions of these operators. When both operands are strings, JavaScript compares them lexicographically. Otherwise, JavaScript converts both operands to numbers before comparing them.  
+
+```javascript
+11 > '9'							// true -- '9' is coerced to 9
+'11' > 9							// true -- '11' is coerced to 11
+123 > 'a'							// false -- 'a' is coerced to NaN; any comparison with NaN is false
+123 <= 'a'						// also false
+true > null						// true -- becomes > 0
+true > false					// true -- also becomes 1 > 0
+null <= false					// true -- becomes 0 <= 0
+undefined >= 1				// false -- becomes NaN >= 1
+```
+
+###### Best Practices
+
+Understanding JavaScript's implicit type coercions is important when you're debugging code. When you write your programs, though, it's best to:
+
+* **Always** use explicit type coercions (covered in the previous topic)
+* **Always use strict equality operators** (`===` and `!==`).
+
+This is true even when you think you "understand the rules." This part of JavaScript is opaque and not well understood. Clearly show your intentions and be explicit. These best practices will save you and future developers much grief.  
 
 
 
@@ -1165,11 +1505,116 @@ Everything else evaluates as true.
 
 ### Function Definition and Function Invocation
 
+###### Definition
 
+One way to defined functions is to declare them. A function declaration has the following structure:
+
+* The `function` keyword
+* The name of the function
+* A list of comma separated parameters
+* A block of statements (the function body)
+
+Here is a simple function declaration with several different calls:
+
+```javascript
+function triple(number) {
+  console.log('tripling in process...');
+  return number + number + number;
+}
+
+// call function with a value argument
+console.log(triple(5));									// logs 15
+
+// call function with a variable argument
+let someNumber = 5;
+console.log(triple(someNumber));				// logs 15
+
+// call function and store result in a variable
+let result = triple(5);
+console.log(result);										// logs 15
+```
+
+The `triple` function takes one parameter called `number`. It has two statements inside its block. Of particular note is the `return` statement; it specifies the value returned by the function. In all three calls (invocations), the function returns a value of 15. You can use return values immediately or save them for later use; you can even ignore them.  
 
 ###### Invocation
 
 Programmers often talk about function **invocation** and **invoking** functions. The terms are synonymous with "call" and "calling." You _invoke_ or write a _function invocation_. We use these terms as well.  
+
+The standard way to invoke a function is to append `()` to its name. Consider the following function:  
+
+```javascript
+function startle() {
+  console.log('Yikes!');
+}
+```
+
+We can call this function by appending `()` to the name:
+
+```javascript
+startle()
+
+// logs:
+Yikes!
+```
+
+Function names are nothing special in JavaScript: they are just local variables that happen to have a function as a value. Since `startle` is just a local variable, we can assign it to a new local variable and call the function using that new name:
+
+```javascript
+let suprise = startle;
+surprise();
+
+// logs:
+Yikes!
+```
+
+Many functions require parameters to fulfill their purpose. As we saw earlier, when calling a functio, we call these values _arguments_, and specify them as a list of names between the parentheses.  
+
+Consider the following function, `takeTwo`:
+
+```javascript
+function takeTwo(a, b) {
+  console.log(a);
+  console.log(b);
+  console.log(a + b);
+}
+```
+
+If we call `takeTwo` with two arguments, `1` and `2`, it logs each of the arguments and then their sum:  
+
+```javascript
+takeTwo(1, 2);
+
+// logs:
+1
+2
+3
+```
+
+So far, so good. But, what happens if we don't provide the same number of arguments as there are in the function's declaration? Let's try passing a single argument to `takeTwo`:
+
+```javascript
+takeTwo(1);
+
+// logs:
+1
+undefined
+NaN
+```
+
+A few things to note:
+
+1. Calling a function with too few arguments _does not raise an error_.
+2. Within a function, an argument that wasn't provided in the call will have the value `undefined`
+3. The `NaN` result is caused by the fact that `b` is `undefined`; it isn't a direct result of the missing parameter. It is merely JavaScript's standard behaviour when a number and `undefined` are added.
+
+```javascript
+takeTwo(1, 2, 4);
+
+// logs:
+1
+2
+3
+```
 
 
 
@@ -1253,6 +1698,10 @@ On line #2, we define an arrow function that requires one parameter. The parenth
 ---
 
 ### Implicit Return Value of Function Invocations
+
+If a function does not contain an explicit `return` statement, or the `return` statement does not include a value, the function implicitly returns the value `undefined`. This is a reason why functions are said to "have returned" rather than "finished execution". When we talk about closures in a later course this distinction will become more apparent. For now, just be mindful of the disambiguation between the `return` value (explicit or implicit) of a function and the statement that a "_function that has returned or returns_".  
+
+
 
 
 
