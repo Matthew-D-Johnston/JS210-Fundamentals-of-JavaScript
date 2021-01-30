@@ -290,6 +290,127 @@ As the name suggests, local variables in JavaScript have a local scope, meaning 
 
 Local variables are short-lived; they go away when the function that corresponds to their scope stops running. When we invoke the function, we start a new scope. If the code within that scope declares a new variable, that variable belongs to the scope. When the last bit of code in that scope finishes running, the scope goes away, as do any local variables declared within it. JavaScript repeats this process each time we invoke a function.  
 
+###### Adding Variables to the Current Scope
+
+These are a number of ways to create a variable in the current scope:
+
+* Use the `let` or `const` keywords.
+* Use the `var` keyword, which we'lll introduce later in this lesson.
+* Define parameters for a function -- each parameter is a local variable.
+* A function declaration creates a variable with the same name as the function. We'll talk about that in the next assignment.
+* A class declaration also creates a variable with the same name as the class. We'll talk about class declarations in a later course.  
+
+```javascript
+function lunch() {		// A function declaration creates a new variable scope
+	let food = 'taco';	// 1. Add a new variable food within the current variable scope
+}
+
+function eat(food) {	// 2. Parameters create variables during function invocation
+	console.log('I am eating ' + food);
+}
+
+function drink() {		// 3. Add a new variable drink within the global variable scope
+	console.log('I am drinking a glass of water');
+}
+```
+
+Of note in the above code is the scope of `food` variable from the parameter of the `eat` function. Given lexical scoping rules, its scope is the `eat` function because of the way the source code is written not because the function gets invoked. At runtime, this scope implies that `food` can only be accessed from within the body of the `eat` function.  
+
+###### Variable Assignment
+
+Variable scoping rules apply to both assignment and reference equally. This code:  
+
+```javascript
+country = 'Liechtenstein';
+```
+
+checks the current scope and then each higher scope, looking for a variable with the name `country`. JavaScript sets the first `country` variable it finds to `"Liechtenstein"`.  
+
+```javascript
+let country = 'Spain';
+function update() {
+  country = 'Liechtenstein';
+}
+
+console.log(country);		// logs: Spain
+
+update();
+console.log(country);		// logs: Liechtenstein
+```
+
+If JavaScript can't find a matching variable, **it creates a new global variable instead**. This is rarely what you want; it can be the source of subtle bugs.  
+
+```javascript
+// no other code above
+function assign() {
+  let country1 = 'Liechtenstein';
+  country2 = 'Spain';
+}
+
+assign();
+console.log(country2);  // logs: Spain
+console.log(country1);	// gets ReferenceError
+// no other code below
+```
+
+In the above code, `country2` isn't declared anywhere else in the code and it is assigned a value inside the function. Since JavaScript couldn't find a matching variable, it created a new "global" variable and as such it makes it possible to log its value on line 8.  
+
+Moreover, similar to the earlier code in the adding variables to the current scope section, `country2` is in the global scope because of the way the source code is written and not because the `assign` function was executed.  
+
+###### Variable Shadowing
+
+With the following code:
+
+```javascript
+let name = 'Julian';
+
+function greet() {
+  let name = 'Logan';
+  console.log(name);
+}
+```
+
+the variable declaration for `name` in the `greet` function shadows the outer `name` variable. Within `greet`, you can only access the inner `name`.  
+
+```javascript
+greet();  // logs: Logan
+```
+
+![Scoping diagram 3](https://dbdwvr6p7sskw.cloudfront.net/210/images/scoping_diagram3-20200720.png)
+
+If a function definition has a parameter with the same name as a variable from an outer scope, the parameter shadows the outer variable: 
+
+```javascript
+let name = 'Julian';
+
+function greet(name) {
+  console.log(name);
+}
+```
+
+When this code runs, the value of `name` inside `greet` is not dependent on the value in the outer scope. Instead, `name` receives the valued passed to `greet` in the invocation.  
+
+```javascript
+greet('Sam');		// logs: Sam
+```
+
+JavaScript throws a `ReferenceError` exception if it can't find a variable anywhere in the scope hierarchy.  
+
+```javascript
+state;		// raises error: ReferenceError: state is not defined
+```
+
+Remember these important variable scoping rules:
+
+* Every function declaration creates a new local variable scope.
+* Every block creates a new local variable scope.
+* Lexical scope uses the structure of the source code to determine the variable's scope. This means that the code doesn't have to be executed for the scope to exist.
+* All variables in the same or surrounding scopes are visible inside functions and blocks.  
+
+
+
+
+
 
 
 
@@ -297,6 +418,100 @@ Local variables are short-lived; they go away when the function that corresponds
 ---
 
 ### Function Scope
+
+In JavaScript, every function or block creates a new variable scope. Let's examine what this means.  
+
+###### The Global Scope
+
+Very small JavaScript programs with no functions or blocks exist entirely within a single sclope called the global scope:  
+
+```javascript
+let name = 'Julian';
+console.log(name);
+```
+
+Here, we declare the `name` variable on the first line. After this line runs, `name` is available from that point to the end of the program. Running this code writes `Julian` to the console log.  
+
+###### Function Scope
+
+Let's add a function to the picture:
+
+```javascript
+let name = 'Julian';
+
+function greet() {
+  let myName = name;
+  console.log(myName);
+}
+
+greet();		// => Julian
+```
+
+With this code, we now have two scopes:  (1) the global scope and (2) the scope from the declaration of the `greet` function. In this code, `name` and `greet` are in the global scope, while `myName` is in the **local scope** of `greet`. Within the function, we can access the `name` variable since the code within a function can access all variables in all surrounding scopes. However, `myName` is only available inside of `greet` -- variables declared inside a scope have function scope, and they cannot be accessed outside the body of the function.  
+
+You can think of variable scopes visually; function scopes nest inside each other. The code within an inner scope can access any variables in the same scope or **any surrounding scope**.  
+
+![Scoping diagram 1](http://dbdwvr6p7sskw.cloudfront.net/210/images/scoping_diagram1-20200720.png)
+
+This works no matter how deeply nested a function is. For instance, in the following code, `say` can access the `name` variable even though `say` is nested inside `greet`, and `greet` is nested in the outermost scope.  
+
+```javascript
+let name = 'Julian';
+
+function greet() {
+  function say() {
+    console.log(name);
+  }
+  
+  say();
+}
+```
+
+ It behaves identically to the version without a `say` function:
+
+```javascript
+greet();			// logs: Julian
+```
+
+![Scoping diagram 2](https://dbdwvr6p7sskw.cloudfront.net/210/images/scoping_diagram2-20200720.png)
+
+###### Block Scope
+
+Let's add a block to the picture by using a `while` loop:
+
+```javascript
+let name = 'Julian';							// 'name' is in global scope
+
+function greet() {								// `greet` is also in global scope
+  let counter = 0;								// `counter` is in function scope
+  while (counter < 3) {
+    let myName = name;						// `myName` is in block scope
+    console.log(myName);
+    counter += 1;
+  }
+  
+  // console.log(myName);					// would raise an error (myName not in scope)
+  console.log(counter);						// => 3
+}
+
+greet();													// => Julian (3 times)
+// console.log(myName);						// would raise an error (not in scope)
+// console.log(counter);					// would raise an error (not in scope)
+```
+
+Here, we declare a `counter` variable on the first line of the `greet` function. After this line runs, `counter` is available from that point to the end of the function. Running this code writes three instances of the string `Julian` to the console log followed by the number `3`. `counter` has function scope, so it's available from its declaration down to the end of the function. However, it is not available outside of the function.  
+
+We also have a **block scope**, introduced by the block used by the `while` loop. As with function scopes, the code inside a block scope can access any variables declared in the surrounding (outer) scope(s).  
+
+We now have three scopes: (1) the global scope (which includes `name` and `greet`); (2) the function scope (which includes `counter`), and (3) the block scope of the loop, which includes `myName`. Both function and block scopes are also called local scopes.  
+
+###### Lexical Scoping
+
+JavaScript uses _Lexical Scoping_ to determine where it looks for variables; it uses the structure of the source code to determine the variable's scope. That is, **the source code defines the scope**. This means that when you write a function in your code, it creates a scope even if the function never gets executed and has no variables of its own. At any point in a JavaScript program, there is a hierarchy of scopes from the local scope of the code up to the program's global scope.  
+
+When JavaScript tries to find a variable, it searches this hierarchy from the bottom to the top. It stops and returns the first variable it finds with a matching name. This means that variables in a lower scope can _shadow_, or hide, a variable with the same name in a higher scope.  
+
+Most mainstream programming languages use lexical scoping rules (also called "static scoping"). Some languages use "dynamic scoping" instead, or make dynamic scoping a choice. We won't get into dynamic scoping here.  
 
 
 
