@@ -1918,6 +1918,82 @@ const found = array1.find(element => element > 10);
 console.log(found);
 ```
 
+##### Some other important Array methods to be aware of:
+
+* `push`
+* `pop`
+* `unshift`
+* `shift`
+* `indexOf`
+* `lastIndexOf`
+* `slice`
+* `splice`
+* `concat`
+
+##### Arrays and Arithmetic Operators
+
+The arithmetic operators convert arrays to strings before performing the operation. After the conversion, the operation works in the same way as described in the Implicit Primitive Type Coercions lesson. For example, let's see what happens when you try to use `+` with an array:  
+
+```javascript
+let initials = ['A', 'H', 'E'];
+initials + 'B';										// "A,H,EB"
+initials;													// [ "A", "H", "E" ]
+```
+
+Arithmetic operators, when used on arrays, behave in un-useful ways.
+
+##### Arrays and Comparison Operators
+
+Now, comparing two arrays should be useful, right? Let's try:
+
+```javascript
+let friends = ['Bob', 'Josie', 'Sam'];
+let enemies = ['Bob', 'Josie', 'Sam'];
+friends == enemies;											// false
+friends === enemies;										// false
+[] == [];																// false
+[] === [];															// false
+```
+
+Uh-oh! Neither equality (`==`) nor strict equality (`===`) considers arrays with the same values to be equal. How can that be?  
+
+The two arrays are unequal since they are different arrays. They happen to contain the same values, but the arrays themselves are different objects. If we modify the first value in `friends` to `'Susan'`, the first value in `enemies` remains unchanged. Thus, the two arrays are different arrays, and the equality operators act accordingly. By analogy, take two sheets of paper. They look identical when blank, but they are not the same thing. You can write on one, but the other won't be affected.  
+
+The equality operators check whether the two arrays are the _same array_--they don't care if the arrays contain the _same content_. Strictly speaking, arrays are only equal when they are the same object.  
+
+We can see this in action by comparing an array with itself:  
+
+```javascript
+let friends = ['Bob', 'Josie', 'Sam'];
+friends == friends;											// true
+friends === friends; 										// true
+```
+
+If you assign the same array to another variable, JavaScript still recognizes them as the same array, and returns `true`:  
+
+```javascript
+let friends = ['Bob', 'Josie', 'Sam'];
+let roommates = friends;
+friends == roommates;											// true
+friends === roommates;										// true
+```
+
+When an array is compared with a non-array using the non-strict equality operator, JavaScript implicitly coerces the array into a string before performing the comparison. For example:  
+
+```javascript
+[] == '0';               // false -- becomes '' == '0'
+[] == 0;                 // true -- becomes '' == 0, then 0 == 0
+[] == false;             // true -- becomes '' == false, then 0 == 0
+[] == ![];               // true -- same as above
+[null] == '';            // true -- becomes '' == ''
+[undefined] == false;    // true -- becomes '' == ''
+[false] == false;        // false -- becomes 'false' == 0, then NaN == 0
+```
+
+The relational comparison operators, `>`, `>=`, `<`, and `<=`, are useless with arrays and objects. They return `true` or `false` in unexpected ways. Don't use them with arrays or objects.  
+
+
+
 ###### Objects
 
 Here is an object definition:
@@ -2140,6 +2216,21 @@ This code mutates neither `objA` nor `objB` and returns an entirely new object.
 ---
 
 ### Understand that arrays are objects, and be able to determine whether you have an Array
+
+JavaScript Arrays are really Objects (we'll talk more about Objects later on). You can see this with the `typeof` operator:  
+
+```javascript
+typeof [];				// "object"
+```
+
+If you need to determine whether a value is an Array, this can be a problem. If you find yourself in this position, use `Array.isArray` instead; it returns `true` when the argument is an Array, `false` if it is anything else:  
+
+```javascript
+Array.isArray([]);				// true
+Array.isArray('array');		// false
+```
+
+
 
 
 
