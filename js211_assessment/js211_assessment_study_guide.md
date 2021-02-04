@@ -1559,6 +1559,292 @@ Objects and primitive values are the data and functions that you use in your pro
 
 Note that variables and other identifiers have or reference objects or primitive values, but the names, by themselves, are not.  
 
+###### Introduction to Objects
+
+JavaScript is an _object-oriented_ language; the code in a JavaScript program uses objects to organize code and data. Typically, data values and the functions that operate on those values are part of the same object.  
+
+##### Standard Built-in Objects
+
+JavaScript provides built-in objects, including `String`, `Array`, `Object`, `Math`, `Date`, and more. You've already worked with objects in this course. For example, when you apply `toUpperCase` to a string, you're calling the method `toUpperCase` on a built-in `String` object: 
+
+```javascript
+'hi'.toUpperCase(); 			// "HI"
+```
+
+One thing to notice is that some of the built-in objects share their names with some of the primitive data types (i.e. `String` and `Number`). While the names are the same, they differ from each other. As primitive values, we theoretically can't call methods on them (i.e., getting the length of a string) since it is only the object data type that you can call methods on. Luckily, JavaScript _temporarily_ coerces primitives to their object counterpart when necessary, which means that we typically don't need to worry about whether we're working with a primitive or an object (`undefined` has no built-in object counterpart).  
+
+To see what this means, let's explore what happens when JavaScript executes the below code:  
+
+```javascript
+let a = 'hi';													// Create a primitive string with value "hi"
+typeof a;															// "string"; This is a primitive string value
+
+let stringObject = new String('hi')		// Create a string object
+typeof stringObject;									// "object"; This is a String object
+
+a.toUpperCase();											// "HI"
+stringObject.toUpperCase();						// "HI"
+
+typeof a;															// "string"; The coercion is only temporary
+typeof stringObject;									// "object"
+```
+
+The same is true for other primitive types (except `null` and `undefined`):
+
+```javascript
+42.5639.toFixed(2);					// "42.56"
+true.toString();						// "true"
+```
+
+With this, we have the benefit of not having to explicitly create the object form of strings, numbers, and booleans to use methods on them.  
+
+##### Creating Custom Objects
+
+The standard built-in objects are all you need for most simple programs. Larger programs, however, often benefit from using custom objects that are specific to their needs.  
+
+You can create your own objects using the object literal notation:
+
+```javascript
+let colors = {
+  red: '#f00',
+  orange: '#ff0',
+};
+
+typeof colors;				// "object"
+colors.red;						// "#f00"
+colors.orange					// "#ff0"
+```
+
+There are two more ways to create objects: with an object constructor function, like `new String('foo')`, or with the `Object.create` method. We'll discuss these later when we get to the Object Oriented JavaScript topics.  
+
+##### Properties
+
+Objects are containers for two things: data and behaviour. The data consists of named items with values; the values represent the attributes of the object. In JavaScript, we call these associations between a name (or key) and a value, **properties**.  
+
+To get the value of an object property, you can append a single dot followed by the property name, to the object's name:  
+
+```javascript
+let animal = 'turtle';
+animal.length;						// 6
+
+let colors = {
+  red: '#f00',
+  orange: '#ff0',
+};
+
+colors.red;								// '#f00'
+
+'blue'.length;						// 4 - works with primitives too
+```
+
+You can set a new value for a property with assignment:
+
+```javascript
+let count = [0, 1, 2, 3, 4];
+count.length = 2;
+
+let colors = {
+  red: '#f00',
+  orange: '#ff0',
+};
+
+colors.blue = '#00f';
+```
+
+##### Methods
+
+Functions define the behaviour of an object. When they are part of an object, we call them **methods**. To call a method on an object, you access the method as though it is a property (it is!), and call it by appending parentheses. You can pass arguments to the method by listing them between the parentheses, just like with a function call. In fact, JavaScript methods are just Functions with some special behaviour that we'll explore later.  
+
+Here are some method calls:  
+
+```javascript
+(5.234).toString();				// "5.234"
+'pizza'.match(/z/);				// [ "z", index: 2, input: "pizza" ]
+Math.ceil(8.675309);			// 9
+Date.now();								// 1467918983610
+```
+
+As a matter of style, custom objects that use object literal notation always use a trailing comma when written across multiple lines. This means that the last property or method of an object ends with a comma (`,`).  
+
+##### Compact Method Notation
+
+ES6 introduced a new way of writing methods called the **compact method syntax**. Rather than writing the property name, a colon, and then a function expression, you can use a much simplified syntax. For instance, instead of this:  
+
+```javascript
+let myObj = {
+  foo: function (who) {
+    console.log(`hello ${who}`);
+  },
+  
+  bar: function (x, y) {
+    return x + y;
+  },
+};
+```
+
+we can write this instead:
+
+```javascript
+let myObj = {
+  foo(who) {
+    console.log(`hello ${who}`);
+  },
+  
+  bar(x, y) {
+    return x + y;
+  },
+};
+```
+
+We recommend using this syntax for your methods.  
+
+##### Arrow Functions and Methods
+
+It's possible to define methods as arrow functions. However, as you'll learn later, that is not a good idea. Arrow functions have a subtle behaviour that, in most cases, makes them unsuitable for use as methods. For now, just remember not to use arrow functions as methods.  
+
+Note that it is safe to use arrow functions in the body of a method; just don't use them to define the actual method.  
+
+###### Object Properties
+
+A property name for an object can be any valid string, and a property value can be any valid expression:  
+
+```javascript
+let object = {
+  a: 1,														 // a is a string with quotes omitted
+  'foo': 2 +1,										 // property name with quotes
+  'two words': 'this works too',	 // a two word string
+  true: true,											 // property name is implicitly converted to string "true"
+  b: {														 // object as property value
+  	name: 'Jane',
+  	gender: 'female',
+	},
+  c: function () {								 // function expression as property value
+    return 2;
+  },
+  d() {
+    return 4;
+  }
+};
+```
+
+###### Accessing Property Values
+
+You can access property values using "dot notation" or "bracket notation":
+
+```javascript
+let object = {
+  a: 'hello',
+  b: 'world',
+};
+
+object.a;                 // "hello", dot notation
+object['b'];              // "world", bracket notation
+object.c;                 // undefined when property is not defined
+
+let foo = {
+  a: 1,
+  good: true,
+  'a name': 'hello',
+  person: {
+    name: 'Jane',
+    gender: 'female',
+  },
+  c: function () {        // function expression as property value
+    return 2;
+  },
+  d() {                   // compact method syntax
+    return 4;
+  }
+};
+
+foo['a name'];            // "hello", use bracket notation when property name is an invalid identifier
+foo['goo' + 'd'];         // true, bracket notation can take expressions
+let a = 'a';
+foo[a];                   // 1, bracket notation works with variables since they are expressions
+foo.person.name;          // "Jane", dot notation can be chained to "dig into" nested objects
+foo.c();                  // 2, Call the method 'c'
+foo.d();                  // 4, Call the method 'd'
+```
+
+JavaScript style guide usually recommend using dot notation when possible.
+
+###### Adding and Updating Properties
+
+To add a new property to an object, use "dot notation" or "bracket notation" and assign a value to the result:  
+
+```javascript
+let object = {};								// empty object
+
+object.a = 'foo';
+object.a;												// "foo"
+
+object['a name'] = 'hello';
+object['a name'];								// "hello"
+
+object;													// { a: "foo", "a name": "hello" }				
+```
+
+If the named property exists, the assignment updates the property's value:
+
+```javascript
+let object = {};
+
+object.a = 'foo';
+object.a;                    // "foo"
+
+object.a = 'hello';
+object.a;                    // "hello"
+
+object['a'] = 'world';
+object.a;                    // "world"
+```
+
+You can use the reserved keyword `delete` to delete properties from objects:
+
+```javascript
+let foo = {
+  a: 'hello',
+  b: 'world',
+};
+
+delete foo.a;
+foo;								// { b: "world" }
+```
+
+###### Stepping through Object Properties
+
+Objects are a collection type. This means a single Object can store multiple values. A common task is to perform some action for each element in a collection. You can do this with a `for...in` loop:  
+
+```javascript
+let nicknames = {
+  joseph: 'Joey',
+  margaret: 'Maggie',
+};
+
+for (let nick in nicknames) {
+  console.log(nick);
+  console.log(nicknames[nick]);
+}
+
+// logs on the console:
+joseph
+Joey
+margaret
+Maggie
+```
+
+You can also retrieve the names of all properties in an object with `Object.keys`:  
+
+```javascript
+let nicknames = {
+  joseph: 'Joey',
+  margaret: 'Maggie',
+};
+
+Object.keys(nicknames);  // [ 'joseph', 'margaret' ]
+Object.values(nicknames); // [ 'Joey', 'Maggie' ]
+```
+
 
 
 
@@ -2229,6 +2515,174 @@ If you need to determine whether a value is an Array, this can be a problem. If 
 Array.isArray([]);				// true
 Array.isArray('array');		// false
 ```
+
+###### Arrays are Objects
+
+In JavaScript, arrays are actually objects! Let's demonstrate this: 
+
+```javascript
+let a = ['hello', 'world'];
+
+console.log(typeof a);				// "object"
+console.log(a['1']);					// "world", object's bracket notation to access value
+console.log(Object.keys(a));  // ["0", "1"], the keys of the object!
+
+// line 1 is equivalent of:
+let a = {
+  '0': 'hello',
+  '1': 'world',
+};
+
+console.log(typeof a);				// "object"
+console.log(a['1']);					// "world", object's bracket notation to access value
+console.log(Object.keys(a));  // ["0", "1"], the keys of the object!
+```
+
+Since you now understand that arrays are objects, you should understand why you can use the `length` property on arrays. It's just an object property that JavaScript maintains to track the array's size.  
+
+##### Arrays and the Length Property
+
+JavaScript's built-in Array methods (`join`, `forEach`, `push`, `splice`, etc.) take the value of the `length` property into consideration while performing their operations. Some methods just use the value, others set it, and some even do both. Let's take a closer look at how JavaScript manages the `length` property.  
+
+Referring to the ECMAScript documentation, here are some key points about `Array.length`: 
+
+* Its value is always a non-negative integer less than 2<sup>32</sup> (roughly 4.2 billion).
+* The value of the `length` property is numerically one greater than the largest **array index** in the Array. If you take all of the property names from the Array that represent non-negative integer values, then the property name with the largest numeric value is the largest array index.  
+* You can set the value of the `length` property explicitly.  
+
+Let's examine the first two points with this code:  
+
+```javascript
+let myArray = [];
+myArray.length;											// returns 0
+
+myArray = ['foo', 'bar', 'baz'];
+myArray.indexOf('baz');							// returns 2 (this is the largest index)
+myArray.length;											// returns 3
+```
+
+This code demonstrates that the `length` property is initially set to `0`, a non-negative integer. It also demonstrates that `length` is one greater than the largest index (when the largest index is `2`, the `length` is `3`).  
+
+What's more interesting and not obvious concerns which keys of the array object are array indexes and which are not. Take this example:  
+
+```javascript
+let myArray = [];
+myArray['foo'] = 'bar';
+myArray[0] = 'baz';
+myArray[1] = 'qux';
+
+console.log(myArray);         // logs ['baz', 'qux', foo: 'bar']
+myArray.length;               // returns 2 since foo: 'bar' is not an element
+myArray.indexOf('bar');       // returns -1 since 'bar' isn't in an element
+
+myArray[-1] = 'hello';
+myArray[-2] = 'world';
+myArray.length;               // returns 2
+myArray.indexOf('hello');     // returns -1 since 'hello' is not in an element
+                              // the fact that myArray[-1] is 'hello' is
+                              // coincidental
+myArray.indexOf('world');     // returns -1 since 'world' is not in an element
+
+console.log(myArray);         // logs ['baz', 'qux', foo: 'bar', '-1': 'hello', '-2': 'world']
+Object.keys(myArray).length;  // returns 5 (there are 5 keys at this point)
+myArray.length;               // returns 2 (but only 2 keys are indexes)
+```
+
+The important points here are:  
+
+* A property name is an array index when it is a non-negative integer. Values that have been assigned to index properties are called **elements** of the array. All other property names and their associated values are _not_ considered to be elements of the array.  
+* `Array.prototype.indexOf` returns `-1` if the value it is passed is not an element of the array, even if the value is associated with a non-index property.  
+* The value of `length` is entirely dependent on the largest array index. In that code, the largest valid index is `1` (see line 4). Therefore, `length` returns `2` (`1 + 1`).  
+* Logging an array logs all the indexed values and every `key: value` pair that the object contains. It logs only the value (e.g., `'baz'`, `'qux'`) if it's an element. Otherwise, it logs the `key: value` pair (e.g., `foo: 'bar'`) if it isn't an element (see line 18).
+* To count all of the properties in an Array object, use `Object.keys(array).length` (see line 19). Don't use `array.length`.  
+
+Finally, let's examine the implications of explicitly setting an array's `length` property:  
+
+```javascript
+let myArray = [1, 2, 3];
+myArray.length;         // returns 3
+
+// setting to a larger value than the current largest array index
+myArray.length = 5;
+console.log(myArray);   // logs (5) [1, 2, 3, empty × 2] on Chrome Console
+                        // logs [1, 2, 3, <2 empty slots>] on Firefox console
+                        // logs [1, 2, 3, ,] on node REPL
+myArray.length;         // returns 5
+
+myArray[6] = 'foo';
+myArray.length;         // returns 7
+console.log(myArray);   // logs (7) [1, 2, 3, empty × 3, "foo"] on Chrome Console
+                        // logs [1, 2, 3, <3 empty slots>, "foo"] on Firefox console
+                        // logs [1, 2, 3, , , , 'foo'] on node REPL
+
+// setting to a smaller value than the current largest array index with value
+myArray.length = 2;
+console.log(myArray);   // logs [1, 2]
+
+myArray.length = 5;
+console.log(myArray);   // logs (5) [1, 2, empty × 3] on Chrome Console
+                        // logs [1, 2, <3 empty slots>] on Firefox console
+                        // logs [1, 2, , ,] on node REPL
+myArray.length;         // returns 5
+```
+
+Note that the array loses data when you set the `length` property to a value equal to or smaller than the current largest array index. For example, on line 18, the array loses two elements: `3` and `'foo'`. It also loses three "empty slots", but these do not count as elements because they have never been assigned a value--they're only displayed to indicate that there are gaps between the actual elements.  
+
+Also note that, just like with objects, you can directly set the value of an array element with bracket notation (see line 11). If the property name you use is a valid array index that's greater than the current largest array index, JavaScript sets the `length` value to `1` greater than the array index you provided. Note that the `length` property does _not_ only count elements (the array indexes that have been assigned values)--the number of "empty slots" is also included in the count. In other words, the value of `length` is not necessarily the same as the number of elements in an array. For example, on line 13, there are only four actual elements, even though `length` value is `7` (as seen on line 12).  
+
+##### Using Object Operations with Arrays
+
+Since arrays are objects, you can use object operations such as `in` and `delete` on arrays. However, just because you can doesn't mean you should: using `in` and `delete` on an array introduces confusion and--particularly with `in`--may yield surprising results. You should usually use more idiomatic ways to accomplish the same tasks.  
+
+You can use the `in` operator to see whether an Object contains a specific key. It works fine with Arrays:  
+
+```javascript
+0 in [];			// false
+0 in [1];			// true
+```
+
+However, you should instead make the intent of the code clear. If you want to check whether an array has a certain index, compare it directly to the array's `length`:
+
+```javascript
+let numbers = [4, 8, 1, 3];
+2 < numbers.length;						// true
+```
+
+You can also use `delete` on Arrays but it isn't usually a good idea. If you need to remove a value from an Array, use `Array.prototype.splice` instead of `delete`.  
+
+Just like with arrays, the arithmetic and comparison operators are not very useful with objects and often lead to surprising results. When one operand is an object and the other is not an object, JavaScript typically coerces the object to the string `[object Object]`:  
+
+```javascript
+[] + {};                  // "[object Object]" -- becomes "" + "[object Object]"
+[] - {};                  // NaN -- becomes "" - "[object Object]", then 0 - NaN
+'[object Object]' == {};  // true
+'' == {};                 // false
+false == {};              // false
+0 == {};                  // false
+```
+
+However, if an object literal is used in certain contexts--such as at the beginning of a line--JavaScript interprets it as a block of code instead of as an object:  
+
+```javascript
+{} + [];                  // 0 -- becomes +[]
+{}[0];                    // [0] -- the object is ignored, so the array [0] is returned
+{ foo: 'bar' }['foo'];    // ["foo"]
+{} == '[object Object]';  // SyntaxError: Unexpected token ==
+```
+
+Like with arrays, two objects are considered equal by the `==` and `===` operators only if they are the same object:  
+
+```javascript
+let a = {};
+let b = a;
+a == a;											// true
+a == b;											// true
+a === b;										// true
+a == {};										// false
+a === {};										// false
+```
+
+Note: This assignment takes a deep look at arrays as objects. It provides an understanding of the mechanisms behind the scenes. However, use caution when modifying properties of an array directly, such as changing the `length` property, `delete`ing a property, or adding properties with keys that are not array indexes. If your code performs any of these actions, it can lead to unexpected results when working with arrays. The most notable issue is that properties that are not array indexes will not be processed by the built-in Array methods. "Empty slots" also will not be processed by the Array methods, since they're not array elements. You're especially at risk if you pass these modified array objects to methods that you don't control.  
 
 
 
