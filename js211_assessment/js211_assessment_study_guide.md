@@ -3568,5 +3568,195 @@ paRseURL               // contains an uppercase letter inside of a non-acronym w
 
 ### Pure Functions and Side Effects
 
+###### Side Effects
+
+A function call that performs any of the following actions is said to have side effects:  
+
+1. It reassigns any non-local variable.
+2. It mutates the value of any object referenced by a non-local variable.
+3. It reads from or writes to any data entity (files, network connections, etc.) that is non-local to your program.
+4. It raises an exception.
+5. It calls another function that has side effects.
+
+We'll look at all of these below.
+
+While it's common to speak of functions as having side effects, it's more correct to talk about whether a specific function **call** has any side effects. A function might have no side effects when given certain arguments, but that same function might have side effects when called with other arguments. For instance, a function when called with certain arguments can raise an exception -- a side effect -- while having no side effects with other arguments. For instance, some functions may raise exceptions in some circumstances, but not others. Those exceptions are side effects when they happen, but they aren't side effects when they don't.  
+
+Nevertheless, we will often talk about side effects as a general characteristic of some functions. If the function can have side effects when used as intended, then we say the function itself has side effects. In practice, functions that have side effects have them regardless of what arguments are passed in.  
+
+What does "used as intended" mean in the previous paragraph? That's just a way of saying that the function is being called in a manner and time that makes sense:  
+
+* If a required argument is omitted, the function isn't being used as intended.  
+* If you pass an array to a function that expects a number, the function isn't being used as intended.  
+* If you call a function before you've done any required preparations (such as opening a connection to a remote server), the function isn't being used as intended.  
+
+The programmer using a function has to take some responsibility for how they call a function.  
+
+##### Side Effects Through Reassignment
+
+These are the easiest side effects to spot when looking at a function. If the function reassigns any variable that is not declared inside the function, the function has a side effect. For instance: 
+
+```javascript
+let number = 42;
+function incrementNumber() {
+  number += 1;  // side effect: number is defined in outer scope
+}
+```
+
+In this example, `incrementNumber` changes the value of the `number` variable. Since `number` is declared in the outer scope, it isn't local to the function. Thus, the reassignment is a side effect.  
+
+###### Side Effects Through Mutation
+
+Mutation side effects are similar to reassignment side effects in that they require a variable that is declared outside the function. It's almost as easy to spot as reassignment, but not always. Suppose such a variable exists and references an object or an array. If the function mutates that object or array, then the function has a side effect. For example: 
+
+```javascript
+let letters = ['a', 'b', 'c'];
+function removeLast() {
+  letters.pop();		// side effect: alters the array referenced by letters
+}
+```
+
+In this example, we mutate the array referenced by `letters`, a variable that is not local to the `removeLast` function. Thus, we have a side effect. As with reassignment of a variable in the outer scope, it's relatively easy to spot this kind of side effect.  
+
+However, a more subtle situation occurs when an array or object is passed as an argument:  
+
+```javascript
+let letters = ['a', 'b', 'c'];
+function removeLast(array) {
+  array.pop();	// side effect: alters the array referenced by letters
+}
+
+removeLast(letters);
+```
+
+In this code, it's not apparent that we're mutating something referenced by a variable in the outer scope. Both `letters` and `array` point to the same array in memory. Thus, if you mutate the value using `array`, you'll see the changes in `letters`.  
+
+##### Side Effects Through Input/Output
+
+A more subtle side effect occurs when you do any kind of input or output (I/O) operation from within a function. Some everyday actions in this category include:  
+
+* Reading from a file on the system's disk
+* Writing to a file on the system's disk
+* Reading input from the keyboard
+* Writing to the console
+* Accessing a database
+* Updating the display on a web page
+* Reading data from a form on a web page
+* Sending data to a remote web site
+* Receiving data from a remote web site
+* Accessing system hardware such as:
+  * The mouse, trackpad, or other pointing devices
+  * The clock
+  * The random number generator
+  * The audio speakers
+  * The camera
+
+The list goes on. Using any of these things are considered side effects.  
+
+Perhaps the most surprising entries on that list are reading from the keyboard and writing to the console:  
+
+```javascript
+let readLine = require("readline-sync");
+
+function getName() {
+  let name = readLine.question("Enter your name: ") // side effect: output and input
+  console.log(`Hello, ${name}!`);	// side effect: output to console
+}
+```
+
+Accessing the system date or time and generating random numbers are also side effects:  
+
+```javascript
+let date = new Date();	// side effect: accesses the system clock
+let rand = Math.random();  // side effect: accessed random number generator
+```
+
+Anything that causes JavaScript to look outside the program for data or a place to read or send data is a side effect.  
+
+##### Side Effects Through Exceptions
+
+If a function can raise an exception and doesn't catch and handle it, it has a side effect:  
+
+```javascript
+function divideBy(numerator, denominator) {
+  if (numerator === 0) {
+    throw new Error("Divide by zero!"); // side effect: raises an exception
+  }
+  
+  return numerator / denominator;
+}
+```
+
+##### Side Effects Through Other Functions
+
+Suppose a function invokes another function, and that invoked function has a side effect that is visible outside the calling function. In that case, the calling function also has a side effect. We've actually seen several situations where a function calls another function that has side effects:  
+
+* `console.log` has a side effect.
+* `readline.question` has multiple side effects.
+* `new Date()` has a side effect (it accesses the system clock).
+* `Math.random()` has a side effect (it accesses the random number generator).
+
+In each case, each of these functions propagates their side effects to the function that called it.  
+
+One thing to note is that this type of side effect is only important when the invoked function has side effects that aren't local to the calling function. If the side effects can only be seen inside the calling function, then that side effect has no effect on whether the calling function has side effects. Consider this code:  
+
+```javascript
+function insertNumberInOrder(arrayOfNumbers) {
+  arrayOfNumbers = arrayOfNumbers.slice(); // creates a copy of an array
+  arrayOfNumbers.push(arrayOfNumbers); // not a side effect since copy of array
+  arrayOfNumbers.sort((a, b) => a - b); // sort has side effects within function
+  return arrayOfNumbers; // function has no side effect
+}
+```
+
+though the `sort` method has a side effect (it mutates the calling array), that side effect is confined to `insertNumberInOrder`. The side effect has no effect at all outside of the function, so the function itself has no side effects.  
+
+###### Mixing Side Effects and Return Values
+
+We've discussed this before, but it bears repeating: most functions should return a useful value or they should have a side effect, but not both. If you write functions that do both, you may have trouble remembering one of those -- either you'll forget about the side effect, or you'll forget that there's a return value that you need to examine.  
+
+By "useful value," we mean that the function returns a value that has meaning to the calling code. For instance, a `sum` function should probably return a number that contains the result of adding some numbers together. A function that returns an arbitrary value or that always returns the same value is not returning a useful value.  
+
+There are exceptions to the rule about mixing side effects and return values. There are times when you have to have a side effect and return a useful value. For instance, if you read something from a database, you almost certainly have to return a value. If you read some input from the user's keyboard, you probably have to return a value. Yet, both operations -- accessing a database and reading user input -- are side effects. In the user input example, you may also need to write some output to the console, which is another side effect.  
+
+###### Pure Functions  
+
+**Pure functions** are functions that:  
+
+1. Have no side effects.
+2. Always return a value that is dependent on the arguments it is passed.
+3. Given the same set of arguments, the function always returns the same value during the function's lifetime.
+
+For instance, consider this function:
+
+```javascript
+const squared = value => value * value;
+```
+
+This function computes the square of a number, e.g., the number multiplied by itself.  
+
+* It has no side effects.
+
+* The return value is dependent on the argument `value`.
+
+* If we execute `square(42)` one billion times, it will return the same value each time: `1764`. The same consistent result occurs no matter what value we pass to it:  
+
+  * `square(25)` always returns `625`
+  * `square(10)` always returns `100`
+
+  The return value will not vary for any given argument.
+
+The consistent return value is possibly the most important feature of pure functions. The fact that the same arguments always produce the same return value implies **nothing else in the program can influence the function during the function's lifetime**. This is a lot more nuanced than it sounds, but we won't get into those details.  
+
+A function's **lifetime** begins when the function is created. It ends when the function is destroyed. That may sound a little strange, but it isn't. Nested functions, for instance, have a lifetime that spans a single execution of the outer function. Furthermore, nested functions are created every time the outer function is invoked. Each instantiation of the nested function is separate. Even if the function looks identical, it can produce different results for each instantiation -- that does not change its status as a pure function.  
+
+A big benefit of pure functions is that the consistent return value and lack of side effects make them easy to test. Since they are effectively isolated from the rest of the program, you don't have to worry about what happens elsewhere. Nothing outside of the function can have any effect on it. Nothing in the function can have any impact on the rest of the program. This is very convenient and helpful when testing.  
+
+As with side effects, it's common to speak of functions as being pure or impure. However, it's more correct to talk about whether a specific function **call** is pure or impure. A function that is pure with one set of arguments could be impure with another. It all depends on whether the function call has side effects and whether using those arguments produces consistent return values.  
+
+Nevertheless, we will usually talk about pure functions as a general kind of function. If the function is always pure when used as intended, then we say the function itself is pure. In practice, functions that are pure are always pure regardless of what arguments are passed in.  
+
+Pure functions are essential in functional programming, a programming paradigm that relies heavily on pure functions, declarative code, and no mutations. Many JavaScript libraries, such as the ubiquitous ReactJS, require the use of pure functions.  
+
 
 
