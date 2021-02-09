@@ -29,7 +29,7 @@ let anotherVariable = true;
 const FOO = 42;
 ```
 
-Initializers look a lot like an assignment, but are distinct terminology. An assignment is a standalone expression that gives a variable a new value; an initializer is the expression to the right of the `=` in a variable declaration.  
+**Initializers look a lot like an assignment, but are distinct terminology. An assignment is a standalone expression that gives a variable a new value; an initializer is the expression to the right of the `=` in a variable declaration.**  
 
 Take note that a variable that is declared but not initialized or assigned a value will have the value `undefined`.   
 
@@ -38,7 +38,7 @@ let foo;
 foo;			// undefined
 ```
 
-Once declared, you can not assign a new value to a constant. Therefore you must initialize the contstant when you declare it:  
+Once declared, you can not assign a new value to a constant. Therefore you must initialize the constant when you declare it:  
 
 ```javascript
 const BAR; // Uncaught SyntaxError: Missing initializer in const declaration
@@ -51,7 +51,7 @@ FOO = 4; // Uncaught TypeError: Assignment to constant variable.
 
 ###### Expressions
 
-Put simply, an expression is any valid code that resolves to a value.  
+**Put simply, an expression is any valid code that resolves to a value.**  
 
 Examples of expressions:
 
@@ -82,7 +82,7 @@ let c = (let a = 1);	// this gives an error, since a statement can't be used
 
 There are other types of statements, such as `if ... else ...` and `switch` for branching logic (conditionals), `while` and `for` for looping, etc. We'll learn more about those in the next topics.  Just remember that statements help to "do something", instead of giving you a value to use.  
 
-Statements always evaluate as `undefined`. They differ from expressions in that you cannot use a statement as part of another expression. For instance, this code isn't valid:
+**Statements always evaluate as `undefined`.** They differ from expressions in that you cannot use a statement as part of another expression. For instance, this code isn't valid:
 
 ```javascript
 > 5 * let foo
@@ -117,7 +117,7 @@ The expressions or values an operatur uses are its **operands**. In comparisons,
 
 ###### Return Value of a Comparison
 
-The `&&` and `||` logical operators, as you'll recall, use short-circuit evaluation. These operators work with truthy and falsy values too, and they can also return truthy values instead of boolean values. When using `&&` and `||`, the return value is always the value of the operand evaluated last:  
+The `&&` and `||` logical operators, as you'll recall, use **short-circuit evaluation.** These operators work with truthy and falsy values too, and they can also return truthy values instead of boolean values. When using `&&` and `||`, the return value is always the value of the operand evaluated last:  
 
 ```javascript
 > 3 && 'foo' // last evaluated operand is 'foo'
@@ -162,7 +162,7 @@ JavaScript has a set of **precedence** rules it uses to evaluate expressions tha
 
 When an expression contains the logical And (`&&`) or logical Or (`||`) operators, JavaScript evaluates them using "short-circuit" rules:  
 
-* For an expression like `a || b`, if `a` is `true`, the result is always `true`. Since it does not need to evaluate `b` to make this determination, JavaScript short circuits the evaluation an returns `true` without evaluating `b`.  
+* For an expression like `a || b`, if `a` is `true`, the result is always `true`. Since it does not need to evaluate `b` to make this determination, JavaScript short circuits the evaluation and returns `true` without evaluating `b`.  
 * As with `a && b`, JavaScript short circuits the evaluation if `a` is `false`, and returns `false` without evaluating `b`.  
 
 ```javascript
@@ -218,7 +218,7 @@ while (answer !== 'no') {
 }
 
 function foo {
-  // not technically a block. However, we can treat is as a block.
+  // not technically a block. However, we can treat it as a block.
   let foo = 42;               // foo has block scope
   console.log(foo);
 }
@@ -276,11 +276,11 @@ There's a third type of variable declaration that uses the `var` keyword and doe
 
 ###### global vs. local variables
 
-In JavaScript, there are two types of variables based on where they're accessible: **global** variables and **local** variables. Global variables are available throughout a program, while local variables are confined to a function. They keyword you use to declare a variable and the location where you declare it combine to determine whether the variable is global or local. Ignoring `var` for now, we'll focus on `let` and `const` instead. Where you delcare a `let` or `const` variable determines whether the variable is global or local.  
+In JavaScript, there are two types of variables based on where they're accessible: **global** variables and **local** variables. Global variables are available throughout a program, while local variables are confined to a function. **The keyword you use to declare a variable and the location where you declare it combine to determine whether the variable is global or local. Ignoring `var` for now, we'll focus on `let` and `const` instead. Where you delcare a `let` or `const` variable determines whether the variable is global or local.**  
 
 ###### Global Variables
 
-As the name suggests, global variables have a global scope, which means that they are available everywhere within a program. You can read and reassign them at any time. Any variable declared inside a function or block is a local variable -- everything else is a global variable.  
+**As the name suggests, global variables have a global scope, which means that they are available everywhere within a program. You can read and reassign them at any time. Any variable declared inside a function or block is a local variable -- everything else is a global variable.**  
 
 Global variables can be useful in some scenarios, e.g., application-wide configuration. However, most developers discourage their use since they often lead to bugs. In general, you should limit the scope of your variables as much as possible; smaller variable scopes limit the risk that an outer scope might misuse the variable.  
 
@@ -288,14 +288,14 @@ Global variables can be useful in some scenarios, e.g., application-wide configu
 
 As the name suggests, local variables in JavaScript have a local scope, meaning that you can't access them outside the function that declares them. As with global variables, where you declare a local variable determines its scope.  
 
-Local variables are short-lived; they go away when the function that corresponds to their scope stops running. When we invoke the function, we start a new scope. If the code within that scope declares a new variable, that variable belongs to the scope. When the last bit of code in that scope finishes running, the scope goes away, as do any local variables declared within it. JavaScript repeats this process each time we invoke a function.  
+**Local variables are short-lived**; they go away when the function that corresponds to their scope stops running. When we invoke the function, we start a new scope. If the code within that scope declares a new variable, that variable belongs to the scope. When the last bit of code in that scope finishes running, the scope goes away, as do any local variables declared within it. JavaScript repeats this process each time we invoke a function.  
 
 ###### Adding Variables to the Current Scope
 
 These are a number of ways to create a variable in the current scope:
 
 * Use the `let` or `const` keywords.
-* Use the `var` keyword, which we'lll introduce later in this lesson.
+* Use the `var` keyword, which we'll introduce later in this lesson.
 * Define parameters for a function -- each parameter is a local variable.
 * A function declaration creates a variable with the same name as the function. We'll talk about that in the next assignment.
 * A class declaration also creates a variable with the same name as the class. We'll talk about class declarations in a later course.  
@@ -413,9 +413,9 @@ The concepts of closure and scope are intimately related. Closures use the scope
 
 [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures) defines **closure** as "the combination of a function and the lexical environment within which that function was [defined]." You can think of closure as a function combined with all of the variables in its lexical scope, including function and class names.
 
-Closures are created when you defined a function or method. The closure essentially _closes over_ its environment -- what's in scope. In effect, the function definition and its scope become a single entity called a closure. When the function is invoked, it has access to everything in its environment. That is, it can use any variable that was in the lexical scope where the function was defined. **Even if those variables aren't in  the lexical scope where you invoke the function, it can still access them.**  
+Closures are created when you define a function or method. The closure essentially _closes over_ its environment -- what's in scope. In effect, the function definition and its scope become a single entity called a closure. When the function is invoked, it has access to everything in its environment. That is, it can use any variable that was in the lexical scope where the function was defined. **Even if those variables aren't in the lexical scope where you invoke the function, it can still access them.**  
 
-Wait a minute. How can you use variables that aren't in scope? Doesn't scope govern what variables you can use? Yes, that's true, but it's a little imprecise. When we say that a variable is no longer in scope, we mean that it isn't in scope at the point in your program where you invoke the function. However, closure and scope are lexical concepts. Where you invoke a function is unimportant; where you define the function is. A closure includes all the variables that are in scope where you defined the function. Those variables may not be in scope when you invoke the function, but they're still available to the function.  
+Wait a minute. How can you use variables that aren't in scope? Doesn't scope govern what variables you can use? Yes, that's true, but it's a little imprecise. **When we say that a variable is no longer in scope, we mean that it isn't in scope at the point in your program where you invoke the function. However, closure and scope are lexical concepts. Where you invoke a function is unimportant; where you define the function is. A closure includes all the variables that are in scope where you defined the function.** Those variables may not be in scope when you invoke the function, but they're still available to the function.  
 
 ##### A Helpful Mental Model
 
@@ -455,11 +455,11 @@ We'll return to this concept in a few minutes.
 
 When a function encounters a variable name during execution, it first looks inside its local scope for that name. If it can't find the name, it peeks inside the envelope to see whether the variable is mentioned there. If it is, JavaScript can follow the pointer and get the current value of the variable. In fact, this is how scope works in JavaScript: it first checks for local variables by a given name, then it looks to the closure if it can't find it. All that stuff about looking at outer scopes until you reach the global scope all happens during the creation phase when JavaScript is looking for identifiers (e.g., variable and function names) and determining what scope they belong to.  
 
-What about variables that are in scope when you invoke a function? Can the function access them? If those variables were in scope at the definition point, then yes, it can. However, if those variables weren't in scope when you defined the function, then the function won't be able to access them. They're not listed in the envelope since those names aren't in scope at the function definition point. Only variables that are in scope when you define the function are available to the function.  
+**What about variables that are in scope when you invoke a function? Can the function access them? If those variables were in scope at the definition point, then yes, it can. However, if those variables weren't in scope when you defined the function, then the function won't be able to access them. They're not listed in the envelope since those names aren't in scope at the function definition point. Only variables that are in scope when you define the function are available to the function.**  
 
 ##### Examples of Closure
 
-Okay, then, how can we invoke a function in a way that lets it access something that isn't in scope? Recall that, in JavaScript, functions are first-class objects. We can assign them to variables, pass them as function arguments, and use them as function return values. That means that we don't have to execute a function in the same scope in which we defined it; we can call it from a completely different part of the program. This is easiest to see with a higher-order function that returns a function object. For instance:  
+Okay, then, how can we invoke a function in a way that lets it access something that isn't in scope? **Recall that, in JavaScript, functions are first-class objects. We can assign them to variables, pass them as function arguments, and use them as function return values. That means that we don't have to execute a function in the same scope in which we defined it; we can call it from a completely different part of the program.** This is easiest to see with a higher-order function that returns a function object. For instance:  
 
 ```javascript
 function foo() {
@@ -556,7 +556,7 @@ The partial function technique is most useful when you need to pass a function t
 
 ```javascript
 function download(locationOfFile, errorHandler) {
-  // try to download teh file
+  // try to download the file
   if (gotError) {
     errorHandler(reasonCode);
   }
@@ -607,16 +607,6 @@ We've seen several examples in this assignment, including callbacks, partial fun
 - The module pattern (putting code and data into modules)
 - Asynchronous operations
 
-
-
-
-
-
-
-
-
-
-
 ---
 
 ### Function Scope
@@ -625,7 +615,7 @@ In JavaScript, every function or block creates a new variable scope. Let's exami
 
 ###### The Global Scope
 
-Very small JavaScript programs with no functions or blocks exist entirely within a single sclope called the global scope:  
+Very small JavaScript programs with no functions or blocks exist entirely within a single scope called the global scope:  
 
 ```javascript
 let name = 'Julian';
@@ -714,8 +704,6 @@ JavaScript uses _Lexical Scoping_ to determine where it looks for variables; it 
 When JavaScript tries to find a variable, it searches this hierarchy from the bottom to the top. It stops and returns the first variable it finds with a matching name. This means that variables in a lower scope can _shadow_, or hide, a variable with the same name in a higher scope.  
 
 Most mainstream programming languages use lexical scoping rules (also called "static scoping"). Some languages use "dynamic scoping" instead, or make dynamic scoping a choice. We won't get into dynamic scoping here.  
-
-
 
 ---
 
@@ -1063,7 +1051,7 @@ foo();
 
 WHAT!!!? After all that, we're going to tell you that hoisting isn't real? Yup.
 
-Hoisting is really just a mental model that almost all JavaScript developers used to explain how scope works in the language. There is no actual process that happens in JavaScript that is called hoisting. Until fairly recently, it wasn't even mentioned in the ECMAScript standards, and even now, it's barely mentioned in passing. What's more, the mental model of hoisting is not perfect -- there are edge cases that aren't properly explaining entirely by hoisting.
+Hoisting is really just a mental model that almost all JavaScript developers use to explain how scope works in the language. There is no actual process that happens in JavaScript that is called hoisting. Until fairly recently, it wasn't even mentioned in the ECMAScript standards, and even now, it's barely mentioned in passing. What's more, the mental model of hoisting is not perfect -- there are edge cases that aren't properly explained entirely by hoisting.
 
 The behavior that we try to explain with hoisting is merely a consequence of how JavaScript runs programs in two phases. The creation phase prepares your code for execution. Each time it encounters a variable, function, or class declaration, it adds that identifier to the current scope. If the identifier is at the global level, it gets added to the global scope. If it's in a function, class, or block, it gets added to the scope for that function, class, or block. Thus, at the end of the creation phase, JavaScript knows all of the identifiers in your program and what scopes each one belongs to.
 
