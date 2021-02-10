@@ -1343,7 +1343,7 @@ In the last example above, `undefined` gets coerced to `NaN`. While `NaN` means 
 
 ##### Other Arithmetic Operators
 
-The other arithmetic operators, `-`, `*`, `/`, `%`, are only defined for numbers, so JavaScript convets both operands to numbers:  
+The other arithmetic operators, `-`, `*`, `/`, `%`, are only defined for numbers, so JavaScript converts both operands to numbers:  
 
 ```javascript
 1 - true                // 0
@@ -1368,7 +1368,7 @@ The most important facts to remember about arrays are:
 
 * The order of the elements is significant.
 * Use index numbers to retrieve array elements.
-* Index numers are non-negative integers starting from `0`.
+* Index numbers are non-negative integers starting from `0`.
 
 ##### Objects
 
@@ -1388,7 +1388,7 @@ Floating point values cannot precisely represent values because of how the compu
 0.1 + 0.2; 			// returns 0.30000000000000004, not 0.3!
 ```
 
-The best practice here is avoid fractional numbers as much as you can. Instead, use an integer number of the smallest relevant units. For example, if you're working with financial numbers, represent the amount in cents. If you're working with time duration, use seconds instead of hours.  
+The best practice here is to avoid fractional numbers as much as you can. Instead, use an integer number of the smallest relevant units. For example, if you're working with financial numbers, represent the amount in cents. If you're working with time duration, use seconds instead of hours.  
 
 There are a few special number values:
 
@@ -1435,12 +1435,6 @@ A common string operation is concatenation, which joins one string to another. C
 'Hello' + ', World'; 		// "Hello, World"
 ```
 
-
-
-
-
-
-
 ---
 
 ### Object Properties and Mutation
@@ -1467,7 +1461,7 @@ let person = {
 
 The comma that follows the last pair is optional.  
 
-You can also write that on a single ine, which is handy in `node`:
+You can also write that on a single line, which is handy in `node`:
 
 ```
 > let person = { name: 'Jane', age: 37, hobbies: ['photography', 'geneaology'] }
@@ -1477,7 +1471,7 @@ Though the keys are strings, we typically omit the quotes when the key consists 
 
 Key-value pairs are also called **properties** in JavaScript. We can also use "property" to refer to the key name; the meaning is typically clear from context. For instance, we can talk about the `name` property for the `person` object without mentioning the value.  
 
-If a variable declared with `const` is initialized with an object, you can't change what object that variable refers to. You can, however, modify that object's properties and property values:  
+**If a variable declared with `const` is initialized with an object, you can't change what object that variable refers to. You can, however, modify that object's properties and property values:**  
 
 ```javascript
 > const MyObj = { foo: "bar", qux: "xyz" }
@@ -1489,7 +1483,7 @@ If a variable declared with `const` is initialized with an object, you can't cha
 > MyObj = {} // Uncaught TypeError: Assignment to constant variable.
 ```
 
-As with arrays, this behavior can be confusing, and it occurs because of the same "variables are pointers" concept that we'll discuss in the next chapter. Essentially, a `const` declaration prohibits changing what thing the `const` points to, but it does not prohibit changing the content of that thing. Thus, we can change a property in a `const` object, but we can't change which object the `const` points to.  
+As with arrays, this behavior can be confusing, and it occurs because of the same "variables are pointers" concept that we'll discuss in the next chapter. **Essentially, a `const` declaration prohibits changing what thing the `const` points to, but it does not prohibit changing the content of that thing. Thus, we can change a property in a `const` object, but we can't change which object the `const` points to.**  
 
 You can use `Object.freeze` with objects to freeze the property values of an object, just like you can with arrays:  
 
@@ -1504,7 +1498,7 @@ As with arrays, `Object.freeze` only works one level deep in the object. If your
 
 ###### Objects vs. Primitives
 
-You may remember that JavaScript has two categories of data types: primitives and objects. The primitive types are strings, numbers, booleans, `null`, and `undefined`, bigints, and symbols. Primitive types are teh simplest, most basic types in JavaScript.  
+You may remember that JavaScript has two categories of data types: primitives and objects. The primitive types are strings, numbers, booleans, `null`, and `undefined`, bigints, and symbols. Primitive types are the simplest, most basic types in JavaScript.  
 
 Objects include, but aren't limited to, the following types:
 
