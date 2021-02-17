@@ -38,7 +38,7 @@ let foo;
 foo;			// undefined
 ```
 
-Once declared, you can not assign a new value to a constant. Therefore you must initialize the constant when you declare it:  
+Once declared, you cannot assign a new value to a constant. Therefore you must initialize the constant when you declare it:  
 
 ```javascript
 const BAR; // Uncaught SyntaxError: Missing initializer in const declaration
@@ -99,7 +99,7 @@ Some statements include expressions as part of their syntax. For example, the `l
 = undefined
 ```
 
-In the `let` statement, the code to the right of the `=` statement is an expression. That expression happents to be part of the `let` statement, but it is still an expression in its own right.  
+In the `let` statement, the code to the right of the `=` statement is an expression. That expression happens to be part of the `let` statement, but it is still an expression in its own right.  
 
 ###### Comparisons
 
@@ -172,12 +172,6 @@ let b = false;
 a || (b = true);	// b is still false after this, because (b = true) is never evaluated
 b && (a = 1);			// a is still true after this, because (a = 1) is never evaluated
 ```
-
-
-
-
-
-
 
 ---
 
@@ -710,6 +704,8 @@ Most mainstream programming languages use lexical scoping rules (also called "st
 ### Hoisting
 
 JavaScript engines operate in two main phases: a **creation phase** and an **execution phase**. The execution phase is when the program runs code line-by-line. That's what most people mean when they talk about a program's execution. However, before the execution phase begins, the creation phase does some preliminary work. One of those work items is to find all of the variable, function, and class _declarations_. It effectively moves these declarations to the top of their respective function or block: function-scoped declarations get moved to the top of the function, and block-scoped declarations get moved to the top of the block. This process is called **hoisting**.  
+
+**hoisting** is the process of finding and associating variable declarations with their respective scope—prior to the execution of all other code. 
 
 The effect of this process is that all the declarations get hoisted -- raised, lifted, moved -- to the top of their defined scope. That's why the following code works:
 
@@ -1989,7 +1985,7 @@ The relational operators, `<`, `>`, `<=`, and `>=` are defined for numbers (nume
 '11' > 9							// true -- '11' is coerced to 11
 123 > 'a'							// false -- 'a' is coerced to NaN; any comparison with NaN is false
 123 <= 'a'						// also false
-true > null						// true -- becomes > 0
+true > null						// true -- becomes 1 > 0
 true > false					// true -- also becomes 1 > 0
 null <= false					// true -- becomes 0 <= 0
 undefined >= 1				// false -- becomes NaN >= 1
@@ -2071,8 +2067,6 @@ in reprehenderit in voluptate velit esse cillum dolore eu fugiat \
 nulla pariatur. Excepteur sint occaecat cupidatat non proident, \
 sunt in culpa qui officia deserunt mollit anim id est laborum.';
 ```
-
-
 
 ###### Arrays
 
@@ -2212,7 +2206,7 @@ A callback is a function that you pass to another function as an argument. The c
 
 ```javascript
 let array = [1, 2, 3];
-array.forEach(function(num)) {
+array.forEach(function(num) {
   console.log(num);	// on first iteration => 1
 										// on second iteration => 2
 										// on third iteration =>
@@ -2338,8 +2332,6 @@ When an array is compared with a non-array using the non-strict equality operato
 
 The relational comparison operators, `>`, `>=`, `<`, and `<=`, are useless with arrays and objects. They return `true` or `false` in unexpected ways. Don't use them with arrays or objects.  
 
-
-
 ###### Objects
 
 Here is an object definition:
@@ -2461,7 +2453,7 @@ The `Object.keys` static method returns an object's keys as an array. You can it
 ```javascript
 let personKeys = Object.keys(person);
 console.log(personKeys);					// => ['name', 'age', 'height']
-person.Keys.forEach(key => {
+personKeys.forEach(key => {
   console.log(person[key])
 });																// => Bob
 																	//		30
@@ -2539,25 +2531,7 @@ Note taht `objB` isn't mutated. If you need to create a new object, use an empty
 = { b: 'bar' }
 ```
 
-This code mutates neither `objA` nor `objB` and returns an entirely new object.  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+This code mutates neither `objA` nor `objB` and returns an entirely new object. 
 
 ---
 
@@ -2848,12 +2822,6 @@ console.log(Object.keys(arr))			// []					Yes
 
 To determine whether `arr` is empty on lines 5 and 6, we again need to determine what we mean by an empty array. If we want to include the gaps, then we can use `length` to determine whether the array is empty. However, if we need to ignore the gaps, then we must look at the object keys to learn whether the array is empty, keeping in mind that some of the object keys may not be unsigned integers. **Again, there is no one right answer here.** You have to decide what empty means.  
 
-
-
-
-
-
-
 ---
 
 ### Variables as Pointers
@@ -3015,15 +2983,13 @@ When coercing a value to a boolean, JavaScript treats the following values as fa
 
 Everything else evaluates as true.
 
-
-
 ---
 
 ### Function Definition and Function Invocation
 
 ###### Definition
 
-One way to defined functions is to declare them. A function declaration has the following structure:
+One way to define functions is to declare them. A function declaration has the following structure:
 
 * The `function` keyword
 * The name of the function
@@ -3083,7 +3049,7 @@ surprise();
 Yikes!
 ```
 
-Many functions require parameters to fulfill their purpose. As we saw earlier, when calling a functio, we call these values _arguments_, and specify them as a list of names between the parentheses.  
+Many functions require parameters to fulfill their purpose. As we saw earlier, when calling a function, we call these values _arguments_, and specify them as a list of names between the parentheses.  
 
 Consider the following function, `takeTwo`:
 
@@ -3131,8 +3097,6 @@ takeTwo(1, 2, 4);
 2
 3
 ```
-
-
 
 ---
 
@@ -3402,11 +3366,7 @@ We recommend this practice:
 
 ### Implicit Return Value of Function Invocations
 
-If a function does not contain an explicit `return` statement, or the `return` statement does not include a value, the function implicitly returns the value `undefined`. This is a reason why functions are said to "have returned" rather than "finished execution". When we talk about closures in a later course this distinction will become more apparent. For now, just be mindful of the disambiguation between the `return` value (explicit or implicit) of a function and the statement that a "_function that has returned or returns_".  
-
-
-
-
+If a function does not contain an explicit `return` statement, or the `return` statement does not include a value, the function implicitly returns the value `undefined`. This is a reason why functions are said to "have returned" rather than "finished execution". When we talk about closures in a later course this distinction will become more apparent. For now, just be mindful of the disambiguation between the `return` value (explicit or implicit) of a function and the statement that a "_function that has returned or returns_". 
 
 ---
 
@@ -3418,7 +3378,13 @@ One feature of JavaScript that sets it apart from most other languages is that i
 
 ### Side-effects
 
+A function call that performs any of the following actions is said to have side effects:  
 
+1. It reassigns any non-local variable.
+2. It mutates the value of any object referenced by a non-local variable.
+3. It reads from or writes to any data entity (files, network connections, etc.) that is non-local to your program.
+4. It raises an exception.
+5. It calls another function that has side effects.
 
 ---
 
@@ -3712,7 +3678,7 @@ There are exceptions to the rule about mixing side effects and return values. Th
 For instance, consider this function:
 
 ```javascript
-const squared = value => value * value;
+const square = value => value * value;
 ```
 
 This function computes the square of a number, e.g., the number multiplied by itself.  
@@ -3738,7 +3704,4 @@ As with side effects, it's common to speak of functions as being pure or impure.
 
 Nevertheless, we will usually talk about pure functions as a general kind of function. If the function is always pure when used as intended, then we say the function itself is pure. In practice, functions that are pure are always pure regardless of what arguments are passed in.  
 
-Pure functions are essential in functional programming, a programming paradigm that relies heavily on pure functions, declarative code, and no mutations. Many JavaScript libraries, such as the ubiquitous ReactJS, require the use of pure functions.  
-
-
-
+Pure functions are essential in functional programming, a programming paradigm that relies heavily on pure functions, declarative code, and no mutations. Many JavaScript libraries, such as the ubiquitous ReactJS, require the use of pure functions. 
