@@ -74,3 +74,27 @@ function sortIntegers(integer1, integer2) {
 }
 ```
 
+---
+
+### LS Solution
+
+```javascript
+function multiplyAllPairs(array1, array2) {
+  const result = [];
+  
+  array1.forEach(number1 => {
+    array2.forEach(number2 => {
+      result.push(number1 * number2);
+    });
+  });
+  
+  return result.sort((a, b) => a - b);
+}
+```
+
+###### Discussion
+
+The solution uses the iteration list processing strategy because it is an efficient way of performing an action on each element in each array, and then updating the value of the `result` array with the result of each action. Together, the nested `Array.prototype.forEach` loops get all combinations of number pairs from the two arrays. The inner `forEach` loop multiplies the outer `number1` by the inner `number2`, then pushes the product of the pair to the `result` array.  
+
+After the iteration finishes, the solution uses the `Array.prototype.sort` method to sort the values of the `result` array from lowest to highest, then returns the result.
+
