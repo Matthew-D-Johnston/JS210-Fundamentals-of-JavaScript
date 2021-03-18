@@ -1,17 +1,12 @@
 "use strict";
 
-// function substrings(string) {
-//   const Results = [];
+function palindromes(string) {
+  return substrings(string).filter(substring => isPalindrome(substring));
+}
 
-//   for (let index = 0; index < string.length; index += 1) {
-//     let substring = string.slice(index);
-//     let substringsArray = leadingSubstrings(substring);
-//     Results.push(substringsArray);
-//   }
-
-//   return Results.flat();
-// }
-
+function isPalindrome(string) {
+  return string.length > 1 && string === string.split('').reverse().join('');
+}
 
 function substrings(string) {
   let chars = string.split('');
@@ -33,6 +28,7 @@ function leadingSubstrings(string) {
   return Subsets;
 }
 
-console.log(substrings('abcde'));
-console.log(substrings('hello-madam-did-madam-goodbye'));
-
+console.log(palindromes('abcd'));
+console.log(palindromes('madam'));
+console.log(palindromes('hello-madam-did-madam-goodbye'));
+console.log(palindromes('knitting cassettes'));
