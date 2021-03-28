@@ -6,7 +6,7 @@ function isUppercase(text) {
 
 function lowercased(character) {
   return !!character.match(/[a-z]/g);
-} 
+}
 
 console.log(isUppercase('t'));
 console.log(isUppercase('T'));
