@@ -1,15 +1,8 @@
 "use strict";
 
-
 function mergeSort(array) {
-  let iterations = Math.round(array.length / 2);
-  let nestedArrays = array.slice();
-
-  for (let iteration = 1; iteration <= iterations; iteration += 1) {
-    nestedArrays = divideArray(nestedArrays);
-  }
-
-  return nestedArrays;
+  let nestedArrays = makeNestedArray(array);
+  return sortAndFlatten(nestedArrays);
 }
 
 function divideArray(array) {
@@ -22,6 +15,17 @@ function divideArray(array) {
   } else {
     return [array.slice(0, midpoint), array.slice(midpoint)];
   }
+}
+
+function makeNestedArray(array) {
+  let iterations = Math.round(array.length / 2);
+  let nestedArrays = array.slice();
+
+  for (let iteration = 1; iteration <= iterations; iteration += 1) {
+    nestedArrays = divideArray(nestedArrays);
+  }
+
+  return nestedArrays;
 }
 
 function merge(array1, array2) {
@@ -51,37 +55,26 @@ function merge(array1, array2) {
   return results;
 }
 
-function sorting(nestedArrays) {
-  let resultArray;
+function sortAndFlatten(nestedArrays) {
+  let sorted;
 
   if (!Array.isArray(nestedArrays)) {
-    resultArray = nestedArrays;
+    return nestedArrays;
   } else if (nestedArrays.length === 2 && !Array.isArray(nestedArrays[0][0])) {
-    resultArray = mergeFlatten(nestedArrays);
+    sorted = merge(nestedArrays[0], nestedArrays[1]);
   } else {
-    resultArray = nestedArrays.map(array => {
-      if (array.length === 2 && !Array.isArray(array[0][0])) {
-        return mergeFlatten(array);
-      } else {
-        return sorting(array);
-      }
-    });
+    sorted = nestedArrays.map(array => sortAndFlatten(array));
   }
 
-  if (Array.isArray(resultArray[0])) {
-    resultArray = sorting(resultArray);
+  if (Array.isArray(sorted[0])) {
+    sorted = sortAndFlatten(sorted);
   }
-  return resultArray;
+
+  return sorted;
 }
 
-function mergeFlatten(array) {
-  return merge(array[0], array[1]);
-}
-
-let arrays = mergeSort([9, 5, 7, 1, 3]);
-console.log(sorting(arrays));
-
-
-
-
-
+console.log(mergeSort([9, 5, 7, 1]));
+console.log(mergeSort([5, 3]));
+console.log(mergeSort([6, 2, 7, 1, 4]));
+console.log(mergeSort(['Sue', 'Pete', 'Alice', 'Tyler', 'Rachel', 'Kim', 'Bonnie']));
+console.log(mergeSort([7, 3, 9, 15, 23, 1, 6, 51, 22, 37, 54, 43, 5, 25, 35, 18, 46]));
