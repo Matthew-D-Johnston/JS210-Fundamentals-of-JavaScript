@@ -304,3 +304,31 @@ function sortAndFlatten(nestedArrays) {
 
 ### LS Solution
 
+###### Solution
+
+```javascript
+function mergeSort(array) {
+  if (array.length === 1) {
+    return array;
+  }
+  
+  let subArray1 = array.slice(0, array.length / 2);
+  let subArray2 = array.slice(array.length / 2);
+  
+  subArray1 = mergeSort(subArray1);
+  subArray2 = mergeSort(subArray2);
+  
+  return merge(subArray1, subArray2);
+}
+```
+
+###### Discussion
+
+Merge sort is one of the more efficient sorting algorithms. However, because of its efficiency, it can be difficult to understand—not to say that everything that is efficient is hard to understand. Let's break it down step by step.  
+
+Our `mergeSort` function takes the `array` argument and slices it down the middle into two smaller subarrays. When the `length` of the `array` argument is even, the two subarrays will both have the same `length`. Otherwise, when the `length` is odd, `subArray1` will be one element shorter than `subArray2`. We do this to break down our sorting procedure into smaller, more manageable steps, but it doesn't actually make a difference whether we put the extra element in the first or the second array.  
+
+After splitting the `array` into two subarrays, we call the `mergeSort` function recursively, first on one of the subarrays, and then on the next. Each of these two recursive calls sorts the current subarray, breaking it down into smaller and smaller parts by repeating this process until we reach the trivial case of sorting a one-element array—at which point we just return the array as is.  
+
+Once we have the subarray results, we merge them back together using our `merge` function from the previous exercise. With each merge, we take two small subarrays and combine them together to return a larger array that contains all the elements from both subarrays. We repeat this process at each level of recursion until we reach the top level. Finally, we return the merged and sorted array to the caller.  
+
